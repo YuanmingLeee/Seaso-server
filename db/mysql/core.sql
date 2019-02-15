@@ -15,7 +15,8 @@ create table user
 
 create table question
 (
-  id          int auto_increment,
+  id          int auto_increment
+    primary key,
   question_id char(16)                not null,
   keywords    text                    null comment 'keyword string',
   title       varchar(40)             not null comment 'question title',
@@ -39,7 +40,8 @@ create table question
 
 create table answer
 (
-  id          int auto_increment,
+  id          int auto_increment
+    primary key,
   answer_id   char(16)      not null,
   question_id char(16)      not null comment 'answer to the question',
   description varchar(100)  not null comment 'cover text',
@@ -64,12 +66,10 @@ create table answer
 )
   comment 'answer';
 
-alter table answer
-  add primary key (id);
-
 create table comments
 (
-  id          int auto_increment,
+  id          int auto_increment
+    primary key,
   comment_id  char(16) not null,
   answer_id   char(16) not null,
   reply_id    char(16) null,
@@ -95,12 +95,6 @@ create table comments
     foreign key (updater) references user (user_id)
 );
 
-alter table comments
-  add primary key (id);
-
-alter table question
-  add primary key (id);
-
 create table user_auth
 (
   id            int auto_increment
@@ -117,5 +111,3 @@ create table user_auth
     foreign key (user_id) references user (user_id)
 )
   comment 'user authentication';
-
-
