@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
-public class User extends DataEntity {
+public class User extends DataEntity<User> {
 
     @Id
     @GeneratedValue
@@ -62,6 +62,14 @@ public class User extends DataEntity {
         this.id = id;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getName() {
         return name;
     }
@@ -76,5 +84,45 @@ public class User extends DataEntity {
 
     public void setAge(Integer age) {
         this.age = age;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
+    }
+
+    public String getHistory() {
+        return history;
+    }
+
+    public void setHistory(String history) {
+        this.history = history;
+    }
+
+    public String getMyLikes() {
+        return myLikes;
+    }
+
+    public void setMyLikes(String myLikes) {
+        this.myLikes = myLikes;
+    }
+
+    public String getMyDislikes() {
+        return myDislikes;
+    }
+
+    public void setMyDislikes(String myDislikes) {
+        this.myDislikes = myDislikes;
     }
 }

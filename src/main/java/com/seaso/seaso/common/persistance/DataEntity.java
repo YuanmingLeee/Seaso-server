@@ -6,22 +6,22 @@ import javax.persistence.*;
 import java.util.Date;
 
 @MappedSuperclass
-public abstract class DataEntity {
+public abstract class DataEntity<T> {
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "data_entity_user_user_id_fk"),
-            name = "creator", referencedColumnName = "userId")
+    @JoinColumn(name = "creator", referencedColumnName = "userId", nullable = false)
     protected User creator;
 
     @ManyToOne
-    @JoinColumn(foreignKey = @ForeignKey(name = "data_entity_user_user_id_fk2"),
-            name = "updater", referencedColumnName = "userId")
+    @JoinColumn(name = "updater", referencedColumnName = "userId", nullable = false)
     protected User updater;
 
-    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     protected Date createDate;
 
-    @Column
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(nullable = false)
     protected Date updateDate;
 
     protected DataEntity() {}
