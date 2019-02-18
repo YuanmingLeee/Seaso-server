@@ -1,6 +1,8 @@
-package com.seaso.seaso.modules.user.dao;
+package com.seaso.seaso.modules.sys.dao;
 
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {

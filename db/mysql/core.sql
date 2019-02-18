@@ -5,13 +5,13 @@ create table user
   user_id     char(16)   not null,
   nickname    char(20)   not null,
   avatar      mediumblob null,
-  history     longtext   null comment 'user browser history string',
-  my_likes    longtext   null comment 'user liked answers string',
-  my_dislikes longtext   null comment 'user disliked answers string',
+  history     longtext   null comment 'sys browser history string',
+  my_likes    longtext   null comment 'sys liked answers string',
+  my_dislikes longtext   null comment 'sys disliked answers string',
   constraint user_user_id_uindex
     unique (user_id)
 )
-  comment 'user main table';
+  comment 'sys main table';
 
 create table question
 (
@@ -24,9 +24,9 @@ create table question
   cover       blob                    null comment 'cover image',
   content     mediumblob              null comment 'content',
   viewed      int          default 0  not null comment 'number of views',
-  creator     char(16)                not null comment 'creator user id',
+  creator     char(16)                not null comment 'creator sys id',
   create_date datetime                not null,
-  updater     char(16)                not null comment 'updater user id',
+  updater     char(16)                not null comment 'updater sys id',
   update_date datetime                not null,
   constraint question_id_uindex
     unique (id),
@@ -47,9 +47,9 @@ create table answer
   description varchar(100)  not null comment 'cover text',
   cover       blob          null comment 'cover image',
   content     mediumblob    null,
-  creator     char(16)      not null comment 'creator user id',
+  creator     char(16)      not null comment 'creator sys id',
   create_date datetime      not null,
-  updater     char(16)      not null comment 'updater user id',
+  updater     char(16)      not null comment 'updater sys id',
   update_date datetime      not null,
   likes       int default 0 null comment 'number of likes',
   dislikes    int default 0 null comment 'number of dislikes',
@@ -110,4 +110,4 @@ create table user_auth
   constraint user_auth_user_user_id_fk
     foreign key (user_id) references user (user_id)
 )
-  comment 'user authentication';
+  comment 'sys authentication';

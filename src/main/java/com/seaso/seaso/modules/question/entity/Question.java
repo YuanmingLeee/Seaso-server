@@ -1,0 +1,142 @@
+package com.seaso.seaso.modules.question.entity;
+
+import com.seaso.seaso.common.persistance.DataEntity;
+
+import javax.persistence.*;
+
+/**
+ * Question entity class is mapped to QUESTION table. It stores question posted.
+ *
+ * @author Yuanming Li
+ * @version 0.1
+ */
+@Entity
+@Table(name = "t_question")
+public class Question extends DataEntity<Question> {
+
+    /**
+     * Id for primary key of persistence layer
+     */
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    /**
+     * Question id
+     */
+    @Column(nullable = false, unique = true, length = 16)
+    private String question_id;
+
+    /**
+     * Keywords for searching
+     */
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(length = 16777215)
+    private String keywords = "";
+
+    /**
+     * Question title
+     */
+    @Column(length = 40)
+    private String title = "";
+
+    /**
+     * Question description(subtitle)
+     */
+    @Column(length = 100)
+    private String description;
+
+    /**
+     * Question cover image
+     */
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column
+    private byte[] cover;
+
+    /**
+     * Question detailed content
+     */
+    @Lob
+    @Basic(fetch = FetchType.LAZY)
+    @Column(length = 16777215)
+    private byte[] content;
+
+    /**
+     * Number of views
+     */
+    @Column
+    private Long views;
+
+    /**
+     * Default constructor
+     */
+    public Question() {
+        super();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getQuestion_id() {
+        return question_id;
+    }
+
+    public void setQuestion_id(String question_id) {
+        this.question_id = question_id;
+    }
+
+    public String getKeywords() {
+        return keywords;
+    }
+
+    public void setKeywords(String keywords) {
+        this.keywords = keywords;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public byte[] getCover() {
+        return cover;
+    }
+
+    public void setCover(byte[] cover) {
+        this.cover = cover;
+    }
+
+    public byte[] getContent() {
+        return content;
+    }
+
+    public void setContent(byte[] content) {
+        this.content = content;
+    }
+
+    public Long getViews() {
+        return views;
+    }
+
+    public void setViews(Long views) {
+        this.views = views;
+    }
+}

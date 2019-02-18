@@ -1,11 +1,11 @@
-package com.seaso.seaso.modules.user.entity;
+package com.seaso.seaso.modules.sys.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
 
 import javax.persistence.*;
 
 @Entity
-@Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
+@Table(name = "sys", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
     @Id

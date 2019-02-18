@@ -1,6 +1,6 @@
 package com.seaso.seaso.common.persistance;
 
-import com.seaso.seaso.modules.user.entity.User;
+import com.seaso.seaso.modules.sys.entity.User;
 
 import javax.persistence.*;
 import java.util.Date;

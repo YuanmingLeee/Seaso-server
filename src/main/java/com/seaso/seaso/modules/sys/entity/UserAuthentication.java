@@ -1,12 +1,12 @@
-package com.seaso.seaso.modules.user.entity;
+package com.seaso.seaso.modules.sys.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
-import com.seaso.seaso.modules.user.utils.AuthenticationType;
+import com.seaso.seaso.modules.sys.utils.AuthenticationType;
 
 import javax.persistence.*;
 
 /**
- * User authentication Entity class is mapped to USER_AUTH table which is responsible for user authentication.
+ * User authentication Entity class is mapped to USER_AUTH table which is responsible for sys authentication.
  * In each row, it stores the type of authentication method, identifier(e.g. username) and credential(e.g.
  * password).
  *

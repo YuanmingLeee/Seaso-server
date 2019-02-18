@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.user.utils;
+package com.seaso.seaso.modules.sys.utils;
 
 public enum AuthenticationType {
     USER_NAME,

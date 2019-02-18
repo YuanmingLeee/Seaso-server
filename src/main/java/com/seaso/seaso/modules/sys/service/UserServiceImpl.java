@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.user.service;
+package com.seaso.seaso.modules.sys.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
