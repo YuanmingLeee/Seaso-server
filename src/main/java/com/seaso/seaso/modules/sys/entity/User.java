@@ -5,7 +5,7 @@ import com.seaso.seaso.common.persistance.DataEntity;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "sys", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
+@Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
     @Id

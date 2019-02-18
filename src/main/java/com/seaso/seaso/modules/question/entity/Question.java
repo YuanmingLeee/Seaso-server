@@ -11,7 +11,8 @@ import javax.persistence.*;
  * @version 0.1
  */
 @Entity
-@Table(name = "t_question")
+@Table(name = "question",
+        indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
 public class Question extends DataEntity<Question> {
 
     /**
@@ -25,7 +26,7 @@ public class Question extends DataEntity<Question> {
      * Question id
      */
     @Column(nullable = false, unique = true, length = 16)
-    private String question_id;
+    private String questionId;
 
     /**
      * Keywords for searching
@@ -85,11 +86,11 @@ public class Question extends DataEntity<Question> {
     }
 
     public String getQuestion_id() {
-        return question_id;
+        return questionId;
     }
 
-    public void setQuestion_id(String question_id) {
-        this.question_id = question_id;
+    public void setQuestion_id(String questionId) {
+        this.questionId = questionId;
     }
 
     public String getKeywords() {
