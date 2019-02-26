@@ -1,0 +1,24 @@
+spring:
+  profiles:
+    active: dev
+  # disable web handler #
+  mvc.throw-exception-if-no-handler-found: true
+  resources.add-mappings: false
+
+  ### data source ###
+  datasource:
+    url: jdbc:mysql://localhost:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: root
+    password: qRg6bEL&mGq01EiG
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  ### jpa ###
+  jpa:
+    show-sql: false
+    database: mysql
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+        hbm2ddl.auto: update
+  jackson:
+    serialization.indent-output: true

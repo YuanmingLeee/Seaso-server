@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.user.service;
+package com.seaso.seaso.modules.sys.service;
 
 public interface UserService {
     void create(String name, Integer age);
