@@ -1,6 +1,6 @@
-package com.seaso.seaso.modules.sys.controller;
+package com.seaso.seaso.modules.user.controller;
 
-import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.modules.user.entity.User;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +12,7 @@ public class UserController {
 
     private static Map<Long, User> users = Collections.synchronizedMap(new HashMap<>());
 
-    @ApiOperation(value = "Get sys list")
+    @ApiOperation(value = "Get user list")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public List<User> getUserList() {
 

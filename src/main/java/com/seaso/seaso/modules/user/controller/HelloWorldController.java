@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.sys.controller;
+package com.seaso.seaso.modules.user.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;

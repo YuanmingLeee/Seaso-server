@@ -5,18 +5,17 @@ create table user
   user_id     char(16)   not null,
   nickname    char(20)   not null,
   avatar      mediumblob null,
-  history     longtext   null comment 'sys browser history string',
-  my_likes    longtext   null comment 'sys liked answers string',
-  my_dislikes longtext   null comment 'sys disliked answers string',
+  history     longtext   null comment 'user browser history string',
+  my_likes    longtext   null comment 'user liked answers string',
+  my_dislikes longtext   null comment 'user disliked answers string',
   constraint user_user_id_uindex
     unique (user_id)
 )
-  comment 'sys main table';
+  comment 'user main table';
 
 create table question
 (
-  id          int auto_increment
-    primary key,
+  id          int auto_increment,
   question_id char(16)                not null,
   keywords    text                    null comment 'keyword string',
   title       varchar(40)             not null comment 'question title',
@@ -24,9 +23,9 @@ create table question
   cover       blob                    null comment 'cover image',
   content     mediumblob              null comment 'content',
   viewed      int          default 0  not null comment 'number of views',
-  creator     char(16)                not null comment 'creator sys id',
+  creator     char(16)                not null comment 'creator user id',
   create_date datetime                not null,
-  updater     char(16)                not null comment 'updater sys id',
+  updater     char(16)                not null comment 'updater user id',
   update_date datetime                not null,
   constraint question_id_uindex
     unique (id),
@@ -40,16 +39,15 @@ create table question
 
 create table answer
 (
-  id          int auto_increment
-    primary key,
+  id          int auto_increment,
   answer_id   char(16)      not null,
   question_id char(16)      not null comment 'answer to the question',
   description varchar(100)  not null comment 'cover text',
   cover       blob          null comment 'cover image',
   content     mediumblob    null,
-  creator     char(16)      not null comment 'creator sys id',
+  creator     char(16)      not null comment 'creator user id',
   create_date datetime      not null,
-  updater     char(16)      not null comment 'updater sys id',
+  updater     char(16)      not null comment 'updater user id',
   update_date datetime      not null,
   likes       int default 0 null comment 'number of likes',
   dislikes    int default 0 null comment 'number of dislikes',
@@ -66,10 +64,12 @@ create table answer
 )
   comment 'answer';
 
+alter table answer
+  add primary key (id);
+
 create table comments
 (
-  id          int auto_increment
-    primary key,
+  id          int auto_increment,
   comment_id  char(16) not null,
   answer_id   char(16) not null,
   reply_id    char(16) null,
@@ -95,6 +95,12 @@ create table comments
     foreign key (updater) references user (user_id)
 );
 
+alter table comments
+  add primary key (id);
+
+alter table question
+  add primary key (id);
+
 create table user_auth
 (
   id            int auto_increment
@@ -110,4 +116,6 @@ create table user_auth
   constraint user_auth_user_user_id_fk
     foreign key (user_id) references user (user_id)
 )
-  comment 'sys authentication';
+  comment 'user authentication';
+
+

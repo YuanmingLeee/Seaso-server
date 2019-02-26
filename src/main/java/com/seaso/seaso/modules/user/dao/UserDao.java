@@ -1,6 +1,6 @@
-package com.seaso.seaso.modules.sys.dao;
+package com.seaso.seaso.modules.user.dao;
 
-import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.modules.user.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
