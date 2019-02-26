@@ -1,10 +1,10 @@
 package com.seaso.seaso;
 
-import com.seaso.seaso.modules.sys.controller.HelloWorldController;
-import com.seaso.seaso.modules.sys.controller.UserController;
-import com.seaso.seaso.modules.sys.dao.UserDao;
-import com.seaso.seaso.modules.sys.entity.User;
-import com.seaso.seaso.modules.sys.service.UserService;
+import com.seaso.seaso.modules.user.controller.HelloWorldController;
+import com.seaso.seaso.modules.user.controller.UserController;
+import com.seaso.seaso.modules.user.dao.UserDao;
+import com.seaso.seaso.modules.user.entity.User;
+import com.seaso.seaso.modules.user.service.UserService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -18,8 +18,8 @@ import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import static org.hamcrest.Matchers.equalTo;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
