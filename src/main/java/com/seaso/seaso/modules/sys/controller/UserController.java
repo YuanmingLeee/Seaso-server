@@ -33,7 +33,7 @@ public class UserController {
     @RequestMapping(value = "/{id}", method = RequestMethod.PUT)
     public String updateUser(@PathVariable Long id, @ModelAttribute User user) {
         User u = users.get(id);
-        u.setName(user.getName());
+        u.setUsername(user.getUsername());
         u.setAge(user.getAge());
         users.put(id, u);
         return "success";

@@ -1,11 +1,27 @@
 package com.seaso.seaso.modules.sys.service;
 
+import com.seaso.seaso.modules.sys.entity.User;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
 public interface UserService {
-    void create(String name, Integer age);
+    int createUser(String name, Integer age);
 
-    void deleteByName(String name);
+    int updateUser(User user);
 
-    Integer getAllUsers();
+    Page<User> findAllUsers(Pageable pageable);
 
-    void deleteAllUsers();
+    List<User> findAllUsers(User user);
+
+    int deleteUsers(User user);
+
+    int updatePasswordByUserId(String userId, String newPassword);
+
+    List<String> getHistoryByUserId(String userId);
+
+    List<User> getAllUsers();
+
+    int deleteAllUsers();
 }

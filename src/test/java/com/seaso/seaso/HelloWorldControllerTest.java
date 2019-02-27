@@ -2,10 +2,8 @@ package com.seaso.seaso;
 
 import com.seaso.seaso.modules.sys.controller.HelloWorldController;
 import com.seaso.seaso.modules.sys.controller.UserController;
-import com.seaso.seaso.modules.sys.dao.UserDao;
-import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.service.UserService;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -39,7 +37,7 @@ public class HelloWorldControllerTest {
     private UserService userService;
 
     @Autowired
-    private UserDao userDao;
+    private UserRepository userRepository;
 
     @Before
     public void setUp() {
@@ -78,30 +76,9 @@ public class HelloWorldControllerTest {
 
     @Test
     public void testUserService() {
-        userService.create("a", 1);
-        userService.create("b", 2);
-        userService.create("c", 3);
-
-        Assert.assertEquals(3, userService.getAllUsers().intValue());
-
-        userService.deleteByName("a");
-        userService.deleteByName("b");
-
-        Assert.assertEquals(1, userService.getAllUsers().intValue());
     }
 
     @Test
     public void testUserDao() {
-        userDao.save(new User("AAA", 10));
-        userDao.save(new User("BBB", 20));
-        userDao.save(new User("CCC", 30));
-
-        Assert.assertEquals(3, userDao.findAll().size());
-
-        Assert.assertEquals(20, userDao.findByName("BBB").getAge().intValue());
-
-        userDao.delete(userDao.findByName("AAA"));
-
-        Assert.assertEquals(2, userDao.findAll().size());
     }
 }

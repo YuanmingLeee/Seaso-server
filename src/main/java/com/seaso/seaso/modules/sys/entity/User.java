@@ -16,9 +16,6 @@ public class User extends DataEntity<User> {
     private String userId;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private Integer age;
 
     @Column(nullable = false, length = 32)
@@ -48,9 +45,9 @@ public class User extends DataEntity<User> {
         super();
     }
 
-    public User(String name, Integer age) {
+    public User(String username, Integer age) {
         super();
-        this.name = name;
+        this.username = username;
         this.age = age;
     }
 
@@ -68,14 +65,6 @@ public class User extends DataEntity<User> {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public Integer getAge() {
