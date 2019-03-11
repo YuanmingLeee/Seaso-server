@@ -5,23 +5,24 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface UserService {
-    int createUser(String name, Integer age);
+    void createUser(User user);
 
-    int updateUser(User user);
+    void updateByUserId(User user, String userId);
+
+    Optional<User> findByUserId(String userId);
+
+    Optional<User> findByUsername(String username);
 
     Page<User> findAllUsers(Pageable pageable);
 
     List<User> findAllUsers(User user);
 
-    int deleteUsers(User user);
-
-    int updatePasswordByUserId(String userId, String newPassword);
+    void deleteUsers(String userId);
 
     List<String> getHistoryByUserId(String userId);
 
     List<User> getAllUsers();
-
-    int deleteAllUsers();
 }

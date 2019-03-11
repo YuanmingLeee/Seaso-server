@@ -21,6 +21,8 @@ public class User extends DataEntity<User> {
     @Column(nullable = false, length = 32)
     private String username;
 
+    private String password;
+
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(length = 16777215)
@@ -81,6 +83,14 @@ public class User extends DataEntity<User> {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public byte[] getAvatar() {
