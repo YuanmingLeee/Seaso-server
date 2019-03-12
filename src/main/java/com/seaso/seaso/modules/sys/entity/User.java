@@ -8,14 +8,10 @@ import javax.persistence.*;
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
-    @Id
-    @GeneratedValue
-    private Long id;
-
     @Column(nullable = false, length = 16)
     private String userId;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 2)
     private Integer age;
 
     @Column(nullable = false, length = 32)
@@ -51,14 +47,6 @@ public class User extends DataEntity<User> {
         super();
         this.username = username;
         this.age = age;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getUserId() {

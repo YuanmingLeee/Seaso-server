@@ -17,13 +17,6 @@ import javax.persistence.*;
 public class Comment extends DataEntity<Comment> {
 
     /**
-     * Id for primary key of persistence layer
-     */
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    /**
      * Comment id
      */
     @Column(nullable = false, unique = true, length = 16)
@@ -57,14 +50,6 @@ public class Comment extends DataEntity<Comment> {
      */
     public Comment() {
         super();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getCommentId() {

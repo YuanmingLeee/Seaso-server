@@ -12,4 +12,9 @@ public class HelloWorldController {
         map.addAttribute("host", "https://www.seaso.io");
         return "index";
     }
+
+    @RequestMapping("/login")
+    public String login(ModelMap map) {
+        return "login";
+    }
 }

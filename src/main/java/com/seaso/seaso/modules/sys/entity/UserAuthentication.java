@@ -19,14 +19,6 @@ import javax.persistence.*;
 public class UserAuthentication extends DataEntity<UserAuthentication> {
 
     /**
-     * Id for primary key of persistence layer
-     */
-    @Id
-    @GeneratedValue
-    @Column
-    private Long id;
-
-    /**
      * User id
      */
     @Basic(fetch = FetchType.LAZY)
@@ -58,14 +50,6 @@ public class UserAuthentication extends DataEntity<UserAuthentication> {
      */
     public UserAuthentication() {
         super();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public User getUser() {

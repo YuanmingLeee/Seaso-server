@@ -16,13 +16,6 @@ import javax.persistence.*;
 public class Question extends DataEntity<Question> {
 
     /**
-     * Id for primary key of persistence layer
-     */
-    @Id
-    @GeneratedValue
-    private Long id;
-
-    /**
      * Question id
      */
     @Column(nullable = false, unique = true, length = 16)
@@ -75,14 +68,6 @@ public class Question extends DataEntity<Question> {
      */
     public Question() {
         super();
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getQuestion_id() {
