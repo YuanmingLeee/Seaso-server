@@ -16,13 +16,12 @@ public class User extends DataEntity<User> {
     private String userId;
 
     @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
     private Integer age;
 
     @Column(nullable = false, length = 32)
     private String username;
+
+    private String password;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
@@ -48,9 +47,9 @@ public class User extends DataEntity<User> {
         super();
     }
 
-    public User(String name, Integer age) {
+    public User(String username, Integer age) {
         super();
-        this.name = name;
+        this.username = username;
         this.age = age;
     }
 
@@ -70,14 +69,6 @@ public class User extends DataEntity<User> {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public Integer getAge() {
         return age;
     }
@@ -92,6 +83,14 @@ public class User extends DataEntity<User> {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public byte[] getAvatar() {

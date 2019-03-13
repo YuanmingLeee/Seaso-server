@@ -1,36 +1,70 @@
 package com.seaso.seaso.modules.sys.service;
 
+import com.seaso.seaso.modules.sys.dao.UserRepository;
+import com.seaso.seaso.modules.sys.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final JdbcTemplate jdbcTemplate;
+    private final UserRepository userRepository;
 
     @Autowired
-    public UserServiceImpl(JdbcTemplate jdbcTemplate) {
-        this.jdbcTemplate = jdbcTemplate;
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
-    public void create(String name, Integer age) {
-        jdbcTemplate.update("INSERT INTO USER(NAME, AGE) VALUES (?, ?)", name, age);
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
-    public void deleteByName(String name) {
-        jdbcTemplate.update("delete from USER where NAME = ?", name);
+    public void updateByUserId(User user, String userId) {
+        User userOriginal = userRepository.findByUserId(userId).get();
+        // some staff in merging
+        userRepository.save(user);
     }
 
     @Override
-    public Integer getAllUsers() {
-        return jdbcTemplate.queryForObject("select count(1) from USER", Integer.class);
+    public Optional<User> findByUserId(String userId) {
+        return userRepository.findByUserId(userId);
     }
 
     @Override
-    public void deleteAllUsers() {
-        jdbcTemplate.update("delete from USER");
+    public Optional<User> findByUsername(String username) {
+        return userRepository.findByUsername(username);
+    }
+
+    @Override
+    public Page<User> findAllUsers(Pageable pageable) {
+        return null;
+    }
+
+    @Override
+    public List<User> findAllUsers(User user) {
+        return null;
+    }
+
+    @Override
+    public void deleteUsers(String userId) {
+        userRepository.deleteByUserId(userId);
+    }
+
+    @Override
+    public List<String> getHistoryByUserId(String userId) {
+        return null;
+    }
+
+    @Override
+    public List<User> getAllUsers() {
+        return Collections.emptyList();
     }
 }

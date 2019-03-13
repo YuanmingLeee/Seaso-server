@@ -29,6 +29,7 @@ public class UserAuthentication extends DataEntity<UserAuthentication> {
     /**
      * User id
      */
+    @Basic(fetch = FetchType.LAZY)
     @ManyToOne
     @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false,
             foreignKey = @ForeignKey(name = "user_auth_user_user_id_fk"))
@@ -57,5 +58,46 @@ public class UserAuthentication extends DataEntity<UserAuthentication> {
      */
     public UserAuthentication() {
         super();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        user.setPassword(credential);
+        this.user = user;
+    }
+
+    public AuthenticationType getAuthenticationType() {
+        return authenticationType;
+    }
+
+    public void setAuthenticationType(AuthenticationType authenticationType) {
+        this.authenticationType = authenticationType;
+    }
+
+    public String getIdentifier() {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getCredential() {
+        return credential;
+    }
+
+    public void setCredential(String credential) {
+        this.credential = credential;
     }
 }

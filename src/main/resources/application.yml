@@ -7,9 +7,9 @@ spring:
 
   ### data source ###
   datasource:
-    url: jdbc:mysql://localhost:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
-    username: root
-    password: qRg6bEL&mGq01EiG
+    url: jdbc:mysql://172.20.127.88:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    username: dev
+    password: Seaso@2019
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   ### jpa ###
