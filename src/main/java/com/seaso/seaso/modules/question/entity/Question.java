@@ -18,7 +18,7 @@ public class Question extends DataEntity<Question> {
     /**
      * Question id
      */
-    @Column(nullable = false, unique = true, length = 16)
+    @Column(nullable = false, unique = true, length = 32)
     private String questionId;
 
     /**

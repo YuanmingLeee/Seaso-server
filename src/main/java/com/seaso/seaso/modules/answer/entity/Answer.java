@@ -19,7 +19,7 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Answer id
      */
-    @Column(nullable = false, unique = true, length = 16)
+    @Column(nullable = false, unique = true, length = 32)
     private String answerId;
 
     /**

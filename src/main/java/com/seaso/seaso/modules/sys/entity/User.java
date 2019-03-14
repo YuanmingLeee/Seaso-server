@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
-    @Column(nullable = false, length = 16)
+    @Column(nullable = false, length = 32)
     private String userId;
 
     @Column(nullable = false, length = 2)

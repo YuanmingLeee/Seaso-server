@@ -8,9 +8,9 @@ import java.util.Date;
 @MappedSuperclass
 public abstract class DataEntity<T> {
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     protected String creator;
-    @Column(nullable = false)
+    @Column(nullable = false, length = 32)
     protected String updater;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
