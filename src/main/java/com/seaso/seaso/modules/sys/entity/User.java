@@ -17,6 +17,7 @@ public class User extends DataEntity<User> {
     @Column(nullable = false, length = 32)
     private String username;
 
+    @Transient
     private String password;
 
     @Lob

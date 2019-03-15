@@ -22,3 +22,7 @@ spring:
         hbm2ddl.auto: update
   jackson:
     serialization.indent-output: true
+
+### logging ###
+logging:
+  file: log/spring.log

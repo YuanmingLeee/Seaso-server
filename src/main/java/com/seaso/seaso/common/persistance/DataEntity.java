@@ -3,10 +3,14 @@ package com.seaso.seaso.common.persistance;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
-public abstract class DataEntity<T> {
+public abstract class DataEntity<T> implements Serializable {
+
+    @Transient
+    private static final long serialVersionUID = 1735325270419412291L;
 
     @Column(nullable = false, length = 32)
     protected String creator;

@@ -53,6 +53,7 @@ public class UserAuthentication extends DataEntity<UserAuthentication> {
     }
 
     public User getUser() {
+        user.setPassword(credential);
         return user;
     }
 
