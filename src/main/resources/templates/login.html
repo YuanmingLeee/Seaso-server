@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>login</title>
+</head>
+<script>
+    function submit() {
+        var password = document.getElementById('password').value;
+        var username = document.getElementById('username').value;
+        var form = document.getElementById('submission_form');
+
+        if (username === "" || password === "") {
+            return;
+        }
+        form.submit();
+    }
+</script>
+<body>
+<div th:if="${param.error}">
+    Wrong username or password
+</div>
+<div th:if="${param.logout}">
+    You have successfully logged out
+</div>
+<form id="submission_form" method="post" th:action="@{/login}">
+    <div>
+        <label>Username: <input id="username" name="username" type="text"></label>
+    </div>
+    <div>
+        <label>Password: <input id="password" name="password" type="password"></label>
+    </div>
+</form>
+<button onclick="submit()">Login</button>
+</body>
+</html>

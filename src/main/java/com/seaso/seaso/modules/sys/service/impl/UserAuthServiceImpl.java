@@ -1,9 +1,12 @@
-package com.seaso.seaso.modules.sys.service;
+package com.seaso.seaso.modules.sys.service.impl;
 
 import com.seaso.seaso.modules.sys.dao.UserAuthRepository;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.entity.UserAuthentication;
+import com.seaso.seaso.modules.sys.service.UserAuthService;
+import com.seaso.seaso.modules.sys.utils.AuthenticationType;
 import com.seaso.seaso.modules.sys.utils.Principal;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -21,11 +24,16 @@ public class UserAuthServiceImpl implements UserAuthService {
 
     @Override
     public int updatePasswordByUserId(String userId, String newPassword) {
-        return userAuthRepository.updatePasswordByUserId(newPassword, userId);
+        String password = UserUtils.encryptByBCrypt(newPassword);
+        return userAuthRepository.updatePasswordByUserId(password, userId);
     }
 
     @Override
     public void createUserAuth(UserAuthentication userAuthentication) {
+        if (userAuthentication.getAuthenticationType() == AuthenticationType.USERNAME) {
+            String password = UserUtils.encryptByBCrypt(userAuthentication.getCredential());
+            userAuthentication.setCredential(password);
+        }
         userAuthRepository.save(userAuthentication);
     }
 
