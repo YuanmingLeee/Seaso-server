@@ -7,7 +7,7 @@ spring:
 
   ### data source ###
   datasource:
-    url: jdbc:mysql://172.20.127.88:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+    url: jdbc:mysql://172.20.127.88:3306/test?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC&useSSL=false
     username: dev
     password: Seaso@2019
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -22,3 +22,7 @@ spring:
         hbm2ddl.auto: update
   jackson:
     serialization.indent-output: true
+
+### logging ###
+logging:
+  file: log/spring.log

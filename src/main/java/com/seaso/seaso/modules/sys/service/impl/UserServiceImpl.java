@@ -1,7 +1,8 @@
-package com.seaso.seaso.modules.sys.service;
+package com.seaso.seaso.modules.sys.service.impl;
 
 import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.modules.sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

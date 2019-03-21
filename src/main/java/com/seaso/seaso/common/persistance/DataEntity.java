@@ -1,20 +1,24 @@
 package com.seaso.seaso.common.persistance;
 
-import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.Date;
 
 @MappedSuperclass
-public abstract class DataEntity<T> {
+public abstract class DataEntity<T> implements Serializable {
 
-    @ManyToOne
-    @JoinColumn(name = "creator", referencedColumnName = "userId", nullable = false)
-    protected User creator;
+    @Transient
+    private static final long serialVersionUID = 1735325270419412291L;
 
-    @ManyToOne
-    @JoinColumn(name = "updater", referencedColumnName = "userId", nullable = false)
-    protected User updater;
+    @Column(nullable = false, length = 32)
+    protected String creator;
+    @Column(nullable = false, length = 32)
+    protected String updater;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -24,21 +28,41 @@ public abstract class DataEntity<T> {
     @Column(nullable = false)
     protected Date updateDate;
 
-    protected DataEntity() {}
+    protected DataEntity() {
+    }
 
-    public User getCreator() {
+    public void preInsert() {
+        String userId = UserUtils.getUserId();
+        this.updater = this.creator = userId;
+        this.updateDate = this.createDate = new Date();
+    }
+
+    public void preUpdate() {
+        this.updater = UserUtils.getUserId();
+        this.updateDate = new Date();
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getCreator() {
         return creator;
     }
 
-    public void setCreator(User creator) {
+    public void setCreator(String creator) {
         this.creator = creator;
     }
 
-    public User getUpdater() {
+    public String getUpdater() {
         return updater;
     }
 
-    public void setUpdater(User updater) {
+    public void setUpdater(String updater) {
         this.updater = updater;
     }
 
