@@ -1,15 +1,17 @@
 package com.seaso.seaso.modules.sys.service.impl;
 
+import com.seaso.seaso.modules.sys.dao.UserAuthRepository;
 import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
+import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -17,19 +19,24 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
+    private final UserAuthRepository userAuthRepository;
+
     @Autowired
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, UserAuthRepository userAuthRepository) {
         this.userRepository = userRepository;
+        this.userAuthRepository = userAuthRepository;
     }
 
     @Override
     public void createUser(User user) {
+        user.preInsert();
         userRepository.save(user);
     }
 
     @Override
-    public void updateByUserId(User user, String userId) {
+    public void updateByUsername(User user, String userId) {
         User userOriginal = userRepository.findByUserId(userId).get();
+        user.preUpdate();
         // some staff in merging
         userRepository.save(user);
     }
@@ -45,27 +52,15 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<User> findAllUsers(Pageable pageable) {
-        return null;
+    public Page<User> findAllUsers(int page, int size, Sort sort) {
+        Pageable pageable = PageRequest.of(page, size, sort);
+        return userRepository.findAll(pageable);
     }
 
     @Override
-    public List<User> findAllUsers(User user) {
-        return null;
-    }
-
-    @Override
-    public void deleteUsers(String userId) {
-        userRepository.deleteByUserId(userId);
-    }
-
-    @Override
-    public List<String> getHistoryByUserId(String userId) {
-        return null;
-    }
-
-    @Override
-    public List<User> getAllUsers() {
-        return Collections.emptyList();
+    @Transactional
+    public void deleteUser(String username) {
+        userRepository.deleteByUsername(username);
+        userAuthRepository.deleteByIdentifier(username);
     }
 }

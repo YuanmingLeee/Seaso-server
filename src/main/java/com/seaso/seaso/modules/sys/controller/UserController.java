@@ -1,12 +1,12 @@
 package com.seaso.seaso.modules.sys.controller;
 
+import com.seaso.seaso.common.exception.ResourceNotFoundException;
 import com.seaso.seaso.modules.sys.entity.User;
-import com.seaso.seaso.modules.sys.service.UserAuthService;
 import com.seaso.seaso.modules.sys.service.UserService;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -15,19 +15,17 @@ public class UserController {
 
     private final UserService userService;
 
-    private final UserAuthService userAuthService;
-
     @Autowired
-    public UserController(UserService userService, UserAuthService userAuthService) {
+    public UserController(UserService userService) {
         this.userService = userService;
-        this.userAuthService = userAuthService;
     }
 
     @ApiOperation(value = "Get sys list")
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public Page<User> getUserList() {
-
-        return userService.findAllUsers(new PageRequest(1, 10));
+    public Page<User> getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
+                                  @RequestParam(value = "size", defaultValue = "10") int size,
+                                  @RequestParam(value = "sort_by", defaultValue = "userId") String itemName) {
+        return userService.findAllUsers(page, size, Sort.by(itemName).descending());
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -38,18 +36,19 @@ public class UserController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public User getUser(@PathVariable String username) {
-        return userService.findByUserId(username).get();
+        return userService.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.PUT)
-    public String updateUser(@ModelAttribute User user) {
-        userService.updateByUserId(user, user.getUserId());
+    public String updateUser(@PathVariable String username,
+                             @ModelAttribute User user) {
+        userService.updateByUsername(user, username);
         return "success";
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
     public String deleteUser(@PathVariable String username) {
-        userService.deleteUsers(username);
+        userService.deleteUser(username);
         return "success";
     }
 }
