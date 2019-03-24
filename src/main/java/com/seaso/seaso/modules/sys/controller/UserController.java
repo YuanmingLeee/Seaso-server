@@ -51,4 +51,6 @@ public class UserController {
         userService.deleteUser(username);
         return "success";
     }
+
+
 }
