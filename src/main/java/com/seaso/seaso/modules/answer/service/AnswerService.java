@@ -3,6 +3,7 @@ package com.seaso.seaso.modules.answer.service;
 import com.seaso.seaso.modules.answer.entity.Answer;
 import com.seaso.seaso.modules.comment.entity.Comment;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.Optional;
 
@@ -11,7 +12,7 @@ public interface AnswerService {
 
     void createAnswer (Answer answer);
 
-    Page<Answer> getAnswersByQuestionId(String questionId);
+    Page<Answer> getAnswersByQuestionId(String questionId, Pageable pageable);
 
     void likeAnswerById(String answerId);
 

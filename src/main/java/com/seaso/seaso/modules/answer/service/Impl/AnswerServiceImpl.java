@@ -7,6 +7,7 @@ import com.seaso.seaso.modules.answer.service.AnswerService;
 import com.seaso.seaso.modules.comment.entity.Comment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -35,14 +36,14 @@ public class AnswerServiceImpl implements AnswerService {
 
     //Implementation to be added here
     @Override
-    public Page<Answer> getAnswersByQuestionId(String questionId) {
+    public Page<Answer> getAnswersByQuestionId(String questionId, Pageable pageable) {
         return null;
     }
 
     @Override
     @Transactional
     public void likeAnswerById(String answerId) {
-        Answer ans = answerRepository.getAnswerById(answerId).get();
+        Answer ans = answerRepository.getByAnswerId(answerId).get();
         ans.setLikes(ans.getLikes()+1);
         answerRepository.save(ans);
     }
@@ -50,13 +51,13 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public void dislikeAnswerById(String answerId) {
-        Answer ans = answerRepository.getAnswerById(answerId).get();
+        Answer ans = answerRepository.getByAnswerId(answerId).get();
         ans.setDislikes(ans.getDislikes()+1);
         answerRepository.save(ans);
     }
 
     @Override
     public Optional<Answer> getAnswerById(String answerId) {
-        return answerRepository.getAnswerById(answerId);
+        return answerRepository.getByAnswerId(answerId);
     }
 }

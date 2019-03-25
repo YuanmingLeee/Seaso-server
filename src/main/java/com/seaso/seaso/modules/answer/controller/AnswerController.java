@@ -11,9 +11,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-import javax.transaction.Transactional;
-
 @Controller
+@RequestMapping(value = "/answers")
 public class AnswerController {
 
     private final AnswerService answerService;

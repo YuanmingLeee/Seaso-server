@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import java.util.Optional;
 
 @Controller
+@RequestMapping(value = "/comments")
 public class CommentController {
 
     private final CommentService commentService;

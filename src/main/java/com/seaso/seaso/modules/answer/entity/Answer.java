@@ -1,7 +1,6 @@
 package com.seaso.seaso.modules.answer.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
-import com.seaso.seaso.modules.question.entity.Question;
 
 import javax.persistence.*;
 
@@ -16,6 +15,7 @@ import javax.persistence.*;
         indexes = {@Index(name = "answer_answer_id_uindex", columnList = "answerId", unique = true)})
 public class Answer extends DataEntity<Answer> {
 
+    private static final long serialVersionUID = 7500358540229630981L;
     /**
      * Answer id
      */
@@ -25,10 +25,8 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Question id which this answer id belongs to
      */
-    @ManyToOne
-    @JoinColumn(nullable = false, name = "questionId", referencedColumnName = "questionId",
-            foreignKey = @ForeignKey(name = "answer_question_question_id_fk"))
-    private Question questionId;
+    @Column(nullable = false, length = 32)
+    private String questionId;
 
     /**
      * Number of likes
@@ -79,11 +77,11 @@ public class Answer extends DataEntity<Answer> {
         this.answerId = answerId;
     }
 
-    public Question getQuestionId() {
+    public String getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(Question questionId) {
+    public void setQuestionId(String questionId) {
         this.questionId = questionId;
     }
 
