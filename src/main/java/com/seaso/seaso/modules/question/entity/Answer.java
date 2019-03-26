@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.answer.entity;
+package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
 

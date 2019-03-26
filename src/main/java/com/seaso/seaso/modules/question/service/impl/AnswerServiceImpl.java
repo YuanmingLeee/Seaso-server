@@ -1,10 +1,10 @@
-package com.seaso.seaso.modules.answer.service.Impl;
+package com.seaso.seaso.modules.question.service.impl;
 
 
-import com.seaso.seaso.modules.answer.dao.AnswerRepository;
-import com.seaso.seaso.modules.answer.entity.Answer;
-import com.seaso.seaso.modules.answer.service.AnswerService;
-import com.seaso.seaso.modules.comment.entity.Comment;
+import com.seaso.seaso.modules.question.dao.AnswerRepository;
+import com.seaso.seaso.modules.question.entity.Answer;
+import com.seaso.seaso.modules.question.entity.Comment;
+import com.seaso.seaso.modules.question.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

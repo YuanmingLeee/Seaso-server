@@ -1,8 +1,8 @@
-package com.seaso.seaso.modules.comment.service.impl;
+package com.seaso.seaso.modules.question.service.impl;
 
-import com.seaso.seaso.modules.comment.dao.CommentRepository;
-import com.seaso.seaso.modules.comment.entity.Comment;
-import com.seaso.seaso.modules.comment.service.CommentService;
+import com.seaso.seaso.modules.question.dao.CommentRepository;
+import com.seaso.seaso.modules.question.entity.Comment;
+import com.seaso.seaso.modules.question.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

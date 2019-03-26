@@ -1,6 +1,6 @@
-package com.seaso.seaso.modules.comment.service;
+package com.seaso.seaso.modules.question.service;
 
-import com.seaso.seaso.modules.comment.entity.Comment;
+import com.seaso.seaso.modules.question.entity.Comment;
 
 import java.util.Optional;
 
