@@ -1,6 +1,5 @@
 package com.seaso.seaso.modules.sys.controller;
 
-import com.seaso.seaso.common.exception.ResourceNotFoundException;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.UserService;
 import com.seaso.seaso.modules.sys.utils.JsonResponse;
@@ -27,7 +26,7 @@ public class UserController {
     public JsonResponse<List<User>> getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
                                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                                 @RequestParam(value = "sort_by", defaultValue = "userId") String itemName) {
-        List<User> users = userService.findAllUsers(page, size, Sort.by(itemName).descending()).getContent();
+        List<User> users = userService.findAllUsers(page, size, Sort.by(itemName).descending());
         return new JsonResponse<>(users);
     }
 
@@ -39,7 +38,7 @@ public class UserController {
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public JsonResponse<User> getUser(@PathVariable String username) {
-        User user = userService.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+        User user = userService.findByUsername(username);
         return new JsonResponse<>(user);
     }
 

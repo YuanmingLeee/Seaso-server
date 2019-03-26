@@ -2,21 +2,20 @@ package com.seaso.seaso.modules.sys.service;
 
 import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.entity.User;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface UserService {
     void createUser(User user) throws ServiceException;
 
     void updateByUsername(User user, String userId) throws ServiceException;
 
-    Optional<User> findByUserId(String userId);
+    User findByUserId(String userId) throws ServiceException;
 
-    Optional<User> findByUsername(String username);
+    User findByUsername(String username) throws ServiceException;
 
-    Page<User> findAllUsers(int page, int size, Sort sort);
+    List<User> findAllUsers(int page, int size, Sort sort) throws ServiceException;
 
     void deleteUser(String username) throws ServiceException;
 }

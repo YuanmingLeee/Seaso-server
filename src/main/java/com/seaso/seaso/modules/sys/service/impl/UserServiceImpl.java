@@ -7,14 +7,13 @@ import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
+import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -49,19 +48,19 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Optional<User> findByUserId(String userId) {
-        return userRepository.findByUserId(userId);
+    public User findByUserId(String userId) throws ServiceException {
+        return userRepository.findByUserId(userId).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
+    public User findByUsername(String username) throws ServiceException {
+        return userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
-    public Page<User> findAllUsers(int page, int size, Sort sort) {
+    public List<User> findAllUsers(int page, int size, Sort sort) throws ServiceException {
         Pageable pageable = PageRequest.of(page, size, sort);
-        return userRepository.findAll(pageable);
+        return userRepository.findAll(pageable).getContent();
     }
 
     @Override
