@@ -40,6 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .logout()
                 .permitAll();
         http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
+
+        // remember to comment this line in prod
+        http.csrf().disable();
     }
 
     @Bean

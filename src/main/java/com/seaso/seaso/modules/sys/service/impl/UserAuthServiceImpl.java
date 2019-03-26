@@ -25,7 +25,7 @@ public class UserAuthServiceImpl implements UserAuthService {
     @Override
     public int updatePasswordByUserId(String userId, String newPassword) {
         String password = UserUtils.encryptByBCrypt(newPassword);
-        return userAuthRepository.updatePasswordByUserId(password, userId);
+        return userAuthRepository.updatePasswordByIdentifier(password, userId);
     }
 
     @Override

@@ -2,10 +2,12 @@ package com.seaso.seaso.common.persistance;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Date;
 
 @MappedSuperclass
@@ -44,6 +46,19 @@ public abstract class DataEntity<T> implements Serializable {
     public void preUpdate() {
         this.updater = UserUtils.getUserId();
         this.updateDate = new Date();
+    }
+
+    public void merge(T obj) throws ServiceException {
+        Field[] fields = obj.getClass().getDeclaredFields();
+        try {
+            for (Field field : fields) {
+                field.setAccessible(true);
+                if (field.get(obj) != null)
+                    field.set(this, field.get(obj));
+            }
+        } catch (IllegalAccessException e) {
+            throw new ServiceException(e.getMessage(), e.getCause());
+        }
     }
 
     @JsonIgnore

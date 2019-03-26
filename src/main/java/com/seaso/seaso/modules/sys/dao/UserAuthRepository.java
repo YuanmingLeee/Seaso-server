@@ -12,8 +12,10 @@ public interface UserAuthRepository extends JpaRepository<UserAuthentication, St
     Optional<UserAuthentication> findByIdentifier(String identifier);
 
     @Modifying
-    @Query("update UserAuthentication u set u.credential = ?1 where u.credential = ?2")
-    int updatePasswordByUserId(String password, String id);
+    @Query("update UserAuthentication u set u.credential = ?1 where u.identifier = ?2")
+    int updatePasswordByIdentifier(String password, String id);
 
-    Optional<UserAuthRepository> deleteByIdentifier(String identifier);
+    void deleteByUser_UserId(String userId);
+
+    void deleteByIdentifier(String identifier);
 }

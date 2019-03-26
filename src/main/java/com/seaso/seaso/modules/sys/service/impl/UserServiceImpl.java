@@ -1,5 +1,7 @@
 package com.seaso.seaso.modules.sys.service.impl;
 
+import com.seaso.seaso.common.exception.ResourceNotFoundException;
+import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.dao.UserAuthRepository;
 import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
@@ -10,8 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.transaction.Transactional;
 import java.util.Optional;
 
 @Service
@@ -28,17 +30,22 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createUser(User user) {
+    @Transactional
+    public void createUser(User user) throws ServiceException {
         user.preInsert();
+        userRepository.findByUsername(user.getUsername()).ifPresent(s -> {
+            throw new ResourceNotFoundException();
+        });
         userRepository.save(user);
     }
 
     @Override
-    public void updateByUsername(User user, String userId) {
-        User userOriginal = userRepository.findByUserId(userId).get();
-        user.preUpdate();
-        // some staff in merging
-        userRepository.save(user);
+    @Transactional
+    public void updateByUsername(User user, String userId) throws ServiceException {
+        User original = userRepository.findByUsername(userId).orElseThrow(ResourceNotFoundException::new);
+        original.merge(user);
+        original.preUpdate();
+        userRepository.save(original);
     }
 
     @Override
@@ -59,8 +66,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void deleteUser(String username) {
+    public void deleteUser(String username) throws ServiceException {
+        User user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
         userRepository.deleteByUsername(username);
-        userAuthRepository.deleteByIdentifier(username);
+        userAuthRepository.deleteByUser_UserId(user.getUserId());
     }
 }
