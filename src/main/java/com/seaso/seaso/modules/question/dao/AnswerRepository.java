@@ -14,4 +14,5 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     Optional<Answer> getByAnswerId(String answerId);
 
+    void deleteByAnswerId(String answerId);
 }

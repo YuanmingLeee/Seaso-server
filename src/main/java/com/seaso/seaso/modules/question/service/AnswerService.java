@@ -1,23 +1,21 @@
 package com.seaso.seaso.modules.question.service;
 
 import com.seaso.seaso.modules.question.entity.Answer;
-import com.seaso.seaso.modules.question.entity.Comment;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface AnswerService {
-    Page<Comment> getCommentsByAnswerId(String answerId);
 
-    void createAnswer (Answer answer);
+    void createAnswer(Answer answer);
 
-    Page<Answer> getAnswersByQuestionId(String questionId, Pageable pageable);
+    List<Answer> getAnswersByQuestionId(String questionId, int page, int size, Sort sort);
 
-    void likeAnswerById(String answerId);
+    void likeAnswerById(String answerId, boolean set);
 
-    void dislikeAnswerById(String answerId);
+    void dislikeAnswerById(String answerId, boolean set);
 
-    Optional<Answer> getAnswerById(String answerId);
+    Answer getAnswerById(String answerId);
 
+    void deleteAnswerById(String answerId);
 }

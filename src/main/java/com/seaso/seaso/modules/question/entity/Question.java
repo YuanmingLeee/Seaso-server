@@ -61,7 +61,7 @@ public class Question extends DataEntity<Question> {
      * Number of views
      */
     @Column
-    private Long views;
+    private Long views = 0L;
 
     /**
      * Default constructor
