@@ -1,7 +1,7 @@
 package com.seaso.seaso.modules.sys.service.impl;
 
+import com.seaso.seaso.common.exception.ResourceConflictException;
 import com.seaso.seaso.common.exception.ResourceNotFoundException;
-import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.dao.UserAuthRepository;
 import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
@@ -30,17 +30,17 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void createUser(User user) throws ServiceException {
+    public void createUser(User user) {
         user.preInsert();
         userRepository.findByUsername(user.getUsername()).ifPresent(s -> {
-            throw new ResourceNotFoundException();
+            throw new ResourceConflictException("Username has been taken");
         });
         userRepository.save(user);
     }
 
     @Override
     @Transactional
-    public void updateByUsername(User user, String userId) throws ServiceException {
+    public void updateByUsername(User user, String userId) {
         User original = userRepository.findByUsername(userId).orElseThrow(ResourceNotFoundException::new);
         original.merge(user);
         original.preUpdate();
@@ -48,25 +48,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findUserByUserId(String userId) throws ServiceException {
+    public User findUserByUserId(String userId) {
         return userRepository.findByUserId(userId).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
-    public User findUserByUsername(String username) throws ServiceException {
+    public User findUserByUsername(String username) {
         return userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAllUsers(int page, int size, Sort sort) throws ServiceException {
+    public List<User> findAllUsers(int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         return userRepository.findAll(pageable).getContent();
     }
 
     @Override
     @Transactional
-    public void deleteUser(String username) throws ServiceException {
+    public void deleteUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
         userRepository.deleteByUsername(username);
         userAuthRepository.deleteByUser_UserId(user.getUserId());

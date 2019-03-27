@@ -6,6 +6,7 @@ import com.seaso.seaso.modules.sys.utils.JsonResponse;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,9 +34,9 @@ public class UserController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse<String> postUser(@ModelAttribute User user) {
+    public JsonResponse<String> createUser(@ModelAttribute User user) {
         userService.createUser(user);
-        return new JsonResponse<>("");
+        return new JsonResponse<>(HttpStatus.CREATED, "success", null);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)

@@ -15,10 +15,10 @@ public class GlobalExceptionHandler {
     private static final String DEFAULT_ERROR_VIEW = "error";
 
     @ResponseBody
-    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResourceConflictException.class)
     public JsonResponse<String> resourceConflict() {
-        return new JsonResponse<>(HttpStatus.CONFLICT, "Resources conflict", "");
+        return new JsonResponse<>(HttpStatus.BAD_REQUEST, "Resources conflict", "");
     }
 
     @ResponseBody
