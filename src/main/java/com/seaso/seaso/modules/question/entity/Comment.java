@@ -1,7 +1,6 @@
-package com.seaso.seaso.modules.comment.entity;
+package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
-import com.seaso.seaso.modules.answer.entity.Answer;
 
 import javax.persistence.*;
 
@@ -15,6 +14,8 @@ import javax.persistence.*;
 @Table(name = "comment",
         indexes = {@Index(name = "comment_comment_id_uindex", columnList = "commentId", unique = true)})
 public class Comment extends DataEntity<Comment> {
+
+    private static final long serialVersionUID = -6686228172563795386L;
 
     /**
      * Comment id

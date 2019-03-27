@@ -33,12 +33,12 @@ public class User extends DataEntity<User> {
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(length = 166777215)
-    private String myLikes;
+    private String myLikes = "";
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(length = 166777215)
-    private String myDislikes;
+    private String myDislikes = "";
 
     public User() {
         super();

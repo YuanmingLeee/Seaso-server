@@ -1,6 +1,6 @@
-package com.seaso.seaso.modules.comment.dao;
+package com.seaso.seaso.modules.question.dao;
 
-import com.seaso.seaso.modules.comment.entity.Comment;
+import com.seaso.seaso.modules.question.entity.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

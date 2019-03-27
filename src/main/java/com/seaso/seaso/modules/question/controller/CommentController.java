@@ -1,7 +1,7 @@
-package com.seaso.seaso.modules.comment.controller;
+package com.seaso.seaso.modules.question.controller;
 
-import com.seaso.seaso.modules.comment.entity.Comment;
-import com.seaso.seaso.modules.comment.service.CommentService;
+import com.seaso.seaso.modules.question.entity.Comment;
+import com.seaso.seaso.modules.question.service.CommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.ModelAttribute;

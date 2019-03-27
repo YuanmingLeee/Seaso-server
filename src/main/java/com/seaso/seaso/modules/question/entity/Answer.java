@@ -1,6 +1,7 @@
-package com.seaso.seaso.modules.answer.entity;
+package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.modules.question.utils.LikeStatus;
 
 import javax.persistence.*;
 
@@ -27,6 +28,12 @@ public class Answer extends DataEntity<Answer> {
      */
     @Column(nullable = false, length = 32)
     private String questionId;
+
+    /**
+     * User like status to the answer
+     */
+    @Transient
+    private LikeStatus likeStatus;
 
     /**
      * Number of likes
@@ -83,6 +90,14 @@ public class Answer extends DataEntity<Answer> {
 
     public void setQuestionId(String questionId) {
         this.questionId = questionId;
+    }
+
+    public LikeStatus getLikeStatus() {
+        return likeStatus;
+    }
+
+    public void setLikeStatus(LikeStatus likeStatus) {
+        this.likeStatus = likeStatus;
     }
 
     public Long getLikes() {

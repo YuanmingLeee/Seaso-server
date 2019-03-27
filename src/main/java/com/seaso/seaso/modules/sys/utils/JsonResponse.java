@@ -9,7 +9,7 @@ public class JsonResponse<T> {
     private int statusCode;
     private String message;
     private T data;
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss z")
     private Date timestamp;
 
     public JsonResponse(HttpStatus status, String message, T data) {
