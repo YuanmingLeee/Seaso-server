@@ -23,6 +23,7 @@ public class UserController {
 
     @ApiOperation(value = "Get sys list")
     @RequestMapping(value = "/", method = RequestMethod.GET)
+    @ResponseBody
     public JsonResponse<List<User>> getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
                                                 @RequestParam(value = "size", defaultValue = "10") int size,
                                                 @RequestParam(value = "sort_by", defaultValue = "userId") String itemName) {
@@ -31,18 +32,21 @@ public class UserController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @ResponseBody
     public JsonResponse<String> postUser(@ModelAttribute User user) {
         userService.createUser(user);
         return new JsonResponse<>("");
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    @ResponseBody
     public JsonResponse<User> getUser(@PathVariable String username) {
-        User user = userService.findByUsername(username);
+        User user = userService.findUserByUsername(username);
         return new JsonResponse<>(user);
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.PATCH)
+    @ResponseBody
     public JsonResponse<String> updateUser(@PathVariable String username,
                                            @ModelAttribute User user) {
         userService.updateByUsername(user, username);
@@ -50,6 +54,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
+    @ResponseBody
     public JsonResponse<String> deleteUser(@PathVariable String username) {
         userService.deleteUser(username);
         return new JsonResponse<>("");

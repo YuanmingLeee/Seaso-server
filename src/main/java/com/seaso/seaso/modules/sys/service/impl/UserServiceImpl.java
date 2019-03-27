@@ -48,16 +48,17 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User findByUserId(String userId) throws ServiceException {
+    public User findUserByUserId(String userId) throws ServiceException {
         return userRepository.findByUserId(userId).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
-    public User findByUsername(String username) throws ServiceException {
+    public User findUserByUsername(String username) throws ServiceException {
         return userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllUsers(int page, int size, Sort sort) throws ServiceException {
         Pageable pageable = PageRequest.of(page, size, sort);
         return userRepository.findAll(pageable).getContent();

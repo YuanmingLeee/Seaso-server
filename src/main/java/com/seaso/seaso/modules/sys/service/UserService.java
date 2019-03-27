@@ -11,9 +11,9 @@ public interface UserService {
 
     void updateByUsername(User user, String userId) throws ServiceException;
 
-    User findByUserId(String userId) throws ServiceException;
+    User findUserByUserId(String userId) throws ServiceException;
 
-    User findByUsername(String username) throws ServiceException;
+    User findUserByUsername(String username) throws ServiceException;
 
     List<User> findAllUsers(int page, int size, Sort sort) throws ServiceException;
 
