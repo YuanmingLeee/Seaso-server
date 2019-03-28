@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.sys.controller;
+package com.seaso.seaso.modules.sys.web;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -10,7 +10,7 @@ public class HelloWorldController {
     @RequestMapping("/")
     public String index(ModelMap map) {
         map.addAttribute("host", "https://www.seaso.io");
-        return "index";
+        return "home";
     }
 
     @RequestMapping("/login")

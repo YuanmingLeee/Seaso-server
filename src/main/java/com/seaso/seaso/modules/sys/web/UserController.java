@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.sys.controller;
+package com.seaso.seaso.modules.sys.web;
 
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.UserService;

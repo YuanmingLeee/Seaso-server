@@ -19,7 +19,7 @@ public class Swagger2 {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                .apis(RequestHandlerSelectors.basePackage("com.example.demo"))
+                .apis(RequestHandlerSelectors.basePackage("com.seaso.seaso"))
                 .paths(PathSelectors.any())
                 .build();
     }
@@ -27,7 +27,7 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 .title("API document")
-                .termsOfServiceUrl("http://demo.example.com/")
+                .termsOfServiceUrl("http://seaso.seaso.com/")
                 .version("1.0")
                 .build();
     }

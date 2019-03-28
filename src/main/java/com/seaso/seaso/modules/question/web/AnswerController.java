@@ -1,4 +1,4 @@
-package com.seaso.seaso.modules.question.controller;
+package com.seaso.seaso.modules.question.web;
 
 import com.seaso.seaso.modules.question.entity.Answer;
 import com.seaso.seaso.modules.question.service.AnswerService;
