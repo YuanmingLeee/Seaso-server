@@ -10,9 +10,9 @@ import java.util.Optional;
 
 public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
-    Page<Answer> getByQuestionId(String questionId, Pageable pageable);
+    Page<Answer> findByQuestionId(String questionId, Pageable pageable);
 
-    Optional<Answer> getByAnswerId(String answerId);
+    Optional<Answer> findByAnswerId(String answerId);
 
     void deleteByAnswerId(String answerId);
 }

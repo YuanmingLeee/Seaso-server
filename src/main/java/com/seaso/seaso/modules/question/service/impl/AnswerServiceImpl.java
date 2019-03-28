@@ -1,9 +1,12 @@
 package com.seaso.seaso.modules.question.service.impl;
 
 import com.seaso.seaso.modules.question.dao.AnswerRepository;
+import com.seaso.seaso.modules.question.dao.CommentRepository;
+import com.seaso.seaso.modules.question.dao.QuestionRepository;
 import com.seaso.seaso.modules.question.entity.Answer;
 import com.seaso.seaso.modules.question.exception.AnswerApiIllegalArgumentException;
 import com.seaso.seaso.modules.question.exception.AnswerNotFoundException;
+import com.seaso.seaso.modules.question.exception.QuestionNotFoundException;
 import com.seaso.seaso.modules.question.service.AnswerService;
 import com.seaso.seaso.modules.question.utils.QuestionUtils;
 import com.seaso.seaso.modules.sys.dao.UserRepository;
@@ -27,15 +30,21 @@ public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
+    private final QuestionRepository questionRepository;
+    private final CommentRepository commentRepository;
 
     @Autowired
-    public AnswerServiceImpl(AnswerRepository answerRepository, UserRepository userRepository) {
+    public AnswerServiceImpl(AnswerRepository answerRepository, UserRepository userRepository,
+                             CommentRepository commentRepository, QuestionRepository questionRepository) {
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
+        this.commentRepository = commentRepository;
+        this.questionRepository = questionRepository;
     }
 
     @Override
     public void createAnswer(Answer answer) {
+        questionRepository.findByQuestionId(answer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
         answer.preInsert();
         answerRepository.save(answer);
     }
@@ -44,7 +53,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional(readOnly = true)
     public List<Answer> getAnswersByQuestionId(String questionId, int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
-        List<Answer> answers = answerRepository.getByQuestionId(questionId, pageable).getContent();
+        List<Answer> answers = answerRepository.findByQuestionId(questionId, pageable).getContent();
         User user = userRepository.findByUsername(UserUtils.getUserId()).orElse(new User());
 
         // obtain user answer preference maps
@@ -63,7 +72,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public void likeAnswerById(String answerId, boolean set) {
-        Answer answer = answerRepository.getByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
+        Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
         User user = userRepository.findByUsername(UserUtils.getUserId()).orElseThrow(UserNotFoundException::new);
 
         Map<String, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
@@ -86,7 +95,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     @Transactional
     public void dislikeAnswerById(String answerId, boolean set) {
-        Answer answer = answerRepository.getByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
+        Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
         User user = userRepository.findByUsername(UserUtils.getUserId()).orElseThrow(UserNotFoundException::new);
 
         Map<String, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
@@ -122,7 +131,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public Answer getAnswerById(String answerId) {
-        Answer answer = answerRepository.getByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
+        Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
         User user = userRepository.findByUsername(UserUtils.getUserId()).orElse(new User());
 
         // obtain user answer preference maps
@@ -137,10 +146,12 @@ public class AnswerServiceImpl implements AnswerService {
         return answer;
     }
 
+    /* Bug found here: fk dependency on reply_id, comment */
     @Override
     @Transactional
     public void deleteAnswerById(String answerId) {
-        answerRepository.getByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
+        answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
+        commentRepository.deleteAllByAnswerId(answerId);
         answerRepository.deleteByAnswerId(answerId);
     }
 }

@@ -5,12 +5,11 @@ import com.seaso.seaso.modules.question.service.AnswerService;
 import com.seaso.seaso.modules.sys.utils.JsonResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping(value = "/answers")
 public class AnswerController {
 
@@ -22,8 +21,7 @@ public class AnswerController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    @ResponseBody
-    public JsonResponse<List<Answer>> getAnswerByQuestionId(@RequestParam String questionId,
+    public JsonResponse<List<Answer>> getAnswerByQuestionId(@RequestParam(value = "question_id") String questionId,
                                                             @RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "10") int size,
                                                             @RequestParam(defaultValue = "likes") String itemName) {
@@ -34,14 +32,12 @@ public class AnswerController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    @ResponseBody
     public JsonResponse<String> createAnswer(@ModelAttribute Answer answer) {
         answerService.createAnswer(answer);
         return new JsonResponse<>(null);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
-    @ResponseBody
     public JsonResponse<Answer> getAnswerById(@PathVariable String answerId) {
         Answer answer = answerService.getAnswerById(answerId);
         return new JsonResponse<>(answer);
@@ -59,8 +55,8 @@ public class AnswerController {
         return new JsonResponse<>(null);
     }
 
+    /* Bug found here: fk dependency on reply_id, comment */
     @RequestMapping(value = "/{answerId}", method = RequestMethod.DELETE)
-    @ResponseBody
     public JsonResponse<String> deleteAnswerById(@PathVariable String answerId) {
         answerService.deleteAnswerById(answerId);
         return new JsonResponse<>(null);

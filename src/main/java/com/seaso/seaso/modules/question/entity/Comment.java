@@ -26,18 +26,14 @@ public class Comment extends DataEntity<Comment> {
     /**
      * Answer id which this comment replies
      */
-    @ManyToOne
-    @JoinColumn(name = "answerId", referencedColumnName = "answerId", nullable = false,
-            foreignKey = @ForeignKey(name = "comment_answer_answer_id_fk"))
-    private Answer answer;
+    @Column(nullable = false, length = 32)
+    private String answerId;
 
     /**
      * Replied comment id which this comment replies
      */
-    @ManyToOne
-    @JoinColumn(name = "replyId", referencedColumnName = "commentId",
-            foreignKey = @ForeignKey(name = "comment_comment_id_fk"))
-    private Comment replyId;
+    @Column(length = 32)
+    private String replyId;
 
     /**
      * Comment content
@@ -61,19 +57,19 @@ public class Comment extends DataEntity<Comment> {
         this.commentId = commentId;
     }
 
-    public Answer getAnswer() {
-        return answer;
+    public String getAnswerId() {
+        return answerId;
     }
 
-    public void setAnswer(Answer answer) {
-        this.answer = answer;
+    public void setAnswerId(String answerId) {
+        this.answerId = answerId;
     }
 
-    public Comment getReplyId() {
+    public String getReplyId() {
         return replyId;
     }
 
-    public void setReplyId(Comment replyId) {
+    public void setReplyId(String replyId) {
         this.replyId = replyId;
     }
 
