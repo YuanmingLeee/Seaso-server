@@ -8,8 +8,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Map;
@@ -20,7 +18,6 @@ public class UserUtils {
 
     private static PasswordEncoder encoder;
     private final PasswordEncoder _encoder;
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("MMddyyyyHHmmssZ");
 
     @Autowired
     public UserUtils(PasswordEncoder _encoder) {
@@ -49,10 +46,10 @@ public class UserUtils {
         encoder = _encoder;
     }
 
-    private static Date parseDateString(String string, SimpleDateFormat dateFormat) {
+    private static Date parseDateString(String string) {
         try {
-            return dateFormat.parse(string);
-        } catch (ParseException e) {
+            return new Date(Long.parseLong(string));
+        } catch (NumberFormatException e) {
             throw new RuntimeException(e);
         }
     }
@@ -61,13 +58,13 @@ public class UserUtils {
         return Arrays.stream(string.split(";"))
                 .filter(e -> !e.equals(""))
                 .map(e -> Arrays.asList(e.split(",")))
-                .collect(Collectors.toMap(entry -> entry.get(0), entry -> parseDateString(entry.get(1), dateFormat)));
+                .collect(Collectors.toMap(entry -> entry.get(0), entry -> parseDateString(entry.get(1))));
     }
 
     public static String encodeUserAnswerPreference(@NotNull Map<String, Date> map) {
         return map.entrySet().stream()
                 .filter(x -> x.getValue() != null)
-                .map(e -> e.getKey() + "," + dateFormat.format(e.getValue()))
+                .map(e -> e.getKey() + "," + e.getValue().getTime())
                 .reduce((x, y) -> x + ";" + y).orElse("");
     }
 }
