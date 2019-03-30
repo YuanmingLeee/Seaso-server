@@ -8,11 +8,12 @@ package com.seaso.seaso.common.utils;
  * does not appear that id and id_str match, it’s due to your environment having already parsed the id integer munging
  * the number in the process.
  *
- * @author beyond
+ * @author beyond, Li Yuanming
  * @see <a href="https://developer.twitter.com/en/docs/basics/twitter-ids.html">Twitter IDs (snowflake)</a>
  * <p>
  * The implemention is done by Beyond using Java.
  * @see <a href="https://github.com/beyondfengyu/SnowFlake">Snowflake implemented by Beyond</a>
+ * </p>
  */
 public class Snowflake implements IdGeneratable {
     /**
