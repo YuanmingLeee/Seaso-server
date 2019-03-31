@@ -26,3 +26,8 @@ spring:
 ### logging ###
 logging:
   file: log/spring.log
+
+### ID generator ###
+idgen:
+  machine-id: 0
+  data-center-id: 0

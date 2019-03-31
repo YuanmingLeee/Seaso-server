@@ -23,12 +23,6 @@ public class UserAuthServiceImpl implements UserAuthService {
     }
 
     @Override
-    public int updatePasswordByUserId(String userId, String newPassword) {
-        String password = UserUtils.encryptByBCrypt(newPassword);
-        return userAuthRepository.updatePasswordByIdentifier(password, userId);
-    }
-
-    @Override
     public void createUserAuth(UserAuthentication userAuthentication) {
         if (userAuthentication.getAuthenticationType() == AuthenticationType.USERNAME) {
             String password = UserUtils.encryptByBCrypt(userAuthentication.getCredential());

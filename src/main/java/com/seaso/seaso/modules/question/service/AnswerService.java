@@ -9,13 +9,13 @@ public interface AnswerService {
 
     void createAnswer(Answer answer);
 
-    List<Answer> getAnswersByQuestionId(String questionId, int page, int size, Sort sort);
+    List<Answer> getAnswersByQuestionId(Long questionId, int page, int size, Sort sort);
 
-    void likeAnswerById(String answerId, boolean set);
+    void likeAnswerById(Long answerId, boolean set);
 
-    void dislikeAnswerById(String answerId, boolean set);
+    void dislikeAnswerById(Long answerId, boolean set);
 
-    Answer getAnswerById(String answerId);
+    Answer getAnswerById(Long answerId);
 
-    void deleteAnswerById(String answerId);
+    void deleteAnswerById(Long answerId);
 }

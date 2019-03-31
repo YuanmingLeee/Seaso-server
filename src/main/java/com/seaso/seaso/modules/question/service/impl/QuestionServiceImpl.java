@@ -25,7 +25,7 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public Question findQuestionById(String questionId) {
+    public Question findQuestionById(Long questionId) {
         return questionRepository.findByQuestionId(questionId).orElseThrow(ResourceNotFoundException::new);
     }
 
@@ -45,7 +45,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     @Transactional
-    public void deleteQuestionById(String questionId) throws ServiceException {
+    public void deleteQuestionById(Long questionId) throws ServiceException {
         questionRepository.findByQuestionId(questionId).orElseThrow(ResourceNotFoundException::new);
         questionRepository.deleteByQuestionId(questionId);
     }

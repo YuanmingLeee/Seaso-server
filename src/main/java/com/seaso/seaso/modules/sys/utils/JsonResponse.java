@@ -1,15 +1,18 @@
 package com.seaso.seaso.modules.sys.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
 public class JsonResponse<T> {
+
+    @JsonProperty("status_code")
     private int statusCode;
     private String message;
     private T data;
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss z")
+    @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date timestamp;
 
     public JsonResponse(HttpStatus status, String message, T data) {

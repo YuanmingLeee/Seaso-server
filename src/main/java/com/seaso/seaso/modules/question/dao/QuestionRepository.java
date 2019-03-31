@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public interface QuestionRepository extends JpaRepository<Question, String> {
 
-    Optional<Question> findByQuestionId(String questionId);
+    Optional<Question> findByQuestionId(Long questionId);
 
-    void deleteByQuestionId(String questionId);
+    void deleteByQuestionId(Long questionId);
 }

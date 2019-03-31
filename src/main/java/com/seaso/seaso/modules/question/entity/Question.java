@@ -1,6 +1,7 @@
 package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
 
@@ -15,11 +16,12 @@ import javax.persistence.*;
         indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
 public class Question extends DataEntity<Question> {
 
+    private static final long serialVersionUID = 8150616186831582842L;
     /**
      * Question id
      */
-    @Column(nullable = false, unique = true, length = 32)
-    private String questionId;
+    @Column(nullable = false, unique = true, length = 64)
+    private Long questionId;
 
     /**
      * Keywords for searching
@@ -70,11 +72,16 @@ public class Question extends DataEntity<Question> {
         super();
     }
 
-    public String getQuestion_id() {
+    @Override
+    protected void setDataId() {
+        questionId = IdGen.generateId();
+    }
+
+    public Long getQuestion_id() {
         return questionId;
     }
 
-    public void setQuestion_id(String questionId) {
+    public void setQuestion_id(Long questionId) {
         this.questionId = questionId;
     }
 

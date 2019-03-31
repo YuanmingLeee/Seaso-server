@@ -1,6 +1,7 @@
 package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
 
@@ -20,24 +21,20 @@ public class Comment extends DataEntity<Comment> {
     /**
      * Comment id
      */
-    @Column(nullable = false, unique = true, length = 32)
-    private String commentId;
+    @Column(nullable = false, unique = true, length = 64)
+    private Long commentId;
 
     /**
      * Answer id which this comment replies
      */
-    @ManyToOne
-    @JoinColumn(name = "answerId", referencedColumnName = "answerId", nullable = false,
-            foreignKey = @ForeignKey(name = "comment_answer_answer_id_fk"))
-    private Answer answer;
+    @Column(nullable = false, length = 64)
+    private Long answerId;
 
     /**
      * Replied comment id which this comment replies
      */
-    @ManyToOne
-    @JoinColumn(name = "replyId", referencedColumnName = "commentId",
-            foreignKey = @ForeignKey(name = "comment_comment_id_fk"))
-    private Comment replyId;
+    @Column(length = 64)
+    private Long replyId;
 
     /**
      * Comment content
@@ -53,27 +50,32 @@ public class Comment extends DataEntity<Comment> {
         super();
     }
 
-    public String getCommentId() {
+    @Override
+    protected void setDataId() {
+        commentId = IdGen.generateId();
+    }
+
+    public Long getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(String commentId) {
+    public void setCommentId(Long commentId) {
         this.commentId = commentId;
     }
 
-    public Answer getAnswer() {
-        return answer;
+    public Long getAnswerId() {
+        return answerId;
     }
 
-    public void setAnswer(Answer answer) {
-        this.answer = answer;
+    public void setAnswerId(Long answerId) {
+        this.answerId = answerId;
     }
 
-    public Comment getReplyId() {
+    public Long getReplyId() {
         return replyId;
     }
 
-    public void setReplyId(Comment replyId) {
+    public void setReplyId(Long replyId) {
         this.replyId = replyId;
     }
 
