@@ -1,4 +1,4 @@
-package com.seaso.seaso.common.utils;
+package com.seaso.seaso.common.utils.idgen;
 
 /**
  * Twitter Snowflake Algorithm for distributed ID generator. These IDs are 64-bit unsigned integers generated based on

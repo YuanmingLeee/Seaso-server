@@ -2,6 +2,7 @@ package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.modules.question.utils.LikeStatus;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -26,8 +27,8 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Question id which this answer id belongs to
      */
-    @Column(nullable = false, length = 32)
-    private String questionId;
+    @Column(nullable = false, length = 64)
+    private Long questionId;
 
     /**
      * User like status to the answer
@@ -76,6 +77,11 @@ public class Answer extends DataEntity<Answer> {
         super();
     }
 
+    @Override
+    protected void setDataId() {
+        this.questionId = UserUtils.idGenerate(1).get(0);
+    }
+
     public String getAnswerId() {
         return answerId;
     }
@@ -84,11 +90,11 @@ public class Answer extends DataEntity<Answer> {
         this.answerId = answerId;
     }
 
-    public String getQuestionId() {
+    public Long getQuestionId() {
         return questionId;
     }
 
-    public void setQuestionId(String questionId) {
+    public void setQuestionId(Long questionId) {
         this.questionId = questionId;
     }
 

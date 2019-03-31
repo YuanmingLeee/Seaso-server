@@ -1,6 +1,7 @@
 package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -20,8 +21,8 @@ public class Comment extends DataEntity<Comment> {
     /**
      * Comment id
      */
-    @Column(nullable = false, unique = true, length = 32)
-    private String commentId;
+    @Column(nullable = false, unique = true, length = 64)
+    private Long commentId;
 
     /**
      * Answer id which this comment replies
@@ -49,11 +50,16 @@ public class Comment extends DataEntity<Comment> {
         super();
     }
 
-    public String getCommentId() {
+    @Override
+    protected void setDataId() {
+        commentId = UserUtils.idGenerate(1).get(0);
+    }
+
+    public Long getCommentId() {
         return commentId;
     }
 
-    public void setCommentId(String commentId) {
+    public void setCommentId(Long commentId) {
         this.commentId = commentId;
     }
 

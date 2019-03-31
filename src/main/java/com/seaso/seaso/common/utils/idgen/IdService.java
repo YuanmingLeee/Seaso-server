@@ -1,18 +1,17 @@
-package com.seaso.seaso.common.utils;
+package com.seaso.seaso.common.utils.idgen;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
 /**
  * A ID generating service is an instance of service which generates IDs using different algorithm by IdGenerator. To
- * use it for generating ID service, we shall create another class which extends IdGeneratingService, and register it
+ * use it for generating ID service, we shall create another class which extends IdService, and register it
  * into Spring context holder.
  * <pre>{@code
  *     \@Service
- *     class GenerateUserIdService extends IdGeneratingService {
+ *     class GenerateUserIdService extends IdService {
  *
  *         \@Autowired
  *         \@Qualifier("someGenerator")
@@ -21,7 +20,7 @@ import java.util.concurrent.BlockingQueue;
  *         }
  *     }
  * }</pre>
- * <p><code>IdGeneratingService</code> creates two threads when registered: {@link #generator} and
+ * <p><code>IdService</code> creates two threads when registered: {@link #generator} and
  * <code>scheduler</code>. Insides, a {@link BlockingQueue} is used for caching IDs.
  *
  * <p>
@@ -41,7 +40,7 @@ import java.util.concurrent.BlockingQueue;
  * @see #generateIds(int)
  * @see #stop()
  */
-public class IdGeneratingService {
+public class IdService {
 
     /* */
     private IdGenerationThread generator;
@@ -49,13 +48,13 @@ public class IdGeneratingService {
     private Scheduler scheduler;
 
     /**
-     * Constructor of IdGeneratingService with a given cache size of IDs. The service is automatically started when
+     * Constructor of IdService with a given cache size of IDs. The service is automatically started when
      * created. <b>Manually start by {@link #start()} shall not be involved</b>.
      *
      * @param idGenerator ID generator implemented using specific algorithm
      * @param cacheSize   number of IDs cached by the ID generating server
      */
-    public IdGeneratingService(IdGeneratable idGenerator, int cacheSize) {
+    public IdService(IdGeneratable idGenerator, int cacheSize) {
         BlockingQueue<Long> idPool = new ArrayBlockingQueue<>(cacheSize);
         this.generator = new IdGenerationThread(idGenerator, idPool, "generator");
         this.scheduler = new Scheduler(idPool, "scheduler");
@@ -64,18 +63,17 @@ public class IdGeneratingService {
     }
 
     /**
-     * Generate a list of IDs with a given size. The list is wrapped with {@link Optional}. It returns an empty
-     * {@link Optional} if {@link #scheduler} is interrupted during fetching IDs from cache.
+     * Generate a list of IDs with a given size. {@link RuntimeException} is thrown if {@link #scheduler} is
+     * interrupted during fetching IDs from cache.
      *
      * @param size number of IDs to be generated
-     * @return list of IDs wrapped with {@link Optional} or an empty Optional by {@link Optional#empty()} if
-     * {@link InterruptedException} is raised during generating IDs.
+     * @return list of IDs. {@link InterruptedException} is raised when the service get interrupted when generating IDs.
      */
-    public Optional<List<Long>> generateIds(int size) {
+    public List<Long> generateIds(int size) {
         try {
-            return Optional.of(scheduler.generateIds(size));
+            return scheduler.generateIds(size);
         } catch (InterruptedException e) {
-            return Optional.empty();
+            throw new RuntimeException("Fetching ID error.", e.getCause());
         }
     }
 
@@ -83,7 +81,7 @@ public class IdGeneratingService {
      * Start the ID generating service. This method is called during construction and shall not be manually called after
      * construction. However, it shall be called if the ID generating service is restarted.
      *
-     * @see #IdGeneratingService(IdGeneratable, int)
+     * @see #IdService(IdGeneratable, int)
      */
     public void start() {
         generator.start();

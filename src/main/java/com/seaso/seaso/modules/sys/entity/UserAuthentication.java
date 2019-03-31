@@ -52,6 +52,10 @@ public class UserAuthentication extends DataEntity<UserAuthentication> {
         super();
     }
 
+    @Override
+    protected void setDataId() {
+    }
+
     public User getUser() {
         user.setPassword(credential);
         return user;

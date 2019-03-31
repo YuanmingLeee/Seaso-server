@@ -2,6 +2,7 @@ package com.seaso.seaso.common.persistance;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 
@@ -21,24 +22,25 @@ public abstract class DataEntity<T> implements Serializable {
     private Long id;
 
     @Column(nullable = false, length = 32)
-    protected String creator;
+    private String creator;
 
     @Column(nullable = false, length = 32)
-    protected String updater;
+    private String updater;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    protected Date createDate;
+    private Date createDate;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    protected Date updateDate;
+    private Date updateDate;
 
     protected DataEntity() {
     }
 
     public void preInsert() {
         String userId = UserUtils.getUserId();
+        setDataId();
         this.updater = this.creator = userId;
         this.updateDate = this.createDate = new Date();
     }
@@ -60,6 +62,8 @@ public abstract class DataEntity<T> implements Serializable {
             throw new ServiceException(e.getMessage(), e.getCause());
         }
     }
+
+    protected abstract void setDataId();
 
     @JsonIgnore
     public Long getId() {
@@ -88,6 +92,7 @@ public abstract class DataEntity<T> implements Serializable {
     }
 
     @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    @JsonProperty(value = "create_date")
     public Date getCreateDate() {
         return createDate;
     }
@@ -97,6 +102,7 @@ public abstract class DataEntity<T> implements Serializable {
     }
 
     @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    @JsonProperty(value = "update_date")
     public Date getUpdateDate() {
         return updateDate;
     }

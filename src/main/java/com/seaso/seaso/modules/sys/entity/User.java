@@ -1,6 +1,7 @@
 package com.seaso.seaso.modules.sys.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -8,8 +9,8 @@ import javax.persistence.*;
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
-    @Column(nullable = false, length = 32)
-    private String userId;
+    @Column(nullable = false, length = 64)
+    private Long userId;
 
     @Column(nullable = false, length = 2)
     private Integer age;
@@ -44,17 +45,16 @@ public class User extends DataEntity<User> {
         super();
     }
 
-    public User(String username, Integer age) {
-        super();
-        this.username = username;
-        this.age = age;
+    @Override
+    protected void setDataId() {
+        userId = UserUtils.idGenerate(1).get(0);
     }
 
-    public String getUserId() {
+    public Long getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Long userId) {
         this.userId = userId;
     }
 

@@ -1,4 +1,4 @@
-package com.seaso.seaso.common.utils;
+package com.seaso.seaso.common.utils.idgen;
 
 public interface IdGeneratable {
     long nextId();
