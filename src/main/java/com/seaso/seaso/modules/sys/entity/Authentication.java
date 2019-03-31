@@ -16,16 +16,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "user_auth",
         indexes = {@Index(name = "user_auth_identifier_unidex", columnList = "identifier", unique = true)})
-public class UserAuthentication extends DataEntity<UserAuthentication> {
-
-    /**
-     * User id
-     */
-    @Basic(fetch = FetchType.LAZY)
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false,
-            foreignKey = @ForeignKey(name = "user_auth_user_user_id_fk"))
-    private User user;
+public class Authentication extends DataEntity<Authentication> {
 
     /**
      * Authentication method
@@ -48,22 +39,8 @@ public class UserAuthentication extends DataEntity<UserAuthentication> {
     /**
      * Default constructor
      */
-    public UserAuthentication() {
+    public Authentication() {
         super();
-    }
-
-    @Override
-    protected void setDataId() {
-    }
-
-    public User getUser() {
-        user.setPassword(credential);
-        return user;
-    }
-
-    public void setUser(User user) {
-        user.setPassword(credential);
-        this.user = user;
     }
 
     public AuthenticationType getAuthenticationType() {

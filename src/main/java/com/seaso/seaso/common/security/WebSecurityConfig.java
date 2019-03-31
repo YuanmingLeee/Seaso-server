@@ -1,9 +1,10 @@
 package com.seaso.seaso.common.security;
 
-import com.seaso.seaso.modules.sys.service.UserAuthService;
+import com.seaso.seaso.modules.sys.service.AuthenticationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -16,13 +17,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserAuthService userAuthService;
+    private final AuthenticationService authenticationService;
 
     private final MyBasicAuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
-    public WebSecurityConfig(UserAuthService userAuthService, MyBasicAuthenticationEntryPoint authenticationEntryPoint) {
-        this.userAuthService = userAuthService;
+    public WebSecurityConfig(AuthenticationService authenticationService, MyBasicAuthenticationEntryPoint authenticationEntryPoint) {
+        this.authenticationService = authenticationService;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
@@ -30,15 +31,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/", "/home", "/swagger-ui").permitAll()
+                .antMatchers(HttpMethod.GET).permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic().authenticationEntryPoint(authenticationEntryPoint)
-                .and()
-                .formLogin()
-                .loginPage("/login")
-                .permitAll()
-                .and()
-                .logout()
-                .permitAll();
+                .and().formLogin().loginPage("/login").permitAll()
+                .and().logout().permitAll();
         http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
 
         // remember to comment this line in prod
@@ -48,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userAuthService);
+        authProvider.setUserDetailsService(authenticationService);
         authProvider.setPasswordEncoder(encoder());
         return authProvider;
     }

@@ -1,21 +1,27 @@
 package com.seaso.seaso.modules.sys.utils;
 
-import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.common.persistance.DataEntity;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import javax.validation.constraints.NotNull;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Table;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Principal implements UserDetails {
+@Entity
+@Table(name = "sys_user")
+public class Principal extends DataEntity<Principal> implements UserDetails {
 
-    private User user;
+    @Column(nullable = false, length = 32)
+    private String username;
 
-    public Principal(@NotNull User user) {
-        this.user = user;
+    private String password;
+
+    public Principal() {
     }
 
     @Override
@@ -26,12 +32,12 @@ public class Principal implements UserDetails {
 
     @Override
     public String getPassword() {
-        return user.getPassword();
+        return username;
     }
 
     @Override
     public String getUsername() {
-        return user.getUsername();
+        return password;
     }
 
     @Override

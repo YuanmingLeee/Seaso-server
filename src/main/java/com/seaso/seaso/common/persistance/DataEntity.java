@@ -63,7 +63,10 @@ public abstract class DataEntity<T> implements Serializable {
         }
     }
 
-    protected abstract void setDataId();
+    protected void setDataId() {
+    }
+
+    ;
 
     @JsonIgnore
     public Long getId() {

@@ -1,18 +1,18 @@
 package com.seaso.seaso.modules.sys.dao;
 
-import com.seaso.seaso.modules.sys.entity.UserAuthentication;
+import com.seaso.seaso.modules.sys.entity.Authentication;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserAuthRepository extends JpaRepository<UserAuthentication, String> {
+public interface UserAuthRepository extends JpaRepository<Authentication, String> {
 
-    Optional<UserAuthentication> findByIdentifier(String identifier);
+    Optional<Authentication> findByIdentifier(String identifier);
 
     @Modifying
-    @Query("update UserAuthentication u set u.credential = ?1 where u.identifier = ?2")
+    @Query("update Authentication u set u.credential = ?1 where u.identifier = ?2")
     int updatePasswordByIdentifier(String password, String id);
 
     void deleteByUser_UserId(Long userId);
