@@ -1,8 +1,8 @@
 package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.common.utils.idgen.IdGen;
 import com.seaso.seaso.modules.question.utils.LikeStatus;
-import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -21,8 +21,8 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Answer id
      */
-    @Column(nullable = false, unique = true, length = 32)
-    private String answerId;
+    @Column(nullable = false, unique = true, length = 64)
+    private Long answerId;
 
     /**
      * Question id which this answer id belongs to
@@ -79,14 +79,14 @@ public class Answer extends DataEntity<Answer> {
 
     @Override
     protected void setDataId() {
-        this.questionId = UserUtils.idGenerate(1).get(0);
+        this.questionId = IdGen.generateId();
     }
 
-    public String getAnswerId() {
+    public Long getAnswerId() {
         return answerId;
     }
 
-    public void setAnswerId(String answerId) {
+    public void setAnswerId(Long answerId) {
         this.answerId = answerId;
     }
 

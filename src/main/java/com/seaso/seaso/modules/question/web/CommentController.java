@@ -21,7 +21,7 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.GET)
-    public JsonResponse<Comment> findByCommentId(@PathVariable String commentId) {
+    public JsonResponse<Comment> findByCommentId(@PathVariable Long commentId) {
 
         Comment comment = commentService.findByCommentId(commentId);
         return new JsonResponse<>(comment);
@@ -35,8 +35,8 @@ public class CommentController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public JsonResponse<List<Comment>> getComment(@RequestParam(name = "answer_id") String answerId,
-                                                  @RequestParam(name = "reply_id", required = false) String replyId,
+    public JsonResponse<List<Comment>> getComment(@RequestParam(name = "answer_id") Long answerId,
+                                                  @RequestParam(name = "reply_id", required = false) Long replyId,
                                                   @RequestParam(defaultValue = "0") int page,
                                                   @RequestParam(defaultValue = "10") int size,
                                                   @RequestParam(defaultValue = "createDate") String itemName) {
@@ -48,7 +48,7 @@ public class CommentController {
     }
 
     @RequestMapping(value = "/{commentId}", method = RequestMethod.DELETE)
-    public JsonResponse<String> deleteByCommentId(@PathVariable String commentId) {
+    public JsonResponse<String> deleteByCommentId(@PathVariable Long commentId) {
 
         commentService.deleteByCommentId(commentId);
         return new JsonResponse<>(null);

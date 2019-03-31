@@ -8,11 +8,11 @@ import java.util.List;
 
 public interface QuestionService {
 
-    Question findQuestionById(String questionId) throws ServiceException;
+    Question findQuestionById(Long questionId) throws ServiceException;
 
     List<Question> findAllQuestions(int page, int size, Sort sort) throws ServiceException;
 
     void createQuestion(Question question);
 
-    void deleteQuestionById(String questionId) throws ServiceException;
+    void deleteQuestionById(Long questionId) throws ServiceException;
 }

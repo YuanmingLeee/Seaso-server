@@ -7,13 +7,13 @@ import java.util.List;
 
 public interface CommentService {
 
-    Comment findByCommentId(String commentId);
+    Comment findByCommentId(Long commentId);
 
-    List<Comment> findByAnswerId(String answerId, int page, int size, Sort sort);
+    List<Comment> findByAnswerId(Long answerId, int page, int size, Sort sort);
 
-    List<Comment> findByAnswerIdAndReplyId(String answerId, String replyId, int page, int size, Sort sort);
+    List<Comment> findByAnswerIdAndReplyId(Long answerId, Long replyId, int page, int size, Sort sort);
 
-    void deleteByCommentId(String commentId);
+    void deleteByCommentId(Long commentId);
 
     void createComment(Comment comment);
 }

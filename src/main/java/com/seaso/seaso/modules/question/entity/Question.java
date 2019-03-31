@@ -1,7 +1,7 @@
 package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
-import com.seaso.seaso.modules.sys.utils.UserUtils;
+import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
 
@@ -16,6 +16,7 @@ import javax.persistence.*;
         indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
 public class Question extends DataEntity<Question> {
 
+    private static final long serialVersionUID = 8150616186831582842L;
     /**
      * Question id
      */
@@ -73,7 +74,7 @@ public class Question extends DataEntity<Question> {
 
     @Override
     protected void setDataId() {
-        questionId = UserUtils.idGenerate(1).get(0);
+        questionId = IdGen.generateId();
     }
 
     public Long getQuestion_id() {

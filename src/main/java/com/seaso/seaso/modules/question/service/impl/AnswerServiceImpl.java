@@ -51,14 +51,14 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Answer> getAnswersByQuestionId(String questionId, int page, int size, Sort sort) {
+    public List<Answer> getAnswersByQuestionId(Long questionId, int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         List<Answer> answers = answerRepository.findByQuestionId(questionId, pageable).getContent();
-        User user = userRepository.findByUsername(UserUtils.getUserId()).orElse(new User());
+        User user = userRepository.findByUsername(UserUtils.getUsername()).orElse(new User());
 
         // obtain user answer preference maps
-        Map<String, Date> likeMap = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
-        Map<String, Date> dislikeMap = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
+        Map<Long, Date> likeMap = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
+        Map<Long, Date> dislikeMap = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
 
         // set like status for each answers
         answers.forEach(answer ->
@@ -71,11 +71,11 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public void likeAnswerById(String answerId, boolean set) {
+    public void likeAnswerById(Long answerId, boolean set) {
         Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        User user = userRepository.findByUsername(UserUtils.getUserId()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByUsername(UserUtils.getUsername()).orElseThrow(UserNotFoundException::new);
 
-        Map<String, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
+        Map<Long, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
 
         // check set argument
         if (set == map.containsKey(answerId))
@@ -94,11 +94,11 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional
-    public void dislikeAnswerById(String answerId, boolean set) {
+    public void dislikeAnswerById(Long answerId, boolean set) {
         Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        User user = userRepository.findByUsername(UserUtils.getUserId()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByUsername(UserUtils.getUsername()).orElseThrow(UserNotFoundException::new);
 
-        Map<String, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
+        Map<Long, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
 
         // check set argument
         if (set == map.containsKey(answerId))
@@ -116,9 +116,9 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
 
-    private void preferenceAnswerId(@NotNull Answer answer, @NotNull User user, @NotNull Map<String, Date> map,
+    private void preferenceAnswerId(@NotNull Answer answer, @NotNull User user, @NotNull Map<Long, Date> map,
                                     boolean set) {
-        String answerId = answer.getAnswerId();
+        Long answerId = answer.getAnswerId();
         answer.preUpdate();
 
         // update user entity
@@ -130,13 +130,13 @@ public class AnswerServiceImpl implements AnswerService {
     }
 
     @Override
-    public Answer getAnswerById(String answerId) {
+    public Answer getAnswerById(Long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        User user = userRepository.findByUsername(UserUtils.getUserId()).orElse(new User());
+        User user = userRepository.findByUsername(UserUtils.getUsername()).orElse(new User());
 
         // obtain user answer preference maps
-        Map<String, Date> likeMap = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
-        Map<String, Date> dislikeMap = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
+        Map<Long, Date> likeMap = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
+        Map<Long, Date> dislikeMap = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
 
         // set like status for answer
         answer.setLikeStatus(
@@ -149,7 +149,7 @@ public class AnswerServiceImpl implements AnswerService {
     /* Bug found here: fk dependency on reply_id, comment */
     @Override
     @Transactional
-    public void deleteAnswerById(String answerId) {
+    public void deleteAnswerById(Long answerId) {
         answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
         commentRepository.deleteAllByAnswerId(answerId);
         answerRepository.deleteByAnswerId(answerId);

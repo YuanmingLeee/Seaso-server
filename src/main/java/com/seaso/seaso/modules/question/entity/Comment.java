@@ -1,7 +1,7 @@
 package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
-import com.seaso.seaso.modules.sys.utils.UserUtils;
+import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
 
@@ -27,14 +27,14 @@ public class Comment extends DataEntity<Comment> {
     /**
      * Answer id which this comment replies
      */
-    @Column(nullable = false, length = 32)
-    private String answerId;
+    @Column(nullable = false, length = 64)
+    private Long answerId;
 
     /**
      * Replied comment id which this comment replies
      */
-    @Column(length = 32)
-    private String replyId;
+    @Column(length = 64)
+    private Long replyId;
 
     /**
      * Comment content
@@ -52,7 +52,7 @@ public class Comment extends DataEntity<Comment> {
 
     @Override
     protected void setDataId() {
-        commentId = UserUtils.idGenerate(1).get(0);
+        commentId = IdGen.generateId();
     }
 
     public Long getCommentId() {
@@ -63,19 +63,19 @@ public class Comment extends DataEntity<Comment> {
         this.commentId = commentId;
     }
 
-    public String getAnswerId() {
+    public Long getAnswerId() {
         return answerId;
     }
 
-    public void setAnswerId(String answerId) {
+    public void setAnswerId(Long answerId) {
         this.answerId = answerId;
     }
 
-    public String getReplyId() {
+    public Long getReplyId() {
         return replyId;
     }
 
-    public void setReplyId(String replyId) {
+    public void setReplyId(Long replyId) {
         this.replyId = replyId;
     }
 

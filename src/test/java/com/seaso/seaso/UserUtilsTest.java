@@ -14,7 +14,7 @@ public class UserUtilsTest {
                 "654321,1553842000000";
         String string1 = "";
 
-        Map<String, Date> map = UserUtils.decodeUserAnswerPreference(string);
+        Map<Long, Date> map = UserUtils.decodeUserAnswerPreference(string);
         System.out.println(map);
         Assert.assertEquals(map.toString(), "{123456=Fri Mar 29 12:00:00 SRET 2019, 654321=Fri Mar 29 14:46:40 SRET 2019}");
 

@@ -39,14 +39,14 @@ public abstract class DataEntity<T> implements Serializable {
     }
 
     public void preInsert() {
-        String userId = UserUtils.getUserId();
+        String userId = UserUtils.getUsername();
         setDataId();
         this.updater = this.creator = userId;
         this.updateDate = this.createDate = new Date();
     }
 
     public void preUpdate() {
-        this.updater = UserUtils.getUserId();
+        this.updater = UserUtils.getUsername();
         this.updateDate = new Date();
     }
 

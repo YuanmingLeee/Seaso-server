@@ -40,15 +40,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional
-    public void updateByUsername(User user, String userId) {
-        User original = userRepository.findByUsername(userId).orElseThrow(ResourceNotFoundException::new);
+    public void updateByUsername(User user, String username) {
+        User original = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
         original.merge(user);
         original.preUpdate();
         userRepository.save(original);
     }
 
     @Override
-    public User findUserByUserId(String userId) {
+    public User findUserByUserId(Long userId) {
         return userRepository.findByUserId(userId).orElseThrow(ResourceNotFoundException::new);
     }
 

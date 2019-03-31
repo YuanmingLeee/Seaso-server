@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public interface CommentRepository extends JpaRepository<Comment, Long> {
 
-    Optional<Comment> findByCommentId(String commentId);
+    Optional<Comment> findByCommentId(Long commentId);
 
-    Page<Comment> findByAnswerId(String answerId, Pageable pageable);
+    Page<Comment> findByAnswerId(Long answerId, Pageable pageable);
 
-    Page<Comment> findByAnswerIdAndReplyId(String answerId, String replyId, Pageable pageable);
+    Page<Comment> findByAnswerIdAndReplyId(Long answerId, Long replyId, Pageable pageable);
 
-    void deleteByCommentId(String commentId);
+    void deleteByCommentId(Long commentId);
 
-    void deleteAllByAnswerId(String answerId);
+    void deleteAllByAnswerId(Long answerId);
 
-    void deleteAllByReplyId(String replyId);
+    void deleteAllByReplyId(Long replyId);
 
 }

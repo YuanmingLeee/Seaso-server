@@ -4,8 +4,8 @@ import java.util.Date;
 import java.util.Map;
 
 public class QuestionUtils {
-    public static LikeStatus mapPreferenceMapsToLikeStatus(String answerId, Map<String, Date> likeMapper,
-                                                           Map<String, Date> dislikeMapper) {
+    public static LikeStatus mapPreferenceMapsToLikeStatus(Long answerId, Map<Long, Date> likeMapper,
+                                                           Map<Long, Date> dislikeMapper) {
         if (likeMapper.containsKey(answerId))
             return LikeStatus.LIKE;
         if (dislikeMapper.containsKey(answerId))

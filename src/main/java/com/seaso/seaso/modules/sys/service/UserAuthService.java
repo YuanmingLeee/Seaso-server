@@ -5,8 +5,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 
 public interface UserAuthService extends UserDetailsService {
 
-    int updatePasswordByUserId(String userId, String newPassword);
-
     void createUserAuth(UserAuthentication userAuthentication);
 
     int updateUserAuthByIdentifier(String identifier);

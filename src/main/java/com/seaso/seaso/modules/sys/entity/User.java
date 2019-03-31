@@ -1,13 +1,15 @@
 package com.seaso.seaso.modules.sys.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
-import com.seaso.seaso.modules.sys.utils.UserUtils;
+import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
 
 @Entity
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
+
+    private static final long serialVersionUID = 912182812071648668L;
 
     @Column(nullable = false, length = 64)
     private Long userId;
@@ -47,7 +49,7 @@ public class User extends DataEntity<User> {
 
     @Override
     protected void setDataId() {
-        userId = UserUtils.idGenerate(1).get(0);
+        userId = IdGen.generateId();
     }
 
     public Long getUserId() {

@@ -29,7 +29,7 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/{questionId}", method = RequestMethod.GET)
-    public JsonResponse<Question> findQuestionById(@PathVariable String questionId) {
+    public JsonResponse<Question> findQuestionById(@PathVariable Long questionId) {
         Question question = questionService.findQuestionById(questionId);
         return new JsonResponse<>(question);
     }

@@ -21,7 +21,7 @@ public class AnswerController {
     }
 
     @RequestMapping(value = "", method = RequestMethod.GET)
-    public JsonResponse<List<Answer>> getAnswerByQuestionId(@RequestParam(value = "question_id") String questionId,
+    public JsonResponse<List<Answer>> getAnswerByQuestionId(@RequestParam(value = "question_id") Long questionId,
                                                             @RequestParam(defaultValue = "0") int page,
                                                             @RequestParam(defaultValue = "10") int size,
                                                             @RequestParam(defaultValue = "likes") String itemName) {
@@ -38,14 +38,14 @@ public class AnswerController {
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
-    public JsonResponse<Answer> getAnswerById(@PathVariable String answerId) {
+    public JsonResponse<Answer> getAnswerById(@PathVariable Long answerId) {
         Answer answer = answerService.getAnswerById(answerId);
         return new JsonResponse<>(answer);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.POST)
     @ResponseBody
-    public JsonResponse<String> likeAnswerById(@PathVariable String answerId,
+    public JsonResponse<String> likeAnswerById(@PathVariable Long answerId,
                                                @RequestParam boolean like,
                                                @RequestParam boolean set) {
         if (like)
@@ -57,7 +57,7 @@ public class AnswerController {
 
     /* Bug found here: fk dependency on reply_id, comment */
     @RequestMapping(value = "/{answerId}", method = RequestMethod.DELETE)
-    public JsonResponse<String> deleteAnswerById(@PathVariable String answerId) {
+    public JsonResponse<String> deleteAnswerById(@PathVariable Long answerId) {
         answerService.deleteAnswerById(answerId);
         return new JsonResponse<>(null);
     }

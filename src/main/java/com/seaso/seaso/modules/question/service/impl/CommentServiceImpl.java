@@ -30,13 +30,13 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment findByCommentId(String commentId) {
+    public Comment findByCommentId(Long commentId) {
         return commentRepository.findByCommentId(commentId).orElseThrow(CommentNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findByAnswerId(String answerId, int page, int size, Sort sort) {
+    public List<Comment> findByAnswerId(Long answerId, int page, int size, Sort sort) {
         answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
         Pageable pageable = PageRequest.of(page, size, sort);
         return commentRepository.findByAnswerId(answerId, pageable).getContent();
@@ -44,7 +44,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findByAnswerIdAndReplyId(String answerId, String replyId, int page, int size, Sort sort) {
+    public List<Comment> findByAnswerIdAndReplyId(Long answerId, Long replyId, int page, int size, Sort sort) {
         answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
         commentRepository.findByCommentId(replyId).orElseThrow(CommentNotFoundException::new);
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -53,7 +53,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional
-    public void deleteByCommentId(String commentId) {
+    public void deleteByCommentId(Long commentId) {
         commentRepository.findByCommentId(commentId).orElseThrow(CommentNotFoundException::new);
         commentRepository.deleteAllByReplyId(commentId);
         commentRepository.deleteByCommentId(commentId);
