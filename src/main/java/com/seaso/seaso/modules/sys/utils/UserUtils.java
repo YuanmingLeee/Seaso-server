@@ -40,7 +40,13 @@ public class UserUtils {
     }
 
     public static String getUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal;
+
+        try {
+            principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (NullPointerException e) {
+            principal = new Principal("Guest", null);
+        }
 
         String username;
 

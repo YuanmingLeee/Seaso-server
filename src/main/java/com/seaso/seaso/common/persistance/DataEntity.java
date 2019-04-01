@@ -38,6 +38,7 @@ public abstract class DataEntity<T> implements Serializable {
     protected DataEntity() {
     }
 
+    @PrePersist
     public void preInsert() {
         String userId = UserUtils.getUsername();
         setDataId();
@@ -45,6 +46,7 @@ public abstract class DataEntity<T> implements Serializable {
         this.updateDate = this.createDate = new Date();
     }
 
+    @PreUpdate
     public void preUpdate() {
         this.updater = UserUtils.getUsername();
         this.updateDate = new Date();
@@ -65,8 +67,6 @@ public abstract class DataEntity<T> implements Serializable {
 
     protected void setDataId() {
     }
-
-    ;
 
     @JsonIgnore
     public Long getId() {

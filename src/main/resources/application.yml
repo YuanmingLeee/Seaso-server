@@ -31,3 +31,4 @@ logging:
 idgen:
   machine-id: 0
   data-center-id: 0
+  cache: 1024
