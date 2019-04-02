@@ -22,10 +22,10 @@ public abstract class DataEntity<T> implements Serializable {
     private Long id;
 
     @Column(nullable = false, length = 32)
-    private String creator;
+    private Long creator;
 
     @Column(nullable = false, length = 32)
-    private String updater;
+    private Long updater;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -40,7 +40,7 @@ public abstract class DataEntity<T> implements Serializable {
 
     @PrePersist
     public void preInsert() {
-        String userId = UserUtils.getUsername();
+        Long userId = UserUtils.getCurrentUserId();
         setDataId();
         this.updater = this.creator = userId;
         this.updateDate = this.createDate = new Date();
@@ -48,7 +48,7 @@ public abstract class DataEntity<T> implements Serializable {
 
     @PreUpdate
     public void preUpdate() {
-        this.updater = UserUtils.getUsername();
+        this.updater = UserUtils.getCurrentUserId();
         this.updateDate = new Date();
     }
 
@@ -77,20 +77,20 @@ public abstract class DataEntity<T> implements Serializable {
         this.id = id;
     }
 
-    public String getCreator() {
+    public Long getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    public void setCreator(Long creator) {
         this.creator = creator;
     }
 
     @JsonIgnore
-    public String getUpdater() {
+    public Long getUpdater() {
         return updater;
     }
 
-    public void setUpdater(String updater) {
+    public void setUpdater(Long updater) {
         this.updater = updater;
     }
 
