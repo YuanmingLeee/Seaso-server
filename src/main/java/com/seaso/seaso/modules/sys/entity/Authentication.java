@@ -14,9 +14,12 @@ import javax.persistence.*;
  * @version 0.1
  */
 @Entity
-@Table(name = "user_auth",
+@Table(name = "sys_auth",
         indexes = {@Index(name = "user_auth_identifier_unidex", columnList = "identifier", unique = true)})
 public class Authentication extends DataEntity<Authentication> {
+
+    @Transient
+    private static final long serialVersionUID = 591050349135349779L;
 
     /**
      * Authentication method
@@ -35,6 +38,10 @@ public class Authentication extends DataEntity<Authentication> {
      */
     @Column(nullable = false)
     private String credential;
+
+    @ManyToOne
+    @JoinColumn(name = "userId", referencedColumnName = "userId", unique = true, nullable = false, updatable = false)
+    private SystemUser systemUser;
 
     /**
      * Default constructor
@@ -65,5 +72,13 @@ public class Authentication extends DataEntity<Authentication> {
 
     public void setCredential(String credential) {
         this.credential = credential;
+    }
+
+    public SystemUser getSystemUser() {
+        return systemUser;
+    }
+
+    public void setSystemUser(SystemUser systemUser) {
+        this.systemUser = systemUser;
     }
 }

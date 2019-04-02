@@ -1,6 +1,6 @@
 package com.seaso.seaso.modules.sys.service.impl;
 
-import com.seaso.seaso.modules.sys.dao.UserAuthRepository;
+import com.seaso.seaso.modules.sys.dao.AuthenticationRepository;
 import com.seaso.seaso.modules.sys.entity.Authentication;
 import com.seaso.seaso.modules.sys.service.AuthenticationService;
 import com.seaso.seaso.modules.sys.utils.AuthenticationType;
@@ -11,11 +11,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
-    private final UserAuthRepository userAuthRepository;
+    private final AuthenticationRepository authenticationRepository;
 
     @Autowired
-    public AuthenticationServiceImpl(UserAuthRepository userAuthRepository) {
-        this.userAuthRepository = userAuthRepository;
+    public AuthenticationServiceImpl(AuthenticationRepository authenticationRepository) {
+        this.authenticationRepository = authenticationRepository;
     }
 
     @Override
@@ -24,7 +24,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             String password = UserUtils.encryptByBCrypt(authentication.getCredential());
             authentication.setCredential(password);
         }
-        userAuthRepository.save(authentication);
+        authenticationRepository.save(authentication);
     }
 
     @Override
@@ -34,6 +34,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
     @Override
     public void deleteUserAuthByIdentifier(String identifier) {
-        userAuthRepository.deleteByIdentifier(identifier);
+        authenticationRepository.deleteByIdentifier(identifier);
     }
 }

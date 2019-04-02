@@ -1,6 +1,7 @@
 package com.seaso.seaso.modules.sys.web;
 
 import com.seaso.seaso.modules.sys.entity.User;
+import com.seaso.seaso.modules.sys.service.SystemService;
 import com.seaso.seaso.modules.sys.service.UserService;
 import com.seaso.seaso.modules.sys.utils.JsonResponse;
 import io.swagger.annotations.ApiOperation;
@@ -17,23 +18,27 @@ public class UserController {
 
     private final UserService userService;
 
+    private final SystemService systemService;
+
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, SystemService systemService) {
         this.userService = userService;
+        this.systemService = systemService;
     }
 
     @ApiOperation(value = "Get sys list")
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public JsonResponse<List<User>> getUserList(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                @RequestParam(value = "size", defaultValue = "10") int size,
+    public JsonResponse<List<User>> getUserList(@RequestParam(defaultValue = "0") int page,
+                                                @RequestParam(defaultValue = "10") int size,
                                                 @RequestParam(value = "sort_by", defaultValue = "userId") String itemName) {
         List<User> users = userService.findAllUsers(page, size, Sort.by(itemName).descending());
         return new JsonResponse<>(users);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public JsonResponse<String> createUser(@ModelAttribute User user) {
-        userService.createUser(user);
+    public JsonResponse<String> createUser(@RequestParam String username,
+                                           @RequestParam String password) {
+        systemService.createUser(username, password);
         return new JsonResponse<>(HttpStatus.CREATED, "success", null);
     }
 
@@ -50,9 +55,9 @@ public class UserController {
         return new JsonResponse<>("");
     }
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.DELETE)
-    public JsonResponse<String> deleteUser(@PathVariable String username) {
-        userService.deleteUser(username);
+    @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    public JsonResponse<String> deleteUser(@PathVariable String userId) {
+        systemService.deleteUserByUserId(userId);
         return new JsonResponse<>("");
     }
 

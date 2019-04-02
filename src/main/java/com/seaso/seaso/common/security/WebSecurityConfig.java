@@ -1,6 +1,6 @@
 package com.seaso.seaso.common.security;
 
-import com.seaso.seaso.modules.sys.service.AuthenticationService;
+import com.seaso.seaso.modules.sys.service.SystemService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,13 +17,13 @@ import org.springframework.security.web.authentication.www.BasicAuthenticationFi
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final AuthenticationService authenticationService;
+    private final SystemService systemService;
 
     private final MyBasicAuthenticationEntryPoint authenticationEntryPoint;
 
     @Autowired
-    public WebSecurityConfig(AuthenticationService authenticationService, MyBasicAuthenticationEntryPoint authenticationEntryPoint) {
-        this.authenticationService = authenticationService;
+    public WebSecurityConfig(SystemService systemService, MyBasicAuthenticationEntryPoint authenticationEntryPoint) {
+        this.systemService = systemService;
         this.authenticationEntryPoint = authenticationEntryPoint;
     }
 
@@ -45,7 +45,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public DaoAuthenticationProvider daoAuthenticationProvider() {
         DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(authenticationService);
+        authProvider.setUserDetailsService(systemService);
         authProvider.setPasswordEncoder(encoder());
         return authProvider;
     }

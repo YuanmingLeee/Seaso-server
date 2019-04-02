@@ -2,7 +2,7 @@ package com.seaso.seaso.modules.sys.service.impl;
 
 import com.seaso.seaso.common.exception.ResourceConflictException;
 import com.seaso.seaso.common.exception.ResourceNotFoundException;
-import com.seaso.seaso.modules.sys.dao.UserAuthRepository;
+import com.seaso.seaso.modules.sys.dao.AuthenticationRepository;
 import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.UserService;
@@ -20,15 +20,14 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private final UserAuthRepository userAuthRepository;
+    private final AuthenticationRepository authenticationRepository;
 
     @Autowired
-    public UserServiceImpl(UserRepository userRepository, UserAuthRepository userAuthRepository) {
+    public UserServiceImpl(UserRepository userRepository, AuthenticationRepository authenticationRepository) {
         this.userRepository = userRepository;
-        this.userAuthRepository = userAuthRepository;
+        this.authenticationRepository = authenticationRepository;
     }
 
-    @Override
     @Transactional
     public void createUser(User user) {
         user.preInsert();
@@ -64,11 +63,9 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll(pageable).getContent();
     }
 
-    @Override
     @Transactional
     public void deleteUser(String username) {
         User user = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
         userRepository.deleteByUsername(username);
-        userAuthRepository.deleteByUser_UserId(user.getUserId());
     }
 }

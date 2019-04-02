@@ -3,7 +3,6 @@ package com.seaso.seaso.modules.sys.utils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +27,7 @@ public class UserUtils {
     /**
      * Constructor of UserUtils with {@link PasswordEncoder}
      *
-     * @param encoder   specific password encoder
+     * @param encoder specific password encoder
      */
     @Autowired
     public UserUtils(PasswordEncoder encoder) {
@@ -39,23 +38,25 @@ public class UserUtils {
         return encoder.encode(plainPassword);
     }
 
-    public static String getUsername() {
+    public static long getCurrentUserId() {
         Object principal;
 
         try {
             principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (NullPointerException e) {
-            principal = new Principal("Guest", null);
+            principal = new Principal(-1, "Guest", null);
         }
 
-        String username;
+        long userId;
 
-        if (principal instanceof Principal)
-            username = ((UserDetails) principal).getUsername();
-        else
-            username = principal.toString();
+        if (principal instanceof Principal) {
+            userId = ((Principal) principal).getUserId();
+        } else {
+            // set user to be the guest
+            userId = -1;
+        }
 
-        return username;
+        return userId;
     }
 
     /**

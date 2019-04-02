@@ -7,15 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 
 import java.util.Optional;
 
-public interface UserAuthRepository extends JpaRepository<Authentication, String> {
+public interface AuthenticationRepository extends JpaRepository<Authentication, String> {
 
     Optional<Authentication> findByIdentifier(String identifier);
 
     @Modifying
     @Query("update Authentication u set u.credential = ?1 where u.identifier = ?2")
     int updatePasswordByIdentifier(String password, String id);
-
-    void deleteByUser_UserId(Long userId);
 
     void deleteByIdentifier(String identifier);
 }

@@ -6,7 +6,6 @@ import org.springframework.data.domain.Sort;
 import java.util.List;
 
 public interface UserService {
-    void createUser(User user);
 
     void updateByUsername(User user, String username);
 
@@ -15,6 +14,4 @@ public interface UserService {
     User findUserByUsername(String username);
 
     List<User> findAllUsers(int page, int size, Sort sort);
-
-    void deleteUser(String username);
 }
