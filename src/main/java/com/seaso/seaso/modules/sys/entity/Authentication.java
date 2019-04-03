@@ -1,7 +1,9 @@
 package com.seaso.seaso.modules.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.modules.sys.utils.AuthenticationType;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -39,8 +41,10 @@ public class Authentication extends DataEntity<Authentication> {
     @Column(nullable = false)
     private String credential;
 
-    @ManyToOne
-    @JoinColumn(name = "userId", referencedColumnName = "userId", unique = true, nullable = false, updatable = false)
+    @JsonIgnore
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "sys_user_auth_user_id_sys_user_user_id_fk"))
     private SystemUser systemUser;
 
     /**
@@ -48,6 +52,19 @@ public class Authentication extends DataEntity<Authentication> {
      */
     public Authentication() {
         super();
+    }
+
+    @Override
+    public void preInsert() {
+        credential = UserUtils.encryptByBCrypt(credential);
+        super.preInsert();
+    }
+
+    @Override
+    public void preUpdate() {
+        if (!credential.startsWith("$2a$"))
+            credential = UserUtils.encryptByBCrypt(credential);
+        super.preUpdate();
     }
 
     public AuthenticationType getAuthenticationType() {

@@ -18,14 +18,24 @@ public class SystemUser extends DataEntity<SystemUser> {
     @JoinColumn(name = "userId", referencedColumnName = "userId", unique = true, nullable = false)
     private User user;
 
-    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "systemUser")
+    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "systemUser", orphanRemoval = true)
     private List<Authentication> authentications;
 
-    @OneToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH}, mappedBy = "systemUser")
+    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH}, fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "sys_user_role",
+            joinColumns = {
+                    @JoinColumn(name = "userId", unique = true, nullable = false)
+            },
+            inverseJoinColumns = {
+                    @JoinColumn(name = "roleId", unique = true, nullable = false)
+            }
+    )
     private List<Role> roles;
 
     public SystemUser() {
         super();
+        authentications = new ArrayList<>();
         roles = new ArrayList<>();
     }
 

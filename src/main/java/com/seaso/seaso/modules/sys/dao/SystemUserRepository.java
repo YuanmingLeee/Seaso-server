@@ -9,5 +9,4 @@ public interface SystemUserRepository extends JpaRepository<SystemUser, Long> {
 
     Optional<SystemUser> findByUser_Username(String username);
 
-    void deleteByUser_UserId(Long userId);
 }

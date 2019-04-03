@@ -6,7 +6,7 @@ import com.seaso.seaso.common.utils.idgen.IdGen;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "t_user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
+@Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
     private static final long serialVersionUID = 912182812071648668L;
