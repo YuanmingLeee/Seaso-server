@@ -2,6 +2,7 @@ package com.seaso.seaso.modules.sys.utils;
 
 import com.seaso.seaso.modules.sys.dao.RoleRepository;
 import com.seaso.seaso.modules.sys.entity.Role;
+import com.seaso.seaso.modules.sys.entity.SystemUser;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -46,18 +47,17 @@ public class UserUtils {
     }
 
     public static long getCurrentUserId() {
-        Object principal;
+        Object principal = null;
 
         try {
             principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        } catch (NullPointerException e) {
-            principal = new Principal(-1, "Guest", null);
+        } catch (NullPointerException ignored) {
         }
 
         long userId;
 
-        if (principal instanceof Principal) {
-            userId = ((Principal) principal).getUserId();
+        if (principal instanceof SystemUser) {
+            userId = ((SystemUser) principal).getUserId();
         } else {
             // set user to be the guest
             userId = -1;

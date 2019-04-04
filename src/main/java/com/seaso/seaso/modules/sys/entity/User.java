@@ -4,11 +4,13 @@ import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
+import java.util.function.Consumer;
 
 @Entity
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
+    @Transient
     private static final long serialVersionUID = 912182812071648668L;
 
     @Column(nullable = false, length = 64)
@@ -42,6 +44,26 @@ public class User extends DataEntity<User> {
 
     public User() {
         super();
+    }
+
+    private User(String username, Integer age) {
+        super();
+        this.username = username;
+        this.age = age;
+    }
+
+    public static class UserBuilder {
+        public String username;
+        public Integer age;
+
+        public UserBuilder with(Consumer<UserBuilder> build) {
+            build.accept(this);
+            return this;
+        }
+
+        public User build() {
+            return new User(username, age);
+        }
     }
 
     @Override

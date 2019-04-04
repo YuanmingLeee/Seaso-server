@@ -56,7 +56,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
-    public JsonResponse<String> deleteUser(@PathVariable String userId) {
+    public JsonResponse<String> deleteUser(@PathVariable Long userId) {
         systemService.deleteUserByUserId(userId);
         return new JsonResponse<>("");
     }

@@ -6,6 +6,7 @@ import com.seaso.seaso.modules.sys.utils.AuthenticationType;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
+import java.util.function.Consumer;
 
 /**
  * User authentication Entity class is mapped to USER_AUTH table which is responsible for sys authentication.
@@ -42,9 +43,9 @@ public class Authentication extends DataEntity<Authentication> {
     private String credential;
 
     @JsonIgnore
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "userId", referencedColumnName = "userId", nullable = false, updatable = false,
-            foreignKey = @ForeignKey(name = "sys_user_auth_user_id_sys_user_user_id_fk"))
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "userId", nullable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "sys_user_auth_user_id_sys_user_id_fk"))
     private SystemUser systemUser;
 
     /**
@@ -54,17 +55,48 @@ public class Authentication extends DataEntity<Authentication> {
         super();
     }
 
+    private Authentication(String identifier, String credential, AuthenticationType authenticationType,
+                           SystemUser systemUser) {
+        this();
+        this.identifier = identifier;
+        this.credential = credential;
+        this.authenticationType = authenticationType;
+        this.systemUser = systemUser;
+    }
+
+    /**
+     * Override of the pre-insert method for plain credential encryption.
+     */
     @Override
     public void preInsert() {
         credential = UserUtils.encryptByBCrypt(credential);
         super.preInsert();
     }
 
+    /**
+     * Override of the pre-update method for plain updated credential encryption.
+     */
     @Override
     public void preUpdate() {
-        if (!credential.startsWith("$2a$"))
+        if (!credential.startsWith("$2a$"))    // not BCrypted
             credential = UserUtils.encryptByBCrypt(credential);
         super.preUpdate();
+    }
+
+    public static class AuthenticationBuilder {
+        public String identifier;
+        public String credential;
+        public AuthenticationType authenticationType;
+        public SystemUser systemUser;
+
+        public AuthenticationBuilder with(Consumer<AuthenticationBuilder> build) {
+            build.accept(this);
+            return this;
+        }
+
+        public Authentication build() {
+            return new Authentication(identifier, credential, authenticationType, systemUser);
+        }
     }
 
     public AuthenticationType getAuthenticationType() {
