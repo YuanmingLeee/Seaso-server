@@ -13,7 +13,7 @@ public class User extends DataEntity<User> {
     @Transient
     private static final long serialVersionUID = 912182812071648668L;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, updatable = false, length = 64)
     private Long userId;
 
     @Column(length = 2)

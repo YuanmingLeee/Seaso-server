@@ -9,3 +9,7 @@ spring:
       period: 0
   jpa:
     show-sql: true
+logging:
+  level.org.hibernate:
+    SQL: DEBUG
+    type.descriptor.sql.BasicBinder: TRACE

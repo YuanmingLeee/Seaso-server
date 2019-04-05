@@ -17,6 +17,9 @@ public abstract class DataEntity<T> implements Serializable {
     @Transient
     private static final long serialVersionUID = 1735325270419412291L;
 
+    @Transient
+    private boolean isNewRecord = true;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -40,16 +43,24 @@ public abstract class DataEntity<T> implements Serializable {
 
     @PrePersist
     public void preInsert() {
-        Long userId = UserUtils.getCurrentUserId();
-        setDataId();
-        this.updater = this.creator = userId;
-        this.updateDate = this.createDate = new Date();
+        if (isNewRecord) {
+            Long userId = UserUtils.getCurrentUserId();
+            setDataId();
+            this.updater = this.creator = userId;
+            this.updateDate = this.createDate = new Date();
+            isNewRecord = false;
+        }
     }
 
     @PreUpdate
     public void preUpdate() {
         this.updater = UserUtils.getCurrentUserId();
         this.updateDate = new Date();
+    }
+
+    @PostLoad
+    public void postLoad() {
+        isNewRecord = false;
     }
 
     public void merge(T obj) throws ServiceException {

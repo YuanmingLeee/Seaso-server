@@ -7,13 +7,12 @@ import com.seaso.seaso.modules.sys.dao.UserRepository;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -58,9 +57,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<User> findAllUsers(int page, int size, Sort sort) {
+    public Page<User> findAllUsers(int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
-        return userRepository.findAll(pageable).getContent();
+        return userRepository.findAll(pageable);
     }
 
     @Transactional

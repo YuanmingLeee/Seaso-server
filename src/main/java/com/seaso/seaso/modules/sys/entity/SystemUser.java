@@ -1,7 +1,6 @@
 package com.seaso.seaso.modules.sys.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.google.common.collect.Lists;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.modules.sys.utils.AuthenticationType;
 import org.hibernate.annotations.LazyCollection;
@@ -11,7 +10,9 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -44,33 +45,34 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
     private User user;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @OneToMany(cascade = {CascadeType.REMOVE}, mappedBy = "systemUser", orphanRemoval = true)
+    @OneToMany(cascade = {CascadeType.REFRESH, CascadeType.REMOVE}, mappedBy = "systemUser", orphanRemoval = true)
     private List<Authentication> authentications;
 
     @LazyCollection(LazyCollectionOption.FALSE)
-    @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.REFRESH, CascadeType.DETACH})
     @JoinTable(
             name = "sys_user_role",
+            uniqueConstraints = @UniqueConstraint(columnNames = {"userId", "roleId"}),
             joinColumns = {
-                    @JoinColumn(name = "userId", unique = true, nullable = false)
+                    @JoinColumn(name = "userId", nullable = false,
+                            foreignKey = @ForeignKey(name = "sys_user_role_sys_user_id_fk"))
             },
             inverseJoinColumns = {
-                    @JoinColumn(name = "roleId", unique = true, nullable = false)
+                    @JoinColumn(name = "roleId", nullable = false,
+                            foreignKey = @ForeignKey(name = "sys_user_role_sys_role_id_fk"))
             }
     )
     private List<Role> roles;
 
     public SystemUser() {
         super();
-        authentications = Lists.newArrayList();
-        roles = Lists.newArrayList();
     }
 
     private SystemUser(User user, List<Authentication> authentications, List<Role> roles) {
-        this();
+        super();
         this.user = user;
-        this.authentications.addAll(authentications);
-        this.roles.addAll(roles);
+        this.authentications = authentications;
+        this.roles = roles;
     }
 
     public Long getUserId() {
@@ -109,7 +111,7 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return roles;
+        return Optional.ofNullable(roles).orElse(Collections.emptyList());
     }
 
     public User getUser() {
@@ -139,9 +141,10 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
     /**
      * Post load method called by JPA. This method caches username, user ID and password.
      */
+    @Override
     @PostLoad
-    public void _postLoad() {
-
+    public void postLoad() {
+        super.postLoad();
         if (password != null && username != null && userId != null) {    // already cached
             return;
         }

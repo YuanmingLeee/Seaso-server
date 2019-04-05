@@ -1,9 +1,8 @@
 package com.seaso.seaso.modules.sys.service;
 
 import com.seaso.seaso.modules.sys.entity.User;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
-
-import java.util.List;
 
 public interface UserService {
 
@@ -13,5 +12,5 @@ public interface UserService {
 
     User findUserByUsername(String username);
 
-    List<User> findAllUsers(int page, int size, Sort sort);
+    Page<User> findAllUsers(int page, int size, Sort sort);
 }

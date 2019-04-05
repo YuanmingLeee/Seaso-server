@@ -48,7 +48,7 @@ create table test.question
   question_id bigint       not null,
   title       varchar(40)  null,
   views       bigint       null,
-  constraint UK_488pr2mfs6ye2bjlwf0pbcynf
+  constraint question_question_id_uindex
     unique (question_id)
 );
 
@@ -93,7 +93,7 @@ create table test.sys_user
   user_id     bigint   not null,
   constraint UK_onpujjcyjmvs0121ehqanl2kq
     unique (user_id),
-  constraint FKlr3bpgs4b9sodg2y0axap3gs4
+  constraint FKsct63i6ksinu8c2dv7fh4nff4
     foreign key (user_id) references test.user (user_id)
 );
 
@@ -109,10 +109,10 @@ create table test.sys_auth
   credential          varchar(255) not null,
   identifier          varchar(255) not null,
   user_id             bigint       not null,
-  constraint user_auth_identifier_unidex
+  constraint UK_2ps4cm81b5drtp4qgkxrbs3dx
     unique (identifier),
-  constraint sys_user_auth_user_id_sys_user_user_id_fk
-    foreign key (user_id) references test.sys_user (user_id)
+  constraint sys_user_auth_user_id_sys_user_id_fk
+    foreign key (user_id) references test.sys_user (id)
 );
 
 create table test.sys_user_role
@@ -123,21 +123,9 @@ create table test.sys_user_role
     unique (user_id),
   constraint UK_fxu3td9m5o7qov1kbdvmn0g0x
     unique (role_id),
-  constraint FKb40xxfch70f5qnyfw8yme1n1s
-    foreign key (user_id) references test.sys_user (id),
-  constraint FKhh52n8vd4ny9ff4x9fb8v65qx
-    foreign key (role_id) references test.sys_role (id)
-);
-
-create table test.user_authentication
-(
-  id                        bigint auto_increment
-    primary key,
-  authentication_identifier varchar(255) null,
-  user_id                   bigint       null,
-  constraint user_authen_authen_identifier_fk
-    foreign key (authentication_identifier) references test.sys_auth (identifier),
-  constraint user_authen_user_user_id_fk
-    foreign key (user_id) references test.user (user_id)
+  constraint sys_user_role_sys_role_id_fk
+    foreign key (role_id) references test.sys_role (id),
+  constraint sys_user_role_sys_user_id_fk
+    foreign key (user_id) references test.sys_user (id)
 );
 

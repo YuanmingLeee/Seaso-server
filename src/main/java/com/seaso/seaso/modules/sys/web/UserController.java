@@ -6,11 +6,11 @@ import com.seaso.seaso.modules.sys.service.UserService;
 import com.seaso.seaso.modules.sys.utils.JsonResponse;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/users")
@@ -28,14 +28,15 @@ public class UserController {
 
     @ApiOperation(value = "Get sys list")
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public JsonResponse<List<User>> getUserList(@RequestParam(defaultValue = "0") int page,
+    public JsonResponse<Page<User>> getUserList(@RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "10") int size,
                                                 @RequestParam(value = "sort_by", defaultValue = "userId") String itemName) {
-        List<User> users = userService.findAllUsers(page, size, Sort.by(itemName).descending());
+        Page<User> users = userService.findAllUsers(page, size, Sort.by(itemName).descending());
         return new JsonResponse<>(users);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
+    @Secured("ADMIN")
     public JsonResponse<String> createUser(@RequestParam String username,
                                            @RequestParam String password) {
         systemService.createUser(username, password);
@@ -49,6 +50,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{username}", method = RequestMethod.PATCH)
+    @Secured("ADMIN")
     public JsonResponse<String> updateUser(@PathVariable String username,
                                            @ModelAttribute User user) {
         userService.updateByUsername(user, username);
@@ -56,6 +58,7 @@ public class UserController {
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
+    @Secured("ADMIN")
     public JsonResponse<String> deleteUser(@PathVariable Long userId) {
         systemService.deleteUserByUserId(userId);
         return new JsonResponse<>("");
