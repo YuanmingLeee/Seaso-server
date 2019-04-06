@@ -4,6 +4,7 @@ import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.SystemService;
 import com.seaso.seaso.modules.sys.service.UserService;
 import com.seaso.seaso.modules.sys.utils.JsonResponse;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -26,13 +27,25 @@ public class UserController {
         this.systemService = systemService;
     }
 
-    @ApiOperation(value = "Get sys list")
+    @ApiOperation(value = "Get user list")
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public JsonResponse<Page<User>> getUserList(@RequestParam(defaultValue = "0") int page,
                                                 @RequestParam(defaultValue = "10") int size,
                                                 @RequestParam(value = "sort_by", defaultValue = "userId") String itemName) {
         Page<User> users = userService.findAllUsers(page, size, Sort.by(itemName).descending());
         return new JsonResponse<>(users);
+    }
+
+    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
+    public JsonResponse<User> getUser(@PathVariable String username) {
+        User user = userService.findUserByUsername(username);
+        return new JsonResponse<>(user);
+    }
+
+    @RequestMapping(value = "/", method = RequestMethod.PATCH)
+    public JsonResponse<User> updateUser(@ModelAttribute User user) {
+        userService.updateByUserId(UserUtils.getCurrentUserId(), user);
+        return new JsonResponse<>(user);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
@@ -43,18 +56,12 @@ public class UserController {
         return new JsonResponse<>(HttpStatus.CREATED, "success", null);
     }
 
-    @RequestMapping(value = "/{username}", method = RequestMethod.GET)
-    public JsonResponse<User> getUser(@PathVariable String username) {
-        User user = userService.findUserByUsername(username);
-        return new JsonResponse<>(user);
-    }
-
     @RequestMapping(value = "/{username}", method = RequestMethod.PATCH)
     @Secured("ADMIN")
     public JsonResponse<String> updateUser(@PathVariable String username,
                                            @ModelAttribute User user) {
-        userService.updateByUsername(user, username);
-        return new JsonResponse<>("");
+        userService.updateByUsername(username, user);
+        return new JsonResponse<>(null);
     }
 
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)

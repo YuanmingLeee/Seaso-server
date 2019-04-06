@@ -6,7 +6,9 @@ import org.springframework.data.domain.Sort;
 
 public interface UserService {
 
-    void updateByUsername(User user, String username);
+    void updateByUsername(String username, User user);
+
+    void updateByUserId(Long userId, User user);
 
     User findUserByUserId(Long userId);
 
