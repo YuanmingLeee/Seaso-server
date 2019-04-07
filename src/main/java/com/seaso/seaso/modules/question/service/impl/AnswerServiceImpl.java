@@ -45,7 +45,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public void createAnswer(Answer answer) {
         questionRepository.findByQuestionId(answer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
-        answer.preInsert();
         answerRepository.save(answer);
     }
 
@@ -54,7 +53,7 @@ public class AnswerServiceImpl implements AnswerService {
     public List<Answer> getAnswersByQuestionId(Long questionId, int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         List<Answer> answers = answerRepository.findByQuestionId(questionId, pageable).getContent();
-        User user = userRepository.findByUsername(UserUtils.getUsername()).orElse(new User());
+        User user = userRepository.findByUserId(UserUtils.getCurrentUserId()).orElse(new User());
 
         // obtain user answer preference maps
         Map<Long, Date> likeMap = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
@@ -73,7 +72,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public void likeAnswerById(Long answerId, boolean set) {
         Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        User user = userRepository.findByUsername(UserUtils.getUsername()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByUserId(UserUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
 
         Map<Long, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyLikes());
 
@@ -96,7 +95,7 @@ public class AnswerServiceImpl implements AnswerService {
     @Transactional
     public void dislikeAnswerById(Long answerId, boolean set) {
         Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        User user = userRepository.findByUsername(UserUtils.getUsername()).orElseThrow(UserNotFoundException::new);
+        User user = userRepository.findByUserId(UserUtils.getCurrentUserId()).orElseThrow(UserNotFoundException::new);
 
         Map<Long, Date> map = UserUtils.decodeUserAnswerPreference(user.getMyDislikes());
 
@@ -119,20 +118,18 @@ public class AnswerServiceImpl implements AnswerService {
     private void preferenceAnswerId(@NotNull Answer answer, @NotNull User user, @NotNull Map<Long, Date> map,
                                     boolean set) {
         Long answerId = answer.getAnswerId();
-        answer.preUpdate();
 
         // update user entity
         if (set)
             map.put(answerId, new Date());
         else
             map.remove(answerId);
-        user.preUpdate();
     }
 
     @Override
     public Answer getAnswerById(Long answerId) {
         Answer answer = answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        User user = userRepository.findByUsername(UserUtils.getUsername()).orElse(new User());
+        User user = userRepository.findByUserId(UserUtils.getCurrentUserId()).orElse(new User());
 
         // obtain user answer preference maps
         Map<Long, Date> likeMap = UserUtils.decodeUserAnswerPreference(user.getMyLikes());

@@ -20,7 +20,7 @@ public class Question extends DataEntity<Question> {
     /**
      * Question id
      */
-    @Column(nullable = false, unique = true, length = 64)
+    @Column(nullable = false, length = 64)
     private Long questionId;
 
     /**

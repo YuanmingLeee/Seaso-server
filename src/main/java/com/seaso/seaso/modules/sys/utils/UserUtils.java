@@ -1,15 +1,18 @@
 package com.seaso.seaso.modules.sys.utils;
 
+import com.seaso.seaso.modules.sys.dao.RoleRepository;
+import com.seaso.seaso.modules.sys.entity.Role;
+import com.seaso.seaso.modules.sys.entity.SystemUser;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -25,31 +28,42 @@ public class UserUtils {
      */
     private final PasswordEncoder _encoder;
 
+    private static List<Role> roles;
+    private final RoleRepository roleRepository;
+
     /**
      * Constructor of UserUtils with {@link PasswordEncoder}
      *
-     * @param encoder   specific password encoder
+     * @param encoder specific password encoder
      */
     @Autowired
-    public UserUtils(PasswordEncoder encoder) {
+    public UserUtils(PasswordEncoder encoder, RoleRepository roleRepository) {
         _encoder = encoder;
+        this.roleRepository = roleRepository;
     }
 
     public static String encryptByBCrypt(@NotNull String plainPassword) {
         return encoder.encode(plainPassword);
     }
 
-    public static String getUsername() {
-        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public static long getCurrentUserId() {
+        Object principal = null;
 
-        String username;
+        try {
+            principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        } catch (NullPointerException ignored) {
+        }
 
-        if (principal instanceof Principal)
-            username = ((UserDetails) principal).getUsername();
-        else
-            username = principal.toString();
+        long userId;
 
-        return username;
+        if (principal instanceof SystemUser) {
+            userId = ((SystemUser) principal).getUserId();
+        } else {
+            // set user to be the guest
+            userId = -1;
+        }
+
+        return userId;
     }
 
     /**
@@ -96,6 +110,10 @@ public class UserUtils {
                 .reduce((x, y) -> x + ";" + y).orElse("");
     }
 
+    public static Role getRole(@NotNull RoleType roleType) {
+        return roles.get(roleType.ordinal());
+    }
+
     /**
      * Method automatically called after the registration of this beans. It copies to static {@link #encoder}
      * field for the use of it in static methods.
@@ -103,5 +121,11 @@ public class UserUtils {
     @PostConstruct
     public void init() {
         encoder = _encoder;
+        _loadRoles();
+    }
+
+    private void _loadRoles() {
+        RoleType[] roleTypes = RoleType.values();
+        roles = roleRepository.findByRoleTypeIn(Arrays.asList(roleTypes));
     }
 }

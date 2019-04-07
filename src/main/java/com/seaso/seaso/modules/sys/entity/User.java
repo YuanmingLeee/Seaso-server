@@ -4,24 +4,23 @@ import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 
 import javax.persistence.*;
+import java.util.function.Consumer;
 
 @Entity
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
 
+    @Transient
     private static final long serialVersionUID = 912182812071648668L;
 
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, updatable = false, length = 64)
     private Long userId;
 
-    @Column(nullable = false, length = 2)
+    @Column(length = 2)
     private Integer age;
 
     @Column(nullable = false, length = 32)
     private String username;
-
-    @Transient
-    private String password;
 
     @Lob
     @Basic(fetch = FetchType.LAZY)
@@ -45,6 +44,26 @@ public class User extends DataEntity<User> {
 
     public User() {
         super();
+    }
+
+    private User(String username, Integer age) {
+        super();
+        this.username = username;
+        this.age = age;
+    }
+
+    public static class UserBuilder {
+        public String username;
+        public Integer age;
+
+        public UserBuilder with(Consumer<UserBuilder> build) {
+            build.accept(this);
+            return this;
+        }
+
+        public User build() {
+            return new User(username, age);
+        }
     }
 
     @Override
@@ -74,14 +93,6 @@ public class User extends DataEntity<User> {
 
     public void setUsername(String username) {
         this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 
     public byte[] getAvatar() {

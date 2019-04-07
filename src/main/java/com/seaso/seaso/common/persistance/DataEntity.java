@@ -9,6 +9,7 @@ import com.seaso.seaso.modules.sys.utils.UserUtils;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Date;
 
 @MappedSuperclass
@@ -17,15 +18,18 @@ public abstract class DataEntity<T> implements Serializable {
     @Transient
     private static final long serialVersionUID = 1735325270419412291L;
 
+    @Transient
+    private boolean isNewRecord = true;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, length = 32)
-    private String creator;
+    private Long creator;
 
     @Column(nullable = false, length = 32)
-    private String updater;
+    private Long updater;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
@@ -38,24 +42,39 @@ public abstract class DataEntity<T> implements Serializable {
     protected DataEntity() {
     }
 
+    @PrePersist
     public void preInsert() {
-        String userId = UserUtils.getUsername();
+        Long userId = UserUtils.getCurrentUserId();
         setDataId();
         this.updater = this.creator = userId;
         this.updateDate = this.createDate = new Date();
+        isNewRecord = false;
     }
 
+    @PreUpdate
     public void preUpdate() {
-        this.updater = UserUtils.getUsername();
+        this.updater = UserUtils.getCurrentUserId();
         this.updateDate = new Date();
     }
 
+    @PostLoad
+    public void postLoad() {
+        isNewRecord = false;
+    }
+
+    /**
+     * Force merge two entities. It overrides all not-null and non-static fields by the passed in object.
+     * {@link ServiceException} will be raised if the passed in object cannot be force merged.
+     *
+     * @param obj the patch object. All of its not null fields will override the message receiver.
+     * @throws ServiceException thrown if two object cannot be force merged.
+     */
     public void merge(T obj) throws ServiceException {
         Field[] fields = obj.getClass().getDeclaredFields();
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (field.get(obj) != null)
+                if (field.get(obj) != null && !Modifier.isStatic(field.getModifiers()))
                     field.set(this, field.get(obj));
             }
         } catch (IllegalAccessException e) {
@@ -63,7 +82,8 @@ public abstract class DataEntity<T> implements Serializable {
         }
     }
 
-    protected abstract void setDataId();
+    protected void setDataId() {
+    }
 
     @JsonIgnore
     public Long getId() {
@@ -74,20 +94,20 @@ public abstract class DataEntity<T> implements Serializable {
         this.id = id;
     }
 
-    public String getCreator() {
+    public Long getCreator() {
         return creator;
     }
 
-    public void setCreator(String creator) {
+    public void setCreator(Long creator) {
         this.creator = creator;
     }
 
     @JsonIgnore
-    public String getUpdater() {
+    public Long getUpdater() {
         return updater;
     }
 
-    public void setUpdater(String updater) {
+    public void setUpdater(Long updater) {
         this.updater = updater;
     }
 

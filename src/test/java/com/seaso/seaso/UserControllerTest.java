@@ -1,7 +1,7 @@
 package com.seaso.seaso;
 
 import com.seaso.seaso.modules.sys.entity.User;
-import com.seaso.seaso.modules.sys.utils.JsonResponse;
+import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,12 +44,12 @@ public class UserControllerTest {
 
         HttpEntity<User> userHttpEntity = new HttpEntity<>(user, headers);
 
-        ResponseEntity<JsonResponse> userResponseEntity = testRestTemplate.postForEntity(baseUri + "/", userHttpEntity,
-                JsonResponse.class);
+        ResponseEntity<JsonResponseBody> userResponseEntity = testRestTemplate.postForEntity(baseUri + "/", userHttpEntity,
+                JsonResponseBody.class);
 
         Assert.assertEquals(200, userResponseEntity.getStatusCodeValue());
         Assert.assertTrue(userResponseEntity.hasBody());
-        JsonResponse json = userResponseEntity.getBody();
+        JsonResponseBody json = userResponseEntity.getBody();
         Assert.assertEquals(200, json.getStatusCode());
     }
 }
