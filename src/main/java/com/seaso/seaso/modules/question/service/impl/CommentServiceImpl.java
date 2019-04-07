@@ -70,7 +70,6 @@ public class CommentServiceImpl implements CommentService {
                 throw new CommentApiIllegalArgumentException(
                         "Answer id is not matched with the replied comment's answer id");
         }
-        comment.preInsert();
         commentRepository.save(comment);
     }
 

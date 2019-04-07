@@ -43,13 +43,11 @@ public abstract class DataEntity<T> implements Serializable {
 
     @PrePersist
     public void preInsert() {
-        if (isNewRecord) {
-            Long userId = UserUtils.getCurrentUserId();
-            setDataId();
-            this.updater = this.creator = userId;
-            this.updateDate = this.createDate = new Date();
-            isNewRecord = false;
-        }
+        Long userId = UserUtils.getCurrentUserId();
+        setDataId();
+        this.updater = this.creator = userId;
+        this.updateDate = this.createDate = new Date();
+        isNewRecord = false;
     }
 
     @PreUpdate

@@ -10,9 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -111,7 +109,7 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Optional.ofNullable(roles).orElse(Collections.emptyList());
+        return roles;
     }
 
     public User getUser() {
@@ -142,7 +140,6 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
      * Post load method called by JPA. This method caches username, user ID and password.
      */
     @Override
-    @PostLoad
     public void postLoad() {
         super.postLoad();
         if (password != null && username != null && userId != null) {    // already cached

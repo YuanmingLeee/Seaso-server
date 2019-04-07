@@ -1,7 +1,6 @@
 package com.seaso.seaso.modules.sys.service.impl;
 
 import com.google.common.collect.Lists;
-import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
 import com.seaso.seaso.common.exception.ResourceNotFoundException;
 import com.seaso.seaso.modules.sys.dao.AuthenticationRepository;
 import com.seaso.seaso.modules.sys.dao.SystemUserRepository;
@@ -79,15 +78,41 @@ public class SystemServiceImpl implements SystemService {
     }
 
     @Override
-    public void updateUser(SystemUser systemUser) {
+    @Transactional
+    public void updateUsernameByUserId(Long userId, String newUsername) {
+        // update user.username, update userAuthentication.identifier
+        SystemUser systemUser = systemUserRepository.findByUser_UserId(userId).orElseThrow(UserNotFoundException::new);
 
+        User user = systemUser.getUser();
+        user.setUsername(newUsername);
+
+        List<Authentication> authentications = systemUser.getAuthentications();
+        Authentication auth = authentications.stream()
+                .filter($ -> $.getAuthenticationType().equals(AuthenticationType.USERNAME))
+                .collect(Collectors.toList())
+                .get(0);
+        auth.setIdentifier(newUsername);
+
+        systemUserRepository.save(systemUser);
+    }
+
+    @Override
+    @Transactional
+    public void updateUserRolesByUserId(Long userId, List<RoleType> roles) {
+        SystemUser systemUser = systemUserRepository.findByUser_UserId(userId)
+                .orElseThrow(UserNotFoundException::new);
+        List<Role> roleEntities = roles.stream()
+                .map(UserUtils::getRole)
+                .collect(Collectors.toList());
+        systemUser.setRoles(roleEntities);
+        systemUserRepository.save(systemUser);
     }
 
     @Override
     @Transactional
     public void deleteUserByUserId(Long userId) {
         SystemUser systemUser = systemUserRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User ID not found")); // TODO: change ID not found to handler?
         systemUserRepository.delete(systemUser);
     }
 
@@ -95,24 +120,12 @@ public class SystemServiceImpl implements SystemService {
     @Transactional
     public void updatePasswordByUserId(Long userId, String password) {
         SystemUser systemUser = systemUserRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User ID not found"));
+                .orElseThrow(() -> new ResourceNotFoundException("User ID not found"));  // TODO: change ID not found to handler?
         List<Authentication> authentications = systemUser.getAuthentications().stream()
                 .filter($ -> $.getAuthenticationType().equals(AuthenticationType.USERNAME))
                 .collect(Collectors.toList());
         Authentication authen = authentications.get(0);
         authen.setCredential(password);
         authenticationRepository.save(authen);
-    }
-
-    @Override
-    @Transactional
-    public void assignRoleByUserId(Long userId, RoleType roleType) {
-        SystemUser systemUser = systemUserRepository.findByUser_UserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User ID not found"));
-        List<Role> roles = systemUser.getRoles();
-        if (roles.stream().map(Role::getRoleType).collect(Collectors.toList()).contains(roleType))
-            throw new ApiIllegalArgumentException("Role type has been set.");
-        roles.add(UserUtils.getRole(roleType));
-        systemUserRepository.save(systemUser);
     }
 }

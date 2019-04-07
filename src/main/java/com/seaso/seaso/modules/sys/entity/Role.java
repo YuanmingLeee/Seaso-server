@@ -16,6 +16,9 @@ public class Role extends DataEntity<Role> implements GrantedAuthority {
     @Transient
     private static final long serialVersionUID = -1835818699458902220L;
 
+    @Transient
+    private static final String rolePrefix = "ROLE_";
+
     @JsonIgnore
     @ManyToMany(cascade = {CascadeType.REMOVE}, fetch = FetchType.LAZY, mappedBy = "roles")
     private List<SystemUser> systemUsers;
@@ -47,6 +50,24 @@ public class Role extends DataEntity<Role> implements GrantedAuthority {
 
     @Override
     public String getAuthority() {
+        return rolePrefix + roleType.name();
+    }
+
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else {
+            return obj instanceof Role && roleType.equals(((Role) obj).roleType);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        return roleType.hashCode();
+    }
+
+    @Override
+    public String toString() {
         return roleType.name();
     }
 }

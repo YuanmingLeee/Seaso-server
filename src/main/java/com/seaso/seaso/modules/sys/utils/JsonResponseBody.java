@@ -6,24 +6,35 @@ import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
-public class JsonResponse<T> {
+public class JsonResponseBody<T> {
 
     @JsonProperty("status_code")
     private int statusCode;
+
     private String message;
+
     private T data;
+
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date timestamp;
 
-    public JsonResponse(HttpStatus status, String message, T data) {
+    public JsonResponseBody(HttpStatus status, String message, T data) {
         timestamp = new Date();
         this.statusCode = status.value();
         this.message = message;
         this.data = data;
     }
 
-    public JsonResponse(T data) {
-        this(HttpStatus.OK, "Success", data);
+    public JsonResponseBody(HttpStatus status, T data) {
+        this(status, "success", data);
+    }
+
+    public JsonResponseBody(HttpStatus status) {
+        this(status, null);
+    }
+
+    public JsonResponseBody() {
+        this(HttpStatus.OK);
     }
 
     public Date getTimestamp() {

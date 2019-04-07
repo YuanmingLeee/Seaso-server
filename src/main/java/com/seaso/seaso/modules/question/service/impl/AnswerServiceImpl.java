@@ -45,7 +45,6 @@ public class AnswerServiceImpl implements AnswerService {
     @Override
     public void createAnswer(Answer answer) {
         questionRepository.findByQuestionId(answer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
-        answer.preInsert();
         answerRepository.save(answer);
     }
 
@@ -119,14 +118,12 @@ public class AnswerServiceImpl implements AnswerService {
     private void preferenceAnswerId(@NotNull Answer answer, @NotNull User user, @NotNull Map<Long, Date> map,
                                     boolean set) {
         Long answerId = answer.getAnswerId();
-        answer.preUpdate();
 
         // update user entity
         if (set)
             map.put(answerId, new Date());
         else
             map.remove(answerId);
-        user.preUpdate();
     }
 
     @Override

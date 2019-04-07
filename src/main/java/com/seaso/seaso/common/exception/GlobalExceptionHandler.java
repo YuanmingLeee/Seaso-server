@@ -1,7 +1,7 @@
 package com.seaso.seaso.common.exception;
 
-import com.seaso.seaso.modules.sys.utils.JsonResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,15 +17,15 @@ public class GlobalExceptionHandler {
     @ResponseBody
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ResourceConflictException.class)
-    public JsonResponse<String> resourceConflict() {
-        return new JsonResponse<>(HttpStatus.BAD_REQUEST, "Resources conflict", "");
+    public ResponseEntity<?> resourceConflict() {
+        return new ResponseEntity<>("Resources conflict", HttpStatus.BAD_REQUEST);
     }
 
     @ResponseBody
     @ResponseStatus(value = HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
-    public JsonResponse<String> resourceNotFound() {
-        return new JsonResponse<>(HttpStatus.NOT_FOUND, "Resources not found", "");
+    public ResponseEntity<?> resourceNotFound() {
+        return new ResponseEntity<>("Resources not found", HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(value = Exception.class)
