@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -101,10 +102,10 @@ public class SystemServiceImpl implements SystemService {
     public void updateUserRolesByUserId(Long userId, List<RoleType> roles) {
         SystemUser systemUser = systemUserRepository.findByUser_UserId(userId)
                 .orElseThrow(UserNotFoundException::new);
-        List<Role> roleEntities = roles.stream()
+        Set<Role> roleEntities = roles.stream()
                 .map(UserUtils::getRole)
-                .collect(Collectors.toList());
-        systemUser.setRoles(roleEntities);
+                .collect(Collectors.toSet());
+        systemUser.setRoles(Lists.newArrayList(roleEntities));
         systemUserRepository.save(systemUser);
     }
 

@@ -45,6 +45,7 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void updateByUsername(String username, User user) {
         User original = userRepository.findByUsername(username).orElseThrow(ResourceNotFoundException::new);
+        user.setId(original.getId());    // to prevent a creation of new user
         original.merge(user);
         userRepository.save(original);
     }
@@ -52,7 +53,9 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public void updateByUserId(Long userId, User user) {
-        user.setUserId(userId);
-        userRepository.save(user);
+        User original = userRepository.findByUserId(userId).orElseThrow(ResourceNotFoundException::new);
+        user.setId(original.getId());    // to prevent a creation of new user
+        original.merge(user);
+        userRepository.save(original);
     }
 }

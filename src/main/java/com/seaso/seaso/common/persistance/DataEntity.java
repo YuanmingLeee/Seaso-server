@@ -9,6 +9,7 @@ import com.seaso.seaso.modules.sys.utils.UserUtils;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Date;
 
 @MappedSuperclass
@@ -61,12 +62,19 @@ public abstract class DataEntity<T> implements Serializable {
         isNewRecord = false;
     }
 
+    /**
+     * Force merge two entities. It overrides all not-null and non-static fields by the passed in object.
+     * {@link ServiceException} will be raised if the passed in object cannot be force merged.
+     *
+     * @param obj the patch object. All of its not null fields will override the message receiver.
+     * @throws ServiceException thrown if two object cannot be force merged.
+     */
     public void merge(T obj) throws ServiceException {
         Field[] fields = obj.getClass().getDeclaredFields();
         try {
             for (Field field : fields) {
                 field.setAccessible(true);
-                if (field.get(obj) != null)
+                if (field.get(obj) != null && !Modifier.isStatic(field.getModifiers()))
                     field.set(this, field.get(obj));
             }
         } catch (IllegalAccessException e) {
