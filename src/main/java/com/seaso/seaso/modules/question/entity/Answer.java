@@ -27,8 +27,10 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Question id which this answer id belongs to
      */
-    @Column(nullable = false, length = 64)
-    private Long questionId;
+    @ManyToOne
+    @JoinColumn(name = "questionId", referencedColumnName = "questionId", nullable = false, updatable = false,
+            foreignKey = @ForeignKey(name = "answer_question_question_id_fk"))
+    private Question question;
 
     /**
      * User like status to the answer
@@ -79,7 +81,7 @@ public class Answer extends DataEntity<Answer> {
 
     @Override
     protected void setDataId() {
-        this.questionId = IdGen.generateId();
+        this.answerId = IdGen.generateId();
     }
 
     public Long getAnswerId() {
@@ -90,12 +92,12 @@ public class Answer extends DataEntity<Answer> {
         this.answerId = answerId;
     }
 
-    public Long getQuestionId() {
-        return questionId;
+    public Question getQuestion() {
+        return question;
     }
 
-    public void setQuestionId(Long questionId) {
-        this.questionId = questionId;
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     public LikeStatus getLikeStatus() {
