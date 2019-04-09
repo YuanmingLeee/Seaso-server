@@ -21,7 +21,7 @@ If you are using an IDE (e.g. IDEA) which integrates Maven, you can skip this pa
 #### Windows User
 Go [here](https://maven.apache.org/download.cgi). Install and add it into path. Detailed installation instruction can be
 found [here](https://maven.apache.org/guides/getting-started/windows-prerequisites.html).
-### Unix User
+#### Unix User
 run
 ```
 sudo apt-get install mvn
@@ -63,4 +63,12 @@ Then run the jar
 java -jar target/seaso-0.0.1-SNAPSHOT.jar
 ```
 If you are running/testing the project under IDEA, your IDE will automatically detect the entrance.   
-On your first run, you have to init database data. Please run `data.sql` under `/db/mysql/` after you startup the server. 
+On your first run, you have to init database data. Please run `data.sql` under `/db/mysql/` after you startup the server.
+
+## Issues
+Here is some issues you may meet during the installation.
+### 1. Color console in Windows
+With the use of log4j2, we are unable to print out a colorful log to the console in Windows platform. However, unix-like
+platforms work fine. It is because DOS environment does not support colors with ANSI escape codes.  
+This could be not user-friendly. You may wish to use a plugin [Grep Console](https://plugins.jetbrains.com/plugin/7125-grep-console)
+for coloring if you are running this server with IDEA IDE.

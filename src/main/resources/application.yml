@@ -24,10 +24,6 @@ spring:
     serialization.indent-output: true
     time-zone: GMT+8
 
-### logging ###
-logging:
-  file: log/spring.log
-
 ### ID generator ###
 idgen:
   machine-id: 0
