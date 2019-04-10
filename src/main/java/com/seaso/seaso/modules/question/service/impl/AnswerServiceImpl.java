@@ -2,11 +2,9 @@ package com.seaso.seaso.modules.question.service.impl;
 
 import com.seaso.seaso.modules.question.dao.AnswerRepository;
 import com.seaso.seaso.modules.question.dao.CommentRepository;
-import com.seaso.seaso.modules.question.dao.QuestionRepository;
 import com.seaso.seaso.modules.question.entity.Answer;
 import com.seaso.seaso.modules.question.exception.AnswerApiIllegalArgumentException;
 import com.seaso.seaso.modules.question.exception.AnswerNotFoundException;
-import com.seaso.seaso.modules.question.exception.QuestionNotFoundException;
 import com.seaso.seaso.modules.question.service.AnswerService;
 import com.seaso.seaso.modules.question.utils.QuestionUtils;
 import com.seaso.seaso.modules.sys.dao.UserRepository;
@@ -30,21 +28,18 @@ public class AnswerServiceImpl implements AnswerService {
 
     private final AnswerRepository answerRepository;
     private final UserRepository userRepository;
-    private final QuestionRepository questionRepository;
     private final CommentRepository commentRepository;
 
     @Autowired
     public AnswerServiceImpl(AnswerRepository answerRepository, UserRepository userRepository,
-                             CommentRepository commentRepository, QuestionRepository questionRepository) {
+                             CommentRepository commentRepository) {
         this.answerRepository = answerRepository;
         this.userRepository = userRepository;
         this.commentRepository = commentRepository;
-        this.questionRepository = questionRepository;
     }
 
     @Override
     public void createAnswer(Answer answer) {
-        questionRepository.findByQuestionId(answer.getQuestionId()).orElseThrow(QuestionNotFoundException::new);
         answerRepository.save(answer);
     }
 
