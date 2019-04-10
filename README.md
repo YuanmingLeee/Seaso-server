@@ -125,8 +125,43 @@ server {
 ...
 ```
 ##### 3. For Tracker node
-If you are configuring a tracker node, the install of the nginx module is optional. See above for installation.  
-After successfully installed, configure  
+If you are configuring a tracker node, the install of the nginx module is optional. However, we recommend you to 
+install nginx as well, as it can be an encapsulation of storage nodes.  
+If the tracker has already installed nginx, no re-installation is needed. Otherwise, please run:
+```bash
+sudo apt-get install nginx
+```
+And add configuration of `nignx.conf` depends on your installation path. An example is below:
+```
+...
+# set group1 cluster
+upstream fdfs_group1 {
+     server <your storage ip>:<storage http port> weight=1 max_fails=2 fail_timeout=30s;
+     # here can have more storage server
+}
+
+server {
+    listen       18080;    # your tracker http port, refer to tracker.conf
+    server_name  localhost;
+
+    #charset koi8-r;
+
+    #access_log  logs/host.access.log  main;
+
+    location / {
+        root   html;
+        index  index.html index.htm;
+    }
+
+    # set group workload balance
+    location /group1/M00 {
+        proxy_next_upstream http_502 http_504 error timeout invalid_header;
+        proxy_pass http://fdfs_group1;
+        expires 30d;
+    }
+}
+...
+```
 
 #### Window User
 Unfortunately, FastDFS does not have a installable windows version. You may want to install a Cygwin virtual 
