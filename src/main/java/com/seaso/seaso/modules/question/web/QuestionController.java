@@ -1,10 +1,19 @@
 package com.seaso.seaso.modules.question.web;
 
+import com.seaso.seaso.modules.question.dao.QuestionRepository;
 import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.question.service.QuestionService;
 import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
+import org.elasticsearch.index.query.QueryBuilders;
+import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
+import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
+import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -40,4 +49,37 @@ public class QuestionController {
         questionService.createQuestion(question);
         return new JsonResponseBody<>();
     }
+
+    private Integer PAGESIZE=10;
+
+
+    @GetMapping("getSearchResultList")
+    public List<Question> getList(Integer pageNumber,String query){
+        if(pageNumber==null) pageNumber = 0;
+        //es搜索默认第一页页码是0
+        SearchQuery searchQuery=getEntitySearchQuery(pageNumber,PAGESIZE,query);
+        Page<Question> questionsPage = QuestionRepository.search(searchQuery);
+        return questionsPage.getContent();
+    }
+
+
+    private SearchQuery getEntitySearchQuery(int pageNumber, int pageSize, String searchContent) {
+        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery()
+                .add(QueryBuilders.matchPhraseQuery("content", searchContent),
+                        ScoreFunctionBuilders.weightFactorFunction(100))
+                //设置权重分 求和模式
+                .scoreMode("sum")
+                //设置权重分最低分
+                .setMinScore(10);
+
+        // 设置分页
+        Pageable pageable = new PageRequest(pageNumber, pageSize);
+        return new NativeSearchQueryBuilder()
+                .withPageable(pageable)
+                .withQuery(functionScoreQueryBuilder).build();
+    }
+
 }
+
+
+

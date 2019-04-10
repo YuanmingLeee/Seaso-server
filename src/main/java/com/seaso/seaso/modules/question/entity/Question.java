@@ -2,6 +2,7 @@ package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 
@@ -14,8 +15,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "question",
         indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
+@Document(indexName = "schema", type = "question")
 public class Question extends DataEntity<Question> {
 
+    @Id
     private static final long serialVersionUID = 8150616186831582842L;
     /**
      * Question id
