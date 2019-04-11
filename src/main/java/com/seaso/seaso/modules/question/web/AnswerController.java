@@ -26,7 +26,7 @@ public class AnswerController {
                                                    @RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size,
                                                    @RequestParam(defaultValue = "likes") String itemName) {
-        Page<Answer> answers = answerService.getAnswersByQuestionId(questionId, page, size,
+        Page<Answer> answers = answerService.findAnswersByQuestionId(questionId, page, size,
                 Sort.by(itemName).descending());
 
         return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, answers), HttpStatus.OK);

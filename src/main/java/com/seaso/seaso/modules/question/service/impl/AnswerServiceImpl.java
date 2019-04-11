@@ -58,7 +58,7 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Answer> getAnswersByQuestionId(Long questionId, int page, int size, Sort sort) {
+    public Page<Answer> findAnswersByQuestionId(Long questionId, int page, int size, Sort sort) {
         Pageable pageable = PageRequest.of(page, size, sort);
         return answerRepository.findByQuestionId(questionId, pageable);
     }

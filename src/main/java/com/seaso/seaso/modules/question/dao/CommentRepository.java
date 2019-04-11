@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.Collection;
 import java.util.Optional;
 
 
@@ -19,6 +20,8 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
     void deleteByCommentId(Long commentId);
 
     void deleteAllByAnswerId(Long answerId);
+
+    void deleteAllByAnswerIdIn(Collection<Long> answerIds);
 
     void deleteAllByReplyId(Long replyId);
 

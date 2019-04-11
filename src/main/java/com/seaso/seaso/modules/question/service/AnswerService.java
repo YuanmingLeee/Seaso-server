@@ -8,7 +8,7 @@ public interface AnswerService {
 
     void createAnswer(Answer answer);
 
-    Page<Answer> getAnswersByQuestionId(Long questionId, int page, int size, Sort sort);
+    Page<Answer> findAnswersByQuestionId(Long questionId, int page, int size, Sort sort);
 
     /**
      * Like or cancel like an answer given answer ID. Exception will be raised if the user set/unset like to an answer
