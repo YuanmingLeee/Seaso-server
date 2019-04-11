@@ -1,15 +1,15 @@
 package com.seaso.seaso.modules.question.utils;
 
-import java.util.Date;
+import com.seaso.seaso.modules.sys.utils.UserPreference;
+
 import java.util.Map;
 
 public class QuestionUtils {
-    public static LikeStatus mapPreferenceMapsToLikeStatus(Long answerId, Map<Long, Date> likeMapper,
-                                                           Map<Long, Date> dislikeMapper) {
-        if (likeMapper.containsKey(answerId))
-            return LikeStatus.LIKE;
-        if (dislikeMapper.containsKey(answerId))
-            return LikeStatus.DISLIKE;
+    public static LikeStatus mapPreferenceMapsToLikeStatus(Long answerId, Map<Long, UserPreference> likeMapper) {
+        UserPreference userPreference = likeMapper.get(answerId);
+        if (userPreference != null) {
+            return userPreference.getPreference() ? LikeStatus.LIKE : LikeStatus.DISLIKE;
+        }
         return LikeStatus.NONE;
     }
 }

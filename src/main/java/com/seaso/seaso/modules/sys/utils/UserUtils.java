@@ -1,8 +1,10 @@
 package com.seaso.seaso.modules.sys.utils;
 
+import com.seaso.seaso.common.utils.encryption.EncryptionUtils;
 import com.seaso.seaso.modules.sys.dao.RoleRepository;
 import com.seaso.seaso.modules.sys.entity.Role;
 import com.seaso.seaso.modules.sys.entity.SystemUser;
+import com.seaso.seaso.modules.sys.entity.User;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -11,10 +13,9 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Optional;
 
 @Component
 public class UserUtils {
@@ -46,68 +47,52 @@ public class UserUtils {
         return encoder.encode(plainPassword);
     }
 
+    /**
+     * Get current authenticated user ID.
+     *
+     * @return User ID or -1 if no user has been authenticated.
+     */
     public static long getCurrentUserId() {
+        return getCurrentSystemUser().map(SystemUser::getUserId).orElse(-1L);
+    }
+
+    /**
+     * Get current authenticated user. A guest will be returned if no user has logged in.
+     *
+     * @return User or a guest instance.
+     */
+    public static User getCurrentUser() {
+        return getCurrentSystemUser().map(SystemUser::getUser).orElse(User.getGuestInstance());
+    }
+
+    /**
+     * Get current authenticated system user. Null will wrapped in Optional and returned if no user has
+     * been authenticated. This method should be used with a control, as not all method need to expose the authentication
+     * and authorization part in the system.
+     *
+     * @return the wrapped {@link SystemUser} or {@code null} by {@link Optional}
+     */
+    private static Optional<SystemUser> getCurrentSystemUser() {
         Object principal = null;
+        SystemUser systemUser = null;
 
         try {
             principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (NullPointerException ignored) {
         }
 
-        long userId;
-
         if (principal instanceof SystemUser) {
-            userId = ((SystemUser) principal).getUserId();
-        } else {
-            // set user to be the guest
-            userId = -1;
+            systemUser = (SystemUser) principal;
         }
-
-        return userId;
+        return Optional.ofNullable(systemUser);
     }
 
-    /**
-     * Parse date {@link String} to {@link Date}
-     *
-     * @param string the date string
-     * @return the phased date object
-     */
-    private static Date parseDateString(String string) {
-        try {
-            return new Date(Long.parseLong(string));
-        } catch (NumberFormatException e) {
-            throw new RuntimeException(e);
-        }
+    public static String encryptUserPreference(@NotNull Map<Long, UserPreference> map) {
+        return EncryptionUtils.encryptString(map);
     }
 
-    /**
-     * Decode preference string in {@link org.springframework.security.core.userdetails.User} to a {@link Map} whose
-     * key is {@link com.seaso.seaso.modules.question.entity.Answer#setAnswerId(Long)} and the value is preference
-     * set Date.
-     *
-     * @param string the encoded preference string
-     * @return a {@link Map}
-     */
-    public static Map<Long, Date> decodeUserAnswerPreference(@NotNull String string) {
-        return Arrays.stream(string.split(";"))
-                .filter(e -> !e.equals(""))
-                .map(e -> Arrays.asList(e.split(",")))
-                .collect(Collectors.toMap(entry -> Long.parseLong(entry.get(0)),
-                        entry -> parseDateString(entry.get(1))));
-    }
-
-    /**
-     * Encode preference to a {@link String}
-     *
-     * @param map the preference map
-     * @return the encoded string
-     * @see #decodeUserAnswerPreference(String)
-     */
-    public static String encodeUserAnswerPreference(@NotNull Map<Long, Date> map) {
-        return map.entrySet().stream()
-                .filter(x -> x.getValue() != null)
-                .map(e -> e.getKey() + "," + e.getValue().getTime())
-                .reduce((x, y) -> x + ";" + y).orElse("");
+    public static Map<Long, UserPreference> decodeUserPreference(String string) {
+        return EncryptionUtils.decodeString(string, UserPreference.class);
     }
 
     public static Role getRole(@NotNull RoleType roleType) {

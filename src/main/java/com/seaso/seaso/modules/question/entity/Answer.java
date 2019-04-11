@@ -3,6 +3,8 @@ package com.seaso.seaso.modules.question.entity;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 import com.seaso.seaso.modules.question.utils.LikeStatus;
+import com.seaso.seaso.modules.question.utils.QuestionUtils;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -27,10 +29,8 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Question id which this answer id belongs to
      */
-    @ManyToOne
-    @JoinColumn(name = "questionId", referencedColumnName = "questionId", nullable = false, updatable = false,
-            foreignKey = @ForeignKey(name = "answer_question_question_id_fk"))
-    private Question question;
+    @Column(nullable = false, updatable = false, length = 64)
+    private Long questionId;
 
     /**
      * User like status to the answer
@@ -92,12 +92,12 @@ public class Answer extends DataEntity<Answer> {
         this.answerId = answerId;
     }
 
-    public Question getQuestion() {
-        return question;
+    public Long getQuestionId() {
+        return questionId;
     }
 
-    public void setQuestion(Question question) {
-        this.question = question;
+    public void setQuestionId(Long questionId) {
+        this.questionId = questionId;
     }
 
     public LikeStatus getLikeStatus() {
@@ -146,5 +146,13 @@ public class Answer extends DataEntity<Answer> {
 
     public void setContent(byte[] content) {
         this.content = content;
+    }
+
+    @Override
+    @PostLoad
+    public void postLoad() {
+        super.postLoad();
+        likeStatus = QuestionUtils.mapPreferenceMapsToLikeStatus(answerId,
+                UserUtils.decodeUserPreference(UserUtils.getCurrentUser().getMyLikes()));
     }
 }

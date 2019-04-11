@@ -1,32 +1,32 @@
 package com.seaso.seaso;
 
+import com.seaso.seaso.modules.sys.utils.UserPreference;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.util.Date;
 import java.util.Map;
 
 public class UserUtilsTest {
     @Test
     public void testUserUtilUserPreference() {
-        String string = "123456,1553832000000;" +
-                "654321,1553842000000";
+        String string = "123456:1553832000000,1;" +
+                "654321:1553842000000,0";
         String string1 = "";
 
-        Map<Long, Date> map = UserUtils.decodeUserAnswerPreference(string);
+        Map<Long, UserPreference> map = UserUtils.decodeUserPreference(string);
         System.out.println(map);
-        Assert.assertEquals(map.toString(), "{123456=Fri Mar 29 12:00:00 SRET 2019, 654321=Fri Mar 29 14:46:40 SRET 2019}");
+        Assert.assertEquals("{123456=1553832000000,1, 654321=1553842000000,0}", map.toString());
 
-        String newString = UserUtils.encodeUserAnswerPreference(map);
+        String newString = UserUtils.encryptUserPreference(map);
         System.out.println(newString);
         Assert.assertEquals(newString, string);
 
-        map = UserUtils.decodeUserAnswerPreference(string1);
+        map = UserUtils.decodeUserPreference(string1);
         System.out.println(map);
         Assert.assertEquals(map.toString(), "{}");
 
-        newString = UserUtils.encodeUserAnswerPreference(map);
+        newString = UserUtils.encryptUserPreference(map);
         System.out.println(newString);
         Assert.assertEquals(newString, "");
     }

@@ -9,5 +9,7 @@ public interface QuestionRepository extends JpaRepository<Question, String> {
 
     Optional<Question> findByQuestionId(Long questionId);
 
+    boolean existsByQuestionId(Long questionId);
+
     void deleteByQuestionId(Long questionId);
 }
