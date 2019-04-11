@@ -139,9 +139,7 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
     /**
      * Post load method called by JPA. This method caches username, user ID and password.
      */
-    @Override
     public void postLoad() {
-        super.postLoad();
         if (password != null && username != null && userId != null) {    // already cached
             return;
         }

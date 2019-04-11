@@ -45,7 +45,7 @@ public class FastDFSManager implements LargeBinaryFileManager {
             storageServer = trackerClient.getStoreStorage(trackerServer);
             trackerUrl = "http://" + trackerServer.getInetSocketAddress().getHostString() + ":" + ClientGlobal.getG_tracker_http_port() + "/";
         } catch (Exception e) {
-            logger.error("FastDFS client init fail.", e);
+            logger.error("FastDFS client init fail.");
         }
     }
 

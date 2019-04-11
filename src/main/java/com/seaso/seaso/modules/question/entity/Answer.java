@@ -1,5 +1,6 @@
 package com.seaso.seaso.modules.question.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 import com.seaso.seaso.modules.question.utils.LikeStatus;
@@ -29,12 +30,14 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Question id which this answer id belongs to
      */
+    @JsonProperty("question_id")
     @Column(nullable = false, updatable = false, length = 64)
     private Long questionId;
 
     /**
      * User like status to the answer
      */
+    @JsonProperty("like_status")
     @Transient
     private LikeStatus likeStatus;
 
@@ -86,10 +89,6 @@ public class Answer extends DataEntity<Answer> {
 
     public Long getAnswerId() {
         return answerId;
-    }
-
-    public void setAnswerId(Long answerId) {
-        this.answerId = answerId;
     }
 
     public Long getQuestionId() {
@@ -148,10 +147,8 @@ public class Answer extends DataEntity<Answer> {
         this.content = content;
     }
 
-    @Override
     @PostLoad
     public void postLoad() {
-        super.postLoad();
         likeStatus = QuestionUtils.mapPreferenceMapsToLikeStatus(answerId,
                 UserUtils.decodeUserPreference(UserUtils.getCurrentUser().getMyLikes()));
     }

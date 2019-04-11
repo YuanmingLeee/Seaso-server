@@ -53,10 +53,10 @@ public abstract class DataEntity<T> implements Serializable {
     @Column(nullable = false)
     protected Date updateDate;
     /**
-     * Flag to mark if the entity is newly created.
+     * Flag to mark if the entity not to be invoked in pre update.
      */
     @Transient
-    private boolean isNewRecord = true;
+    private boolean notPreUpdate;
     /**
      * Primary key for persistence.
      */
@@ -78,7 +78,6 @@ public abstract class DataEntity<T> implements Serializable {
         setDataId();
         this.updater = this.creator = userId;
         this.updateDate = this.createDate = new Date();
-        isNewRecord = false;
     }
 
     /**
@@ -86,13 +85,10 @@ public abstract class DataEntity<T> implements Serializable {
      */
     @PreUpdate
     public void preUpdate() {
+        if (notPreUpdate)
+            return;
         this.updater = UserUtils.getCurrentUserId();
         this.updateDate = new Date();
-    }
-
-    @PostLoad
-    public void postLoad() {
-        isNewRecord = false;
     }
 
     /**
@@ -130,5 +126,9 @@ public abstract class DataEntity<T> implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public void setNotPreUpdate() {
+        this.notPreUpdate = true;
     }
 }

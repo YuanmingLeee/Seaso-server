@@ -49,8 +49,10 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void createAnswer(Answer answer) {
-        if (questionRepository.existsByQuestionId(answer.getQuestionId()))
+        if (questionRepository.existsByQuestionId(answer.getQuestionId())) {
             answerRepository.save(answer);
+            return;
+        }
         throw new ServiceException("Question Id not found");
     }
 
@@ -89,7 +91,7 @@ public class AnswerServiceImpl implements AnswerService {
         long likeVal = answer.getLikes();
 
         if (set && likeStatus == LikeStatus.NONE) {  // set
-            map.get(answerId).setPreference(like);
+            map.put(answerId, new UserPreference(like));
             likeVal += (like ? 1 : -1);
         } else if (!set) {    // cancel
             if (like && likeStatus == LikeStatus.LIKE) {  // cancel like
@@ -99,13 +101,19 @@ public class AnswerServiceImpl implements AnswerService {
                 map.remove(answerId);
                 ++likeVal;
             } else {
-                throw new AnswerApiIllegalArgumentException("Wrong `set` argument: excepting true, but got false");
+                throw new AnswerApiIllegalArgumentException("Wrong arguments. You have not set " + (like ? "" : "dis") +
+                        "like yet. " + (like ? "" : "dis") + "like can only be cancel if you have set it.");
             }
         } else {
-            throw new AnswerApiIllegalArgumentException("Wrong `set` argument: excepting false, but got true");
+            throw new AnswerApiIllegalArgumentException("Wrong arguments. You cannot set " + (like ? "" : "dis") +
+                    "like while your status is " + likeStatus + ". Please try to cancel the status first before you " +
+                    "set.");
         }
 
         answer.setLikes(likeVal);
+        answer.setNotPreUpdate();
+        user.setMyLikes(UserUtils.encryptUserPreference(map));
+        user.setNotPreUpdate();
 
         userRepository.save(user);
         answerRepository.save(answer);

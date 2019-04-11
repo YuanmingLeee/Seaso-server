@@ -35,7 +35,7 @@ public class AnswerController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> createAnswer(@ModelAttribute Answer answer) {
         answerService.createAnswer(answer);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
@@ -45,7 +45,6 @@ public class AnswerController {
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.POST)
-    @ResponseBody
     public ResponseEntity<?> likeAnswerById(@PathVariable Long answerId,
                                             @RequestParam boolean like,
                                             @RequestParam boolean set) {
@@ -53,12 +52,12 @@ public class AnswerController {
             answerService.likeAnswerById(answerId, set);
         else
             answerService.dislikeAnswerById(answerId, set);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.DELETE)
     public ResponseEntity<?> deleteAnswerById(@PathVariable Long answerId) {
         answerService.deleteAnswerById(answerId);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
 }

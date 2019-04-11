@@ -16,11 +16,13 @@ import javax.persistence.*;
         indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
 public class Question extends DataEntity<Question> {
 
+    @Transient
     private static final long serialVersionUID = 8150616186831582842L;
+
     /**
      * Question id
      */
-    @Column(nullable = false, length = 64)
+    @Column(nullable = false, updatable = false, length = 64)
     private Long questionId;
 
     /**
@@ -34,7 +36,7 @@ public class Question extends DataEntity<Question> {
     /**
      * Question title
      */
-    @Column(length = 40)
+    @Column(length = 40, nullable = false)
     private String title = "";
 
     /**
@@ -79,10 +81,6 @@ public class Question extends DataEntity<Question> {
 
     public Long getQuestion_id() {
         return questionId;
-    }
-
-    public void setQuestion_id(Long questionId) {
-        this.questionId = questionId;
     }
 
     public String getKeywords() {
