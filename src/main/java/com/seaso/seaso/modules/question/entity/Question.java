@@ -2,6 +2,7 @@ package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
+import org.springframework.data.elasticsearch.annotations.Document;
 
 import javax.persistence.*;
 

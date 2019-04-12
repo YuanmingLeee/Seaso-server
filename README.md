@@ -36,6 +36,9 @@ Unfortunately, FastDFS does not have a installable windows version. You may want
 environment or install an [Ubuntu virtual machine](https://www.microsoft.com/store/productId/9NBLGGH4MSV6) which is 
 already available for Windows 10. 
 
+### Install Elastic Search
+Please see [Installation Guide](doc/elastic-search-guide.md) here.
+
 ### Install maven
 #### IDE User
 If you are using an IDE (e.g. IDEA) which integrates Maven, you can skip this part. Please check your IDE manual for running mvn.
