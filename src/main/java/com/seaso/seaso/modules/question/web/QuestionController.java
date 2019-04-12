@@ -15,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,55 +33,29 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public JsonResponseBody<List<Question>> findAllQuestions(@RequestParam(value = "page", defaultValue = "0") int page,
-                                                             @RequestParam(value = "size", defaultValue = "10") int size,
-                                                             @RequestParam(value = "sort_by", defaultValue = "questionId") String itemName) {
+    public ResponseEntity<?> findAllQuestions(@RequestParam(value = "page", defaultValue = "0") int page,
+                                              @RequestParam(value = "size", defaultValue = "10") int size,
+                                              @RequestParam(value = "sort_by", defaultValue = "questionId") String itemName) {
         List<Question> questions = questionService.findAllQuestions(page, size, Sort.by(itemName).descending());
-        return new JsonResponseBody<>(HttpStatus.OK, questions);
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{questionId}", method = RequestMethod.GET)
-    public JsonResponseBody<Question> findQuestionById(@PathVariable Long questionId) {
+    public ResponseEntity<?> findQuestionById(@PathVariable Long questionId) {
         Question question = questionService.findQuestionById(questionId);
-        return new JsonResponseBody<>(HttpStatus.OK, question);
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, question), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public JsonResponseBody<String> postQuestion(@ModelAttribute Question question) {
+    public ResponseEntity<?> postQuestion(@ModelAttribute Question question) {
         questionService.createQuestion(question);
-        return new JsonResponseBody<>();
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
-    private Integer PAGESIZE=10;
-
-
-    @GetMapping("getSearchResultList")
-    public List<Question> getList(Integer pageNumber,String query){
-        if(pageNumber==null) pageNumber = 0;
-        //es搜索默认第一页页码是0
-        SearchQuery searchQuery=getEntitySearchQuery(pageNumber,PAGESIZE,query);
-        Page<Question> questionsPage = QuestionRepository.search(searchQuery);
-        return questionsPage.getContent();
+    @RequestMapping(value = "/{questionId}", method = RequestMethod.DELETE)
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> deleteQuestionById(@PathVariable Long questionId) {
+        questionService.deleteQuestionById(questionId);
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
-
-
-    private SearchQuery getEntitySearchQuery(int pageNumber, int pageSize, String searchContent) {
-        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery()
-                .add(QueryBuilders.matchPhraseQuery("content", searchContent),
-                        ScoreFunctionBuilders.weightFactorFunction(100))
-                //设置权重分 求和模式
-                .scoreMode("sum")
-                //设置权重分最低分
-                .setMinScore(10);
-
-        // 设置分页
-        Pageable pageable = new PageRequest(pageNumber, pageSize);
-        return new NativeSearchQueryBuilder()
-                .withPageable(pageable)
-                .withQuery(functionScoreQueryBuilder).build();
-    }
-
 }
-
-
-

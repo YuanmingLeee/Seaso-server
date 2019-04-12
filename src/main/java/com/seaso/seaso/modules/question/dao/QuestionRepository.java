@@ -6,9 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface QuestionRepository extends JpaRepository<Question, String>,ElasticsearchRepository<Question,String> {
+public interface QuestionRepository extends JpaRepository<Question, String>, ElasticsearchRepository<Question,String> {
 
     Optional<Question> findByQuestionId(Long questionId);
+
+    boolean existsByQuestionId(Long questionId);
 
     void deleteByQuestionId(Long questionId);
 

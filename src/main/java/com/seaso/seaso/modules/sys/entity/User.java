@@ -6,6 +6,12 @@ import com.seaso.seaso.common.utils.idgen.IdGen;
 import javax.persistence.*;
 import java.util.function.Consumer;
 
+/**
+ * User entity.
+ *
+ * @author Li Yuanming
+ * @version 0.3
+ */
 @Entity
 @Table(name = "user", indexes = {@Index(name = "user_user_id_uindex", columnList = "userId", unique = true)})
 public class User extends DataEntity<User> {
@@ -33,14 +39,8 @@ public class User extends DataEntity<User> {
     private String history;
 
     @Lob
-    @Basic(fetch = FetchType.LAZY)
     @Column(length = 166777215)
     private String myLikes = "";
-
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(length = 166777215)
-    private String myDislikes = "";
 
     public User() {
         super();
@@ -64,6 +64,12 @@ public class User extends DataEntity<User> {
         public User build() {
             return new User(username, age);
         }
+    }
+
+    public static User getGuestInstance() {
+        User guest = new User("Guest", null);
+        guest.userId = -1L;
+        return guest;
     }
 
     @Override
@@ -117,13 +123,5 @@ public class User extends DataEntity<User> {
 
     public void setMyLikes(String myLikes) {
         this.myLikes = myLikes;
-    }
-
-    public String getMyDislikes() {
-        return myDislikes;
-    }
-
-    public void setMyDislikes(String myDislikes) {
-        this.myDislikes = myDislikes;
     }
 }

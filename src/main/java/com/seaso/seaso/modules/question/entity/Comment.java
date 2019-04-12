@@ -3,7 +3,10 @@ package com.seaso.seaso.modules.question.entity;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Index;
+import javax.persistence.Table;
 
 /**
  * Comment Entity class is mapped to COMMENT table.
@@ -21,7 +24,7 @@ public class Comment extends DataEntity<Comment> {
     /**
      * Comment id
      */
-    @Column(nullable = false, unique = true, length = 64)
+    @Column(nullable = false, length = 64)
     private Long commentId;
 
     /**
@@ -39,7 +42,6 @@ public class Comment extends DataEntity<Comment> {
     /**
      * Comment content
      */
-    @Basic(fetch = FetchType.LAZY)
     @Column(length = 240)
     private String content = "";
 
