@@ -30,28 +30,33 @@ public abstract class DataEntity<T> implements Serializable {
      */
     @Column(nullable = false, length = 32)
     protected Long creator;
+
     /**
      * Entity updater.
      */
     @JsonIgnore
     @Column(nullable = false, length = 32)
     protected Long updater;
+
     /**
      * Entity create date.
      */
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    /* TODO: bug may raised because of timezone */
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss", timezone = "GMT+8")
     @JsonProperty(value = "create_date")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    protected Date createDate;
+    private Date createDate;
+
     /**
      * Entity update date.
      */
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss", timezone = "GMT+8")
     @JsonProperty(value = "update_date")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
-    protected Date updateDate;
+    private Date updateDate;
+
     /**
      * Flag to mark if the entity not to be invoked in pre update.
      */
@@ -126,6 +131,22 @@ public abstract class DataEntity<T> implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCreator() {
+        return creator;
+    }
+
+    public Long getUpdater() {
+        return updater;
+    }
+
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public Date getUpdateDate() {
+        return updateDate;
     }
 
     public void setNotPreUpdate() {

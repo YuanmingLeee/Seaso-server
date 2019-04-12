@@ -1,20 +1,21 @@
 package com.seaso.seaso.modules.question.service.impl;
 
+import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
+import com.seaso.seaso.common.exception.ResourceNotFoundException;
 import com.seaso.seaso.modules.question.dao.AnswerRepository;
 import com.seaso.seaso.modules.question.dao.CommentRepository;
 import com.seaso.seaso.modules.question.entity.Comment;
-import com.seaso.seaso.modules.question.exception.AnswerNotFoundException;
 import com.seaso.seaso.modules.question.exception.CommentApiIllegalArgumentException;
 import com.seaso.seaso.modules.question.exception.CommentNotFoundException;
 import com.seaso.seaso.modules.question.service.CommentService;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 public class CommentServiceImpl implements CommentService {
@@ -36,42 +37,90 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findByAnswerId(Long answerId, int page, int size, Sort sort) {
-        answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
+    public Page<Comment> findByAnswerId(Long answerId, int page, int size, Sort sort) {
+        if (!answerRepository.existsAnswerByAnswerId(answerId))
+            throw new ResourceNotFoundException("answer ID not found");
+
         Pageable pageable = PageRequest.of(page, size, sort);
-        return commentRepository.findByAnswerId(answerId, pageable).getContent();
+        Pageable commentPageable = PageRequest.of(0, 10, Sort.by("createDate").descending());
+
+        Page<Comment> comments = commentRepository.findByAnswerIdAndReplyIdIsNull(answerId, pageable);
+
+        comments.getContent().forEach(comment ->
+                comment.setReplies(
+                        commentRepository.findByRootCommentIdAndReplyIdNotNull(comment.getCommentId(), commentPageable)
+                                .getContent()));
+        return comments;
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<Comment> findByAnswerIdAndReplyId(Long answerId, Long replyId, int page, int size, Sort sort) {
-        answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
-        commentRepository.findByCommentId(replyId).orElseThrow(CommentNotFoundException::new);
+    public Page<Comment> findByRootCommentId(Long rootCommentId, int page, int size, Sort sort) {
+        if (!commentRepository.existsByCommentId(rootCommentId))
+            throw new ResourceNotFoundException("root comment ID not found");
+
         Pageable pageable = PageRequest.of(page, size, sort);
-        return commentRepository.findByAnswerIdAndReplyId(answerId, replyId, pageable).getContent();
+        return commentRepository.findByRootCommentIdAndReplyIdNotNull(rootCommentId, pageable);
     }
 
+    /**
+     * Delete by commend ID. The comment is not really deleted, only the content is removed.
+     *
+     * @param commentId answer ID.
+     */
     @Override
     @Transactional
     public void deleteByCommentId(Long commentId) {
-        commentRepository.findByCommentId(commentId).orElseThrow(CommentNotFoundException::new);
-        commentRepository.deleteAllByReplyId(commentId);
-        commentRepository.deleteByCommentId(commentId);
+        Comment comment = commentRepository.findByCommentId(commentId).orElseThrow(CommentNotFoundException::new);
+        abstractedDeleteByCommentId(comment);
+    }
+
+    /**
+     * Delete by comment ID. The comment is filtered given creator.
+     *
+     * @param commentId comment ID.
+     * @param creator   creator.
+     */
+    @Override
+    @Transactional
+    public void deleteByCommentIdAndCreator(Long commentId, Long creator) {
+        Comment comment = commentRepository.findByCommentIdAndCreator(commentId, creator)
+                .orElseThrow(ResourceNotFoundException::new);
+        abstractedDeleteByCommentId(comment);
+    }
+
+    /**
+     * Abstracted delete comment method, only used in {@link #deleteByCommentId(Long)} and
+     * {@link #deleteByCommentIdAndCreator(Long, Long)}
+     *
+     * @param comment not null {@link Comment} entity.
+     */
+    private void abstractedDeleteByCommentId(@NotNull Comment comment) {
+        if (comment.isDelete())
+            throw new ApiIllegalArgumentException("Delete comment ID has been removed.");
+        comment.setContent("");
+        comment.setDelete(true);
+        commentRepository.save(comment);
     }
 
     @Override
     @Transactional
     public void createComment(Comment comment) {
-        answerRepository.findByAnswerId(comment.getAnswerId()).orElseThrow(AnswerNotFoundException::new);
+        if (!answerRepository.existsAnswerByAnswerId(comment.getAnswerId()))
+            throw new ResourceNotFoundException("Answer ID not found.");
+
         if (comment.getReplyId() != null) {
             Comment comment1 = commentRepository.findByCommentId(comment.getReplyId())
-                    .orElseThrow(CommentNotFoundException::new);
+                    .orElseThrow(() -> new ResourceNotFoundException("Replied comment ID not found."));
+            if (comment1.isDelete())
+                throw new ApiIllegalArgumentException("Replied comment has been deleted.");
+
             if (!comment1.getAnswerId().equals(comment.getAnswerId()))
                 throw new CommentApiIllegalArgumentException(
                         "Answer id is not matched with the replied comment's answer id");
+
+            comment.setRootCommentId(comment1.getRootCommentId());
         }
         commentRepository.save(comment);
     }
-
-
 }

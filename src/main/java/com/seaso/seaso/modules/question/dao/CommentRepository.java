@@ -13,16 +13,33 @@ public interface CommentRepository extends JpaRepository<Comment, Long> {
 
     Optional<Comment> findByCommentId(Long commentId);
 
-    Page<Comment> findByAnswerId(Long answerId, Pageable pageable);
+    Optional<Comment> findByCommentIdAndCreator(Long commendId, Long creator);
 
-    Page<Comment> findByAnswerIdAndReplyId(Long answerId, Long replyId, Pageable pageable);
+    boolean existsByCommentId(Long commentId);
 
-    void deleteByCommentId(Long commentId);
+    /**
+     * Paged root {@link Comment} (not reply) given answer ID.
+     *
+     * @param answerId answer ID.
+     * @param pageable pageable instance with page number, page size, and sorting method
+     * @return a paged root comments.
+     * @see Page
+     * @see Pageable
+     */
+    Page<Comment> findByAnswerIdAndReplyIdIsNull(Long answerId, Pageable pageable);
+
+    /**
+     * Paged replies given root comment ID.
+     *
+     * @param rootCommentId root comment ID.
+     * @param pageable      pageable instance with page number, page size, and sorting method
+     * @return a paged replies.
+     * @see Page
+     * @see Pageable
+     */
+    Page<Comment> findByRootCommentIdAndReplyIdNotNull(Long rootCommentId, Pageable pageable);
 
     void deleteAllByAnswerId(Long answerId);
 
     void deleteAllByAnswerIdIn(Collection<Long> answerIds);
-
-    void deleteAllByReplyId(Long replyId);
-
 }
