@@ -28,7 +28,11 @@ public interface AnswerService {
      */
     void dislikeAnswerById(Long answerId, boolean set);
 
-    Answer getAnswerById(Long answerId);
+    Answer findAnswerById(Long answerId);
+
+    void updateAnswerByIdAndCreator(Long answerId, Long creator, Answer answer);
+
+    void deleteAnswerByIdAndCreator(Long answerId, Long creator);
 
     void deleteAnswerById(Long answerId);
 }

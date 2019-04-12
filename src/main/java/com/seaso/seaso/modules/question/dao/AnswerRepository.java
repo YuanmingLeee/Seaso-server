@@ -17,7 +17,9 @@ public interface AnswerRepository extends JpaRepository<Answer, Long> {
 
     Optional<Answer> findByAnswerId(Long answerId);
 
-    boolean existsAnswerByAnswerId(Long answerId);
+    boolean existsByAnswerId(Long answerId);
+
+    boolean existsByAnswerIdAndCreator(Long answerId, Long creator);
 
     void deleteByAnswerId(Long answerId);
 

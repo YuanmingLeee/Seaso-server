@@ -3,11 +3,13 @@ package com.seaso.seaso.modules.question.web;
 import com.seaso.seaso.modules.question.entity.Answer;
 import com.seaso.seaso.modules.question.service.AnswerService;
 import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -21,7 +23,7 @@ public class AnswerController {
         this.answerService = answerService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
+    @RequestMapping(value = "/", method = RequestMethod.GET)
     public ResponseEntity<?> getAnswerByQuestionId(@RequestParam(value = "question_id") Long questionId,
                                                    @RequestParam(defaultValue = "0") int page,
                                                    @RequestParam(defaultValue = "10") int size,
@@ -40,7 +42,7 @@ public class AnswerController {
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAnswerById(@PathVariable Long answerId) {
-        Answer answer = answerService.getAnswerById(answerId);
+        Answer answer = answerService.findAnswerById(answerId);
         return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, answer), HttpStatus.OK);
     }
 
@@ -55,7 +57,21 @@ public class AnswerController {
         return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "/{answerId}", method = RequestMethod.PATCH)
+    public ResponseEntity<?> updateAnswer(@ModelAttribute Answer answer,
+                                          @PathVariable Long answerId) {
+        answerService.updateAnswerByIdAndCreator(answerId, UserUtils.getCurrentUserId(), answer);
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{answerId}", method = RequestMethod.DELETE)
+    public ResponseEntity<?> deleteSelfAnswerById(@PathVariable Long answerId) {
+        answerService.deleteAnswerByIdAndCreator(answerId, UserUtils.getCurrentUserId());
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/admin/{answerId}", method = RequestMethod.DELETE)
+    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> deleteAnswerById(@PathVariable Long answerId) {
         answerService.deleteAnswerById(answerId);
         return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);

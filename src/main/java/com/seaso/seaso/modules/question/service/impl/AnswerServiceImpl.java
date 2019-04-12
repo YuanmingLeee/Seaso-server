@@ -1,5 +1,6 @@
 package com.seaso.seaso.modules.question.service.impl;
 
+import com.seaso.seaso.common.exception.ResourceNotFoundException;
 import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.question.dao.AnswerRepository;
 import com.seaso.seaso.modules.question.dao.CommentRepository;
@@ -121,13 +122,33 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     @Transactional(readOnly = true)
-    public Answer getAnswerById(Long answerId) {
+    public Answer findAnswerById(Long answerId) {
         return answerRepository.findByAnswerId(answerId).orElseThrow(AnswerNotFoundException::new);
     }
 
     @Override
     @Transactional
+    public void updateAnswerByIdAndCreator(Long answerId, Long creator, Answer answer) {
+        Answer original = answerRepository.findByAnswerId(answerId)
+                .orElseThrow(() -> new ResourceNotFoundException("Answer ID not found."));
+        original.merge(answer);
+        answerRepository.save(answer);
+    }
+
+    @Override
+    @Transactional
+    public void deleteAnswerByIdAndCreator(Long answerId, Long creator) {
+        if (!answerRepository.existsByAnswerIdAndCreator(answerId, creator))
+            throw new ResourceNotFoundException("Answer ID not found.");
+        commentRepository.deleteAllByAnswerId(answerId);
+        answerRepository.deleteByAnswerId(answerId);
+    }
+
+    @Override
+    @Transactional
     public void deleteAnswerById(Long answerId) {
+        if (!answerRepository.existsByAnswerId(answerId))
+            throw new ResourceNotFoundException("Answer ID not found.");
         commentRepository.deleteAllByAnswerId(answerId);
         answerRepository.deleteByAnswerId(answerId);
     }

@@ -38,7 +38,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional(readOnly = true)
     public Page<Comment> findByAnswerId(Long answerId, int page, int size, Sort sort) {
-        if (!answerRepository.existsAnswerByAnswerId(answerId))
+        if (!answerRepository.existsByAnswerId(answerId))
             throw new ResourceNotFoundException("answer ID not found");
 
         Pageable pageable = PageRequest.of(page, size, sort);
@@ -106,7 +106,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void createComment(Comment comment) {
-        if (!answerRepository.existsAnswerByAnswerId(comment.getAnswerId()))
+        if (!answerRepository.existsByAnswerId(comment.getAnswerId()))
             throw new ResourceNotFoundException("Answer ID not found.");
 
         if (comment.getReplyId() != null) {
