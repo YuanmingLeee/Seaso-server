@@ -1,8 +1,11 @@
 package com.seaso.seaso.modules.question.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 import com.seaso.seaso.modules.question.utils.LikeStatus;
+import com.seaso.seaso.modules.question.utils.QuestionUtils;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
 
@@ -27,12 +30,14 @@ public class Answer extends DataEntity<Answer> {
     /**
      * Question id which this answer id belongs to
      */
-    @Column(nullable = false, length = 64)
+    @JsonProperty("question_id")
+    @Column(nullable = false, updatable = false, length = 64)
     private Long questionId;
 
     /**
      * User like status to the answer
      */
+    @JsonProperty("like_status")
     @Transient
     private LikeStatus likeStatus;
 
@@ -79,15 +84,11 @@ public class Answer extends DataEntity<Answer> {
 
     @Override
     protected void setDataId() {
-        this.questionId = IdGen.generateId();
+        this.answerId = IdGen.generateId();
     }
 
     public Long getAnswerId() {
         return answerId;
-    }
-
-    public void setAnswerId(Long answerId) {
-        this.answerId = answerId;
     }
 
     public Long getQuestionId() {
@@ -144,5 +145,11 @@ public class Answer extends DataEntity<Answer> {
 
     public void setContent(byte[] content) {
         this.content = content;
+    }
+
+    @PostLoad
+    public void postLoad() {
+        likeStatus = QuestionUtils.mapPreferenceMapsToLikeStatus(answerId,
+                UserUtils.decodeUserPreference(UserUtils.getCurrentUser().getMyLikes()));
     }
 }

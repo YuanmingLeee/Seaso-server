@@ -3,12 +3,14 @@ package com.seaso.seaso.modules.question.web;
 import com.seaso.seaso.modules.question.entity.Answer;
 import com.seaso.seaso.modules.question.service.AnswerService;
 import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping(value = "/answers")
@@ -21,45 +23,57 @@ public class AnswerController {
         this.answerService = answerService;
     }
 
-    @RequestMapping(value = "", method = RequestMethod.GET)
-    public JsonResponseBody<List<Answer>> getAnswerByQuestionId(@RequestParam(value = "question_id") Long questionId,
-                                                                @RequestParam(defaultValue = "0") int page,
-                                                                @RequestParam(defaultValue = "10") int size,
-                                                                @RequestParam(defaultValue = "likes") String itemName) {
-        List<Answer> answers = answerService.getAnswersByQuestionId(questionId, page, size,
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public ResponseEntity<?> getAnswerByQuestionId(@RequestParam(value = "question_id") Long questionId,
+                                                   @RequestParam(defaultValue = "0") int page,
+                                                   @RequestParam(defaultValue = "10") int size,
+                                                   @RequestParam(defaultValue = "likes") String itemName) {
+        Page<Answer> answers = answerService.findAnswersByQuestionId(questionId, page, size,
                 Sort.by(itemName).descending());
 
-        return new JsonResponseBody<>(HttpStatus.OK, answers);
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, answers), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public JsonResponseBody<String> createAnswer(@ModelAttribute Answer answer) {
+    public ResponseEntity<?> createAnswer(@ModelAttribute Answer answer) {
         answerService.createAnswer(answer);
-        return new JsonResponseBody<>(null);
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
-    public JsonResponseBody<Answer> getAnswerById(@PathVariable Long answerId) {
-        Answer answer = answerService.getAnswerById(answerId);
-        return new JsonResponseBody<>(HttpStatus.OK, answer);
+    public ResponseEntity<?> getAnswerById(@PathVariable Long answerId) {
+        Answer answer = answerService.findAnswerById(answerId);
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, answer), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.POST)
-    @ResponseBody
-    public JsonResponseBody<String> likeAnswerById(@PathVariable Long answerId,
-                                                   @RequestParam boolean like,
-                                                   @RequestParam boolean set) {
+    public ResponseEntity<?> likeAnswerById(@PathVariable Long answerId,
+                                            @RequestParam boolean like,
+                                            @RequestParam boolean set) {
         if (like)
             answerService.likeAnswerById(answerId, set);
         else
             answerService.dislikeAnswerById(answerId, set);
-        return new JsonResponseBody<>();
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
 
-    /* Bug found here: fk dependency on reply_id, comment */
+    @RequestMapping(value = "/{answerId}", method = RequestMethod.PATCH)
+    public ResponseEntity<?> updateAnswer(@ModelAttribute Answer answer,
+                                          @PathVariable Long answerId) {
+        answerService.updateAnswerByIdAndCreator(answerId, UserUtils.getCurrentUserId(), answer);
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
+    }
+
     @RequestMapping(value = "/{answerId}", method = RequestMethod.DELETE)
-    public JsonResponseBody<String> deleteAnswerById(@PathVariable Long answerId) {
+    public ResponseEntity<?> deleteSelfAnswerById(@PathVariable Long answerId) {
+        answerService.deleteAnswerByIdAndCreator(answerId, UserUtils.getCurrentUserId());
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/admin/{answerId}", method = RequestMethod.DELETE)
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> deleteAnswerById(@PathVariable Long answerId) {
         answerService.deleteAnswerById(answerId);
-        return new JsonResponseBody<>();
+        return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
 }

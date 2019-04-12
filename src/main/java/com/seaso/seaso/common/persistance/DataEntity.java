@@ -12,54 +12,88 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Date;
 
+/**
+ * Base class of all Data entities.
+ *
+ * @param <T> type of the child entity
+ * @author Li Yuanming
+ * @version 0.2
+ */
 @MappedSuperclass
 public abstract class DataEntity<T> implements Serializable {
 
     @Transient
     private static final long serialVersionUID = 1735325270419412291L;
 
-    @Transient
-    private boolean isNewRecord = true;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+    /**
+     * Entity owner.
+     */
     @Column(nullable = false, length = 32)
-    private Long creator;
+    protected Long creator;
 
+    /**
+     * Entity updater.
+     */
+    @JsonIgnore
     @Column(nullable = false, length = 32)
-    private Long updater;
+    protected Long updater;
 
+    /**
+     * Entity create date.
+     */
+    /* TODO: bug may raised because of timezone */
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss", timezone = "GMT+8")
+    @JsonProperty(value = "create_date")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date createDate;
 
+    /**
+     * Entity update date.
+     */
+    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss", timezone = "GMT+8")
+    @JsonProperty(value = "update_date")
     @Temporal(TemporalType.TIMESTAMP)
     @Column(nullable = false)
     private Date updateDate;
 
+    /**
+     * Flag to mark if the entity not to be invoked in pre update.
+     */
+    @Transient
+    private boolean notPreUpdate;
+    /**
+     * Primary key for persistence.
+     */
+    @JsonIgnore
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     protected DataEntity() {
     }
 
+    /**
+     * This method will be invoked before an new entity is persisted. It sets the auxiliary information about the
+     * entity.
+     */
     @PrePersist
     public void preInsert() {
         Long userId = UserUtils.getCurrentUserId();
         setDataId();
         this.updater = this.creator = userId;
         this.updateDate = this.createDate = new Date();
-        isNewRecord = false;
     }
 
+    /**
+     * This method will be invoked before an entity is updated.
+     */
     @PreUpdate
     public void preUpdate() {
+        if (notPreUpdate)
+            return;
         this.updater = UserUtils.getCurrentUserId();
         this.updateDate = new Date();
-    }
-
-    @PostLoad
-    public void postLoad() {
-        isNewRecord = false;
     }
 
     /**
@@ -82,10 +116,15 @@ public abstract class DataEntity<T> implements Serializable {
         }
     }
 
+    /**
+     * This method is used to set the natural ID of the entity. It will be invoked by {@link #preInsert()} if an entity
+     * is about to persist. You may want to override this method to set the specific data ID by some ID generators.
+     *
+     * @see #preInsert()
+     */
     protected void setDataId() {
     }
 
-    @JsonIgnore
     public Long getId() {
         return id;
     }
@@ -98,36 +137,19 @@ public abstract class DataEntity<T> implements Serializable {
         return creator;
     }
 
-    public void setCreator(Long creator) {
-        this.creator = creator;
-    }
-
-    @JsonIgnore
     public Long getUpdater() {
         return updater;
     }
 
-    public void setUpdater(Long updater) {
-        this.updater = updater;
-    }
-
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
-    @JsonProperty(value = "create_date")
     public Date getCreateDate() {
         return createDate;
     }
 
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
-    }
-
-    @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss")
-    @JsonProperty(value = "update_date")
     public Date getUpdateDate() {
         return updateDate;
     }
 
-    public void setUpdateDate(Date updateDate) {
-        this.updateDate = updateDate;
+    public void setNotPreUpdate() {
+        this.notPreUpdate = true;
     }
 }
