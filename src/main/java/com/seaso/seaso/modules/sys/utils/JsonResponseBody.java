@@ -2,14 +2,16 @@ package com.seaso.seaso.modules.sys.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
 public class JsonResponseBody<T> {
 
-    @JsonProperty("status_code")
-    private int statusCode;
+    private static final TypeReference<JsonResponseBody<?>> JsonResponseBodyType =
+            new TypeReference<JsonResponseBody<?>>() {
+            };
 
     private String message;
 
@@ -17,6 +19,8 @@ public class JsonResponseBody<T> {
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date timestamp;
+    @JsonProperty("status")
+    private int statusCode;
 
     public JsonResponseBody(HttpStatus status, String message, T data) {
         timestamp = new Date();
@@ -67,5 +71,9 @@ public class JsonResponseBody<T> {
 
     public void setData(T data) {
         this.data = data;
+    }
+
+    public static TypeReference<JsonResponseBody<?>> getJsonResponseBodyType() {
+        return JsonResponseBodyType;
     }
 }

@@ -37,7 +37,7 @@ environment or install an [Ubuntu virtual machine](https://www.microsoft.com/sto
 already available for Windows 10. 
 
 ### Install Elastic Search
-Please see [Installation Guide](doc/elastic-search-guide.md) here.
+Please see [Installation Guide](doc/setup/elastic-search-guide.md) here.
 
 ### Install maven
 #### IDE User

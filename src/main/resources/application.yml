@@ -1,3 +1,7 @@
+server:
+  address: 172.20.127.88
+  port: 8080
+
 spring:
   profiles:
     active: dev
@@ -30,12 +34,18 @@ idgen:
   data-center-id: 0
   cache: 1024
 
+### model server ###
+model-server:
+  address: localhost
+  port: 5000
+
+### elasticsearch ###
 data:
   elasticsearch:
-    cluster-name: #默认为elasticsearch
-    cluster-nodes: #配置es节点信息，逗号分隔，如果没有指定，则启动ClientNode
+    cluster-name: node-1 # 默认为elasticsearch
+    cluster-nodes: # 配置es节点信息，逗号分隔，如果没有指定，则启动ClientNode
     properties:
       path:
-        logs: ./elasticsearch/log #elasticsearch日志存储目录
-        data: ./elasticsearch/data #elasticsearch数据存储目录
+        logs: elasticsearch/log #elasticsearch日志存储目录
+        data: elasticsearch/data #elasticsearch数据存储目录
 
