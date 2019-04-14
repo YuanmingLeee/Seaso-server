@@ -1,8 +1,13 @@
 package com.seaso.seaso.modules.search.web;
 
 import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
+import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.search.service.SearchService;
+import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,14 +31,18 @@ public class SearchController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> search(HttpServletRequest request,
-                                    @RequestParam MultipartFile file) {
+                                    @RequestParam MultipartFile file,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size) {
         String name = file.getOriginalFilename();
         String mimeType = request.getServletContext().getMimeType(name);
         if (!mimeType.startsWith("image/"))
             throw new ApiIllegalArgumentException("Unrecognized image type" + mimeType);
 
-        searchService.searchQuestionByImage(file);
+        Pageable pageable = PageRequest.of(page, size);
 
-        return new ResponseEntity<>(HttpStatus.OK);
+        Page<Question> questions = searchService.searchQuestionByImage(file, pageable);
+
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
     }
 }

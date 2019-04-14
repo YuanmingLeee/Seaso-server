@@ -3,9 +3,7 @@ package com.seaso.seaso.modules.question.entity;
 import com.seaso.seaso.common.persistance.DataEntityES;
 import com.seaso.seaso.common.utils.idgen.IdGen;
 import org.springframework.data.annotation.Transient;
-import org.springframework.data.elasticsearch.annotations.Document;
-import org.springframework.data.elasticsearch.annotations.Field;
-import org.springframework.data.elasticsearch.annotations.FieldType;
+import org.springframework.data.elasticsearch.annotations.*;
 
 /**
  * Question Elasticsearch entity class is mapped to QUESTION document. It stores question posted.
@@ -27,15 +25,12 @@ public class Question extends DataEntityES<Question> {
     private Long questionId;
 
     /**
-     * Keywords for searching
-     */
-    @Field(type = FieldType.Keyword, index = false, store = true)
-    private String keywords = "";
-
-    /**
      * Question title
      */
-    @Field(type = FieldType.Text, store = true)
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, fielddata = true, store = true),
+            otherFields = {@InnerField(suffix = "keyword", type = FieldType.Text)}
+    )
     private String title = "";
 
     /**
@@ -69,14 +64,6 @@ public class Question extends DataEntityES<Question> {
 
     public Long getQuestionId() {
         return questionId;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
     }
 
     public String getTitle() {
