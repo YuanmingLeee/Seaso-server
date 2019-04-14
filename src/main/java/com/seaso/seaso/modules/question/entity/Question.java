@@ -2,7 +2,6 @@ package com.seaso.seaso.modules.question.entity;
 
 import com.seaso.seaso.common.persistance.DataEntityES;
 import com.seaso.seaso.common.utils.idgen.IdGen;
-import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
 import org.springframework.data.elasticsearch.annotations.Field;
@@ -10,6 +9,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
  * Question Elasticsearch entity class is mapped to QUESTION document. It stores question posted.
+ * TODO: change mapping name for es
  *
  * @author Yuanming Li
  * @version 0.2
@@ -23,9 +23,8 @@ public class Question extends DataEntityES<Question> {
     /**
      * Question id
      */
-    @Id
-    @Field(store = true)
-    private String questionId;
+    @Field(type = FieldType.Long, store = true)
+    private Long questionId;
 
     /**
      * Keywords for searching
@@ -65,11 +64,11 @@ public class Question extends DataEntityES<Question> {
 
     @Override
     protected void setDataId() {
-        questionId = IdGen.generateId().toString();
+        questionId = IdGen.generateId();
     }
 
     public Long getQuestionId() {
-        return Long.parseLong(questionId);
+        return questionId;
     }
 
     public String getKeywords() {

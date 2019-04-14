@@ -36,7 +36,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public Question findQuestionById(Long questionId) {
-        return questionRepository.findByQuestionId(questionId.toString()).orElseThrow(ResourceNotFoundException::new);
+        return questionRepository.findByQuestionId(questionId).orElseThrow(ResourceNotFoundException::new);
     }
 
     @Override
@@ -50,13 +50,13 @@ public class QuestionServiceImpl implements QuestionService {
     @Transactional
     public void createQuestion(Question question) {
         question.preInsert();
-        questionRepository.save(question);
+        questionRepository.index(question);
     }
 
     @Override
     @Transactional
     public void deleteQuestionById(Long questionId) {
-        questionRepository.deleteByQuestionId(questionId.toString());
+        questionRepository.deleteByQuestionId(questionId);
 
         Collection<Long> answers = answerRepository.findAllByQuestionId(questionId).stream()
                 .map(Answer::getAnswerId)

@@ -7,9 +7,9 @@ import java.util.Optional;
 
 public interface QuestionRepository extends ElasticsearchRepository<Question, String> {
 
-    Optional<Question> findByQuestionId(String questionId);
+    Optional<Question> findByQuestionId(Long questionId);
 
-    boolean existsByQuestionId(String questionId);
+    boolean existsByQuestionId(Long questionId);
 
-    void deleteByQuestionId(String questionId);
+    void deleteByQuestionId(Long questionId);
 }
