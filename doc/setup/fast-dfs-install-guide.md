@@ -5,7 +5,7 @@ For fast setup, please run the script:
 ```bash
 sudo ./bin/install-fastdfs.sh
 ```
-Then change settings for [tracker](bin/config/tracker.conf) and [storage](bin/config/storage.conf).
+Then change settings for [tracker](/config/tracker.conf) and [storage](/config/storage.conf).
 Normally, you should change the following lines:  
 ```
 # file: tracker.conf
@@ -57,7 +57,7 @@ fdfs_storaged /etc/fdfs/storage.conf start   # start storage
 ```
 ## 2. For Storage node
 If you are configuring a storage node, the install of the nginx module is required.  
-Before install, you need to modify the [configuration file](/bin/config/mod_fastdfs.conf):
+Before install, you need to modify the [configuration file](/config/mod_fastdfs.conf):
 ```
 ...
 # tracker server address(ip:port), the default port is 22122. You can refer to tracker.conf

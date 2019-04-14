@@ -7,7 +7,7 @@ cd /opt/fastdfs
 wget https://github.com/happyfish100/fastdfs-nginx-module/archive/V1.20.tar.gz
 tar -zxf V1.20.tar.gz
 # copy fastdfs-nginx-module configuration file
-cp ${LAUNCH_DIR}/bin/config/mod_fastdfs.conf /etc/fdfs
+cp ${LAUNCH_DIR}/config/mod_fastdfs.conf /etc/fdfs
 
 ### reinstall ngnix
 service nginx stop
@@ -16,7 +16,7 @@ wget http://nginx.org/download/nginx-1.15.9.tar.gz
 tar -zxf nginx-1.15.9.tar.gz
 cd nginx-1.15.9
 # fix bug in config
-cp ${LAUNCH_DIR}/bin/config/nginx-module-conf ../fastdfs-nginx-module-1.20/src/config
+cp ${LAUNCH_DIR}/config/nginx-module-conf ../fastdfs-nginx-module-1.20/src/config
 
 # uninstall nginx
 apt-get purge nginx nginx-common

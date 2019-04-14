@@ -1,21 +1,21 @@
 package com.seaso.seaso.modules.question.entity;
 
-import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.common.persistance.DataEntityES;
 import com.seaso.seaso.common.utils.idgen.IdGen;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.Document;
-
-import javax.persistence.*;
+import org.springframework.data.elasticsearch.annotations.Field;
+import org.springframework.data.elasticsearch.annotations.FieldType;
 
 /**
- * Question entity class is mapped to QUESTION table. It stores question posted.
+ * Question Elasticsearch entity class is mapped to QUESTION document. It stores question posted.
  *
  * @author Yuanming Li
- * @version 0.1
+ * @version 0.2
  */
-@Entity
-@Table(name = "question",
-        indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
-public class Question extends DataEntity<Question> {
+@Document(indexName = "test", type = "question")
+public class Question extends DataEntityES<Question> {
 
     @Transient
     private static final long serialVersionUID = 8150616186831582842L;
@@ -23,50 +23,38 @@ public class Question extends DataEntity<Question> {
     /**
      * Question id
      */
-    @Column(nullable = false, updatable = false, length = 64)
-    private Long questionId;
+    @Id
+    @Field(store = true)
+    private String questionId;
 
     /**
      * Keywords for searching
      */
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(length = 16777215)
+    @Field(type = FieldType.Keyword, index = false, store = true)
     private String keywords = "";
 
     /**
      * Question title
      */
-    @Column(length = 40, nullable = false)
+    @Field(type = FieldType.Text, store = true)
     private String title = "";
 
     /**
      * Question description(subtitle)
      */
-    @Column(length = 100)
+    @Field(type = FieldType.Keyword, index = false, store = true)
     private String description;
 
     /**
      * Question cover image
      */
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column
     private byte[] cover;
 
     /**
      * Question detailed content
      */
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(length = 16777215)
-    private byte[] content;
-
-    /**
-     * Number of views
-     */
-    @Column
-    private Long views = 0L;
+    @Field(type = FieldType.Text, store = true)
+    private String content;
 
     /**
      * Default constructor
@@ -77,11 +65,11 @@ public class Question extends DataEntity<Question> {
 
     @Override
     protected void setDataId() {
-        questionId = IdGen.generateId();
+        questionId = IdGen.generateId().toString();
     }
 
-    public Long getQuestion_id() {
-        return questionId;
+    public Long getQuestionId() {
+        return Long.parseLong(questionId);
     }
 
     public String getKeywords() {
@@ -116,19 +104,11 @@ public class Question extends DataEntity<Question> {
         this.cover = cover;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
-    }
-
-    public Long getViews() {
-        return views;
-    }
-
-    public void setViews(Long views) {
-        this.views = views;
     }
 }

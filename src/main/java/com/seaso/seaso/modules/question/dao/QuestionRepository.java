@@ -1,15 +1,15 @@
 package com.seaso.seaso.modules.question.dao;
 
 import com.seaso.seaso.modules.question.entity.Question;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 
 import java.util.Optional;
 
-public interface QuestionRepository extends JpaRepository<Question, String> {
+public interface QuestionRepository extends ElasticsearchRepository<Question, String> {
 
-    Optional<Question> findByQuestionId(Long questionId);
+    Optional<Question> findByQuestionId(String questionId);
 
-    boolean existsByQuestionId(Long questionId);
+    boolean existsByQuestionId(String questionId);
 
-    void deleteByQuestionId(Long questionId);
+    void deleteByQuestionId(String questionId);
 }
