@@ -35,7 +35,7 @@ public class AnswerController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<?> createAnswer(@ModelAttribute Answer answer) {
+    public ResponseEntity<?> createAnswer(@RequestBody Answer answer) {
         answerService.createAnswer(answer);
         return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
     }

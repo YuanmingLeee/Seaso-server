@@ -1,19 +1,10 @@
 package com.seaso.seaso.modules.question.web;
 
-import com.seaso.seaso.modules.question.dao.QuestionRepository;
 import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.question.service.QuestionService;
 import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
-import org.elasticsearch.index.query.QueryBuilders;
-import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
-import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
-import org.springframework.data.elasticsearch.core.query.SearchQuery;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -47,7 +38,7 @@ public class QuestionController {
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public ResponseEntity<?> postQuestion(@ModelAttribute Question question) {
+    public ResponseEntity<?> postQuestion(@RequestBody Question question) {
         questionService.createQuestion(question);
         return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
     }

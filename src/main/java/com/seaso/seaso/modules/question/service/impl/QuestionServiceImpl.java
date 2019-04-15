@@ -49,7 +49,8 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     @Transactional
     public void createQuestion(Question question) {
-        questionRepository.save(question);
+        question.preInsert();
+        questionRepository.index(question);
     }
 
     @Override

@@ -1,9 +1,18 @@
+server:
+  address: 172.20.127.88
+  port: 8080
+
 spring:
   profiles:
     active: dev
-  # disable web handler #
+  # disable config handler #
   mvc.throw-exception-if-no-handler-found: true
   resources.add-mappings: false
+
+  data:
+    elasticsearch:
+      cluster-name: seaso
+      cluster-nodes: localhost:9300
 
   ### data source ###
   datasource:
@@ -30,12 +39,7 @@ idgen:
   data-center-id: 0
   cache: 1024
 
-data:
-  elasticsearch:
-    cluster-name: #默认为elasticsearch
-    cluster-nodes: #配置es节点信息，逗号分隔，如果没有指定，则启动ClientNode
-    properties:
-      path:
-        logs: ./elasticsearch/log #elasticsearch日志存储目录
-        data: ./elasticsearch/data #elasticsearch数据存储目录
-
+### model server ###
+model-server:
+  address: localhost
+  port: 5000

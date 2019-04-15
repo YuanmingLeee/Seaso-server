@@ -1,21 +1,21 @@
 package com.seaso.seaso.modules.question.entity;
 
-import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.common.persistance.DataEntityES;
 import com.seaso.seaso.common.utils.idgen.IdGen;
-import org.springframework.data.elasticsearch.annotations.Document;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.elasticsearch.annotations.*;
 
-import javax.persistence.*;
+import java.util.function.Consumer;
 
 /**
- * Question entity class is mapped to QUESTION table. It stores question posted.
+ * Question Elasticsearch entity class is mapped to QUESTION document. It stores question posted.
+ * TODO: change mapping name for es
  *
  * @author Yuanming Li
- * @version 0.1
+ * @version 0.2
  */
-@Entity
-@Table(name = "question",
-        indexes = {@Index(name = "question_question_id_uindex", columnList = "questionId", unique = true)})
-public class Question extends DataEntity<Question> {
+@Document(indexName = "test", type = "question")
+public class Question extends DataEntityES<Question> {
 
     @Transient
     private static final long serialVersionUID = 8150616186831582842L;
@@ -23,50 +23,34 @@ public class Question extends DataEntity<Question> {
     /**
      * Question id
      */
-    @Column(nullable = false, updatable = false, length = 64)
+    @Field(type = FieldType.Long, store = true)
     private Long questionId;
-
-    /**
-     * Keywords for searching
-     */
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(length = 16777215)
-    private String keywords = "";
 
     /**
      * Question title
      */
-    @Column(length = 40, nullable = false)
+    @MultiField(
+            mainField = @Field(type = FieldType.Text, fielddata = true, store = true),
+            otherFields = {@InnerField(suffix = "keyword", type = FieldType.Text)}
+    )
     private String title = "";
 
     /**
      * Question description(subtitle)
      */
-    @Column(length = 100)
+    @Field(type = FieldType.Keyword, index = false, store = true)
     private String description;
 
     /**
      * Question cover image
      */
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column
     private byte[] cover;
 
     /**
      * Question detailed content
      */
-    @Lob
-    @Basic(fetch = FetchType.LAZY)
-    @Column(length = 16777215)
-    private byte[] content;
-
-    /**
-     * Number of views
-     */
-    @Column
-    private Long views = 0L;
+    @Field(type = FieldType.Text, store = true)
+    private String content;
 
     /**
      * Default constructor
@@ -75,21 +59,37 @@ public class Question extends DataEntity<Question> {
         super();
     }
 
+    public Question(String title, String description, byte[] cover, String content) {
+        super();
+        this.title = title;
+        this.description = description;
+        this.cover = cover;
+        this.content = content;
+    }
+
     @Override
     protected void setDataId() {
         questionId = IdGen.generateId();
     }
 
-    public Long getQuestion_id() {
+    public static class QuestionBuilder {
+        public String title;
+        public String description;
+        public String content;
+        public byte[] cover;
+
+        public QuestionBuilder with(Consumer<QuestionBuilder> build) {
+            build.accept(this);
+            return this;
+        }
+
+        public Question build() {
+            return new Question(title, description, cover, content);
+        }
+    }
+
+    public Long getQuestionId() {
         return questionId;
-    }
-
-    public String getKeywords() {
-        return keywords;
-    }
-
-    public void setKeywords(String keywords) {
-        this.keywords = keywords;
     }
 
     public String getTitle() {
@@ -116,19 +116,11 @@ public class Question extends DataEntity<Question> {
         this.cover = cover;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
-    }
-
-    public Long getViews() {
-        return views;
-    }
-
-    public void setViews(Long views) {
-        this.views = views;
     }
 }

@@ -29,36 +29,23 @@ For FastDFS to function, you are required to install: tracker, storage, and fast
 [Here](https://blog.csdn.net/xcg132566/article/details/79163790) is a Chinese tutorial on how to configure FastDFS. Or
 you may wish fast setup by following the [Fast DFS Fast Setup Guide](doc/setup/fast-dfs-install-guide.md).  
 
-
-
 #### Window User
 Unfortunately, FastDFS does not have a installable windows version. You may want to install a Cygwin virtual 
 environment or install an [Ubuntu virtual machine](https://www.microsoft.com/store/productId/9NBLGGH4MSV6) which is 
 already available for Windows 10. 
 
-### Install Elastic Search
-Please see [Installation Guide](doc/elastic-search-guide.md) here.
+### Install Elasticsearch
+Elasticsearch is a highly scalable open-source full-text search and analytics engine. It allows you to store, search, 
+and analyze big volumes of data quickly and in near real time. It is generally used as the underlying engine/technology
+that powers applications that have complex search features and requirements. (from elasticsearch official website)  
 
-### Install maven
-#### IDE User
-If you are using an IDE (e.g. IDEA) which integrates Maven, you can skip this part. Please check your IDE manual for running mvn.
+Here we use this powerful tool to search matched question given a long text.  
+You are required to install elasticsearch and kibana plugin manager. Please see 
+[Installation Guide](doc/setup/elastic-search-guide.md) here.
 
-#### Windows User
-Go [here](https://maven.apache.org/download.cgi). Install and add it into path. Detailed installation instruction can be
-found [here](https://maven.apache.org/guides/getting-started/windows-prerequisites.html).
-#### Unix User
-run
-```
-sudo apt-get install mvn
-# if that does not work
-sudo apt-get install maven
-```
-
-After installation, type
-```
-mvn -version
-```
-to verify.
+### Install Maven
+Maven is a popular Java dependency manager. Our project is managed by Maven. Please see 
+[Setup Guide](doc/setup/maven-setup-guide.md) for maven setup.
 
 ### Install Project dependencies
 #### IDE User

@@ -71,9 +71,8 @@ public class Answer extends DataEntity<Answer> {
      * Answer detailed content
      */
     @Lob
-    @Basic(fetch = FetchType.LAZY)
     @Column(length = 16777215)
-    private byte[] content;
+    private String content;
 
     /**
      * Default constructor
@@ -139,11 +138,11 @@ public class Answer extends DataEntity<Answer> {
         this.cover = cover;
     }
 
-    public byte[] getContent() {
+    public String getContent() {
         return content;
     }
 
-    public void setContent(byte[] content) {
+    public void setContent(String content) {
         this.content = content;
     }
 

@@ -34,11 +34,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .authorizeRequests()
                 .antMatchers("/", "/home", "/swagger-ui").permitAll()
+                .antMatchers(HttpMethod.GET, "/login/").authenticated()
                 .antMatchers(HttpMethod.GET).permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic().authenticationEntryPoint(authenticationEntryPoint)
                 .and().formLogin().loginPage("/login").permitAll()
-                .and().logout().permitAll();
+                .and().logout().logoutUrl("/logout").logoutSuccessUrl("/logout?success=true").invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll();
         http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
 
         // remember to comment this line in prod
