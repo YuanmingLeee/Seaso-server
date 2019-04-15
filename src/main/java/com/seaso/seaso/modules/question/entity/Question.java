@@ -5,6 +5,8 @@ import com.seaso.seaso.common.utils.idgen.IdGen;
 import org.springframework.data.annotation.Transient;
 import org.springframework.data.elasticsearch.annotations.*;
 
+import java.util.function.Consumer;
+
 /**
  * Question Elasticsearch entity class is mapped to QUESTION document. It stores question posted.
  * TODO: change mapping name for es
@@ -57,9 +59,33 @@ public class Question extends DataEntityES<Question> {
         super();
     }
 
+    public Question(String title, String description, byte[] cover, String content) {
+        super();
+        this.title = title;
+        this.description = description;
+        this.cover = cover;
+        this.content = content;
+    }
+
     @Override
     protected void setDataId() {
         questionId = IdGen.generateId();
+    }
+
+    public static class QuestionBuilder {
+        public String title;
+        public String description;
+        public String content;
+        public byte[] cover;
+
+        public QuestionBuilder with(Consumer<QuestionBuilder> build) {
+            build.accept(this);
+            return this;
+        }
+
+        public Question build() {
+            return new Question(title, description, cover, content);
+        }
     }
 
     public Long getQuestionId() {
