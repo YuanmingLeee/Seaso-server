@@ -29,7 +29,7 @@ For FastDFS to function, you are required to install: tracker, storage, and fast
 [Here](https://blog.csdn.net/xcg132566/article/details/79163790) is a Chinese tutorial on how to configure FastDFS. Or
 you may wish fast setup by following the [Fast DFS Fast Setup Guide](doc/setup/fast-dfs-install-guide.md).  
 
-#### Window User
+#### Windows User
 Unfortunately, FastDFS does not have a installable windows version. You may want to install a Cygwin virtual 
 environment or install an [Ubuntu virtual machine](https://www.microsoft.com/store/productId/9NBLGGH4MSV6) which is 
 already available for Windows 10. 
