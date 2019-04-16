@@ -31,17 +31,28 @@ public class SearchController {
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> search(HttpServletRequest request,
-                                    @RequestParam MultipartFile file,
+                                    @RequestParam MultipartFile image,
                                     @RequestParam(defaultValue = "0") int page,
                                     @RequestParam(defaultValue = "10") int size) {
-        String name = file.getOriginalFilename();
+        String name = image.getOriginalFilename();
         String mimeType = request.getServletContext().getMimeType(name);
         if (!mimeType.startsWith("image/"))
             throw new ApiIllegalArgumentException("Unrecognized image type" + mimeType);
 
         Pageable pageable = PageRequest.of(page, size);
 
-        Page<Question> questions = searchService.searchQuestionByImage(file, pageable);
+        Page<Question> questions = searchService.searchQuestionByImage(image, pageable);
+
+        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/text/", method = RequestMethod.POST)
+    public ResponseEntity<?> search(@RequestParam String text,
+                                    @RequestParam(defaultValue = "0") int page,
+                                    @RequestParam(defaultValue = "10") int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<Question> questions = searchService.searchQuestionByText(text, pageable);
 
         return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
     }

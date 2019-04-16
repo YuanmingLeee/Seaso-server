@@ -8,4 +8,6 @@ import org.springframework.web.multipart.MultipartFile;
 public interface SearchService {
 
     Page<Question> searchQuestionByImage(MultipartFile image, Pageable pageable);
+
+    Page<Question> searchQuestionByText(String text, Pageable pageable);
 }
