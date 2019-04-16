@@ -21,16 +21,25 @@ public class HelloWorldController {
         return "home";
     }
 
-    @RequestMapping("/login")
-    public String login(ModelMap map) {
-        return "login";
+    @RequestMapping("/webapp/**")
+    public String webapp(ModelMap map) {
+        return "index";
     }
 
-    @RequestMapping(value = "/login/", method = RequestMethod.GET)
+    @RequestMapping(value = "/login/", method = RequestMethod.POST)
     @ResponseBody
     public ResponseEntity<?> login() {
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/whoami", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> whoAmI() {
         User user = UserUtils.getCurrentUser();
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, user), HttpStatus.OK);
+        if (user.getUserId() != -1L)
+            return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, user), HttpStatus.OK);
+        else
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }
 
     @RequestMapping(value = "/logout", method = RequestMethod.GET)

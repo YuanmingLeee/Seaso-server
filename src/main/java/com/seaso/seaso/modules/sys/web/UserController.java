@@ -111,7 +111,6 @@ public class UserController {
      * @return a {@link JsonResponseBody} if created successfully. Exceptions will be raised.
      */
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    @Secured("ROLE_ADMIN")
     public ResponseEntity<?> createUser(@RequestParam String username,
                                         @RequestParam String password) {
         systemService.createUser(username, password);

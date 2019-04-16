@@ -36,9 +36,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/", "/home", "/swagger-ui").permitAll()
                 .antMatchers(HttpMethod.GET, "/login/").authenticated()
                 .antMatchers(HttpMethod.GET).permitAll()
+                .antMatchers(HttpMethod.POST, "/users/").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic().authenticationEntryPoint(authenticationEntryPoint)
-                .and().formLogin().loginPage("/login").permitAll()
                 .and().logout().logoutUrl("/logout").logoutSuccessUrl("/logout?success=true").invalidateHttpSession(true).deleteCookies("JSESSIONID").permitAll();
         http.addFilterAfter(new CustomFilter(), BasicAuthenticationFilter.class);
 

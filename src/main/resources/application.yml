@@ -1,5 +1,4 @@
 server:
-  address: 172.20.127.88
   port: 8080
 
 spring:
