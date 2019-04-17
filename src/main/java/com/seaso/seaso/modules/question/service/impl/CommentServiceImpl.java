@@ -2,11 +2,10 @@ package com.seaso.seaso.modules.question.service.impl;
 
 import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
 import com.seaso.seaso.common.exception.ResourceNotFoundException;
+import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.question.dao.AnswerRepository;
 import com.seaso.seaso.modules.question.dao.CommentRepository;
 import com.seaso.seaso.modules.question.entity.Comment;
-import com.seaso.seaso.modules.question.exception.CommentApiIllegalArgumentException;
-import com.seaso.seaso.modules.question.exception.CommentNotFoundException;
 import com.seaso.seaso.modules.question.service.CommentService;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +31,7 @@ public class CommentServiceImpl implements CommentService {
 
     @Override
     public Comment findByCommentId(Long commentId) {
-        return commentRepository.findByCommentId(commentId).orElseThrow(CommentNotFoundException::new);
+        return commentRepository.findByCommentId(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment ID not found"));
     }
 
     @Override
@@ -71,7 +70,8 @@ public class CommentServiceImpl implements CommentService {
     @Override
     @Transactional
     public void deleteByCommentId(Long commentId) {
-        Comment comment = commentRepository.findByCommentId(commentId).orElseThrow(CommentNotFoundException::new);
+        Comment comment = commentRepository
+                .findByCommentId(commentId).orElseThrow(() -> new ResourceNotFoundException("Comment ID not found"));
         abstractedDeleteByCommentId(comment);
     }
 
@@ -116,7 +116,7 @@ public class CommentServiceImpl implements CommentService {
                 throw new ApiIllegalArgumentException("Replied comment has been deleted.");
 
             if (!comment1.getAnswerId().equals(comment.getAnswerId()))
-                throw new CommentApiIllegalArgumentException(
+                throw new ServiceException(
                         "Answer id is not matched with the replied comment's answer id");
 
             comment.setRootCommentId(comment1.getRootCommentId());

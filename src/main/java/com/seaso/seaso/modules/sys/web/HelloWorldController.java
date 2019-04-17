@@ -37,7 +37,7 @@ public class HelloWorldController {
     public ResponseEntity<?> whoAmI() {
         User user = UserUtils.getCurrentUser();
         if (user.getUserId() != -1L)
-            return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, user), HttpStatus.OK);
+            return new ResponseEntity<>(new JsonResponseBody<>(200, user), HttpStatus.OK);
         else
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
     }

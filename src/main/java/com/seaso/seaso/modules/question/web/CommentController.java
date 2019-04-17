@@ -34,7 +34,7 @@ public class CommentController {
     public ResponseEntity<?> findByCommentId(@PathVariable Long commentId) {
 
         Comment comment = commentService.findByCommentId(commentId);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, comment), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(20, comment), HttpStatus.OK);
     }
 
     /**
@@ -48,7 +48,7 @@ public class CommentController {
     public ResponseEntity<?> postComment(@ModelAttribute Comment comment) {
 
         commentService.createComment(comment);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JsonResponseBody<>(201), HttpStatus.CREATED);
     }
 
     /**
@@ -75,12 +75,12 @@ public class CommentController {
         Sort sort = Sort.by(itemName).descending();
         if (replyId == null) {    // get comment
             Page<Comment> comments = commentService.findByAnswerId(answerId, page, size, sort);
-            return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, comments), HttpStatus.OK);
+            return new ResponseEntity<>(new JsonResponseBody<>(200, comments), HttpStatus.OK);
         }
 
         // get replies
         Page<Comment> replies = commentService.findByRootCommentId(replyId, page, size, sort);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, replies), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, replies), HttpStatus.OK);
     }
 
     /**

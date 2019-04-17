@@ -28,19 +28,19 @@ public class QuestionController {
                                               @RequestParam(value = "size", defaultValue = "10") int size,
                                               @RequestParam(value = "sort_by", defaultValue = "questionId") String itemName) {
         List<Question> questions = questionService.findAllQuestions(page, size, Sort.by(itemName).descending());
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, questions), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{questionId}", method = RequestMethod.GET)
     public ResponseEntity<?> findQuestionById(@PathVariable Long questionId) {
         Question question = questionService.findQuestionById(questionId);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, question), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, question), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> postQuestion(@RequestBody Question question) {
         questionService.createQuestion(question);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JsonResponseBody<>(201), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{questionId}", method = RequestMethod.DELETE)

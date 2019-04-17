@@ -64,7 +64,8 @@ public class UserController {
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public ResponseEntity<?> getUser(@PathVariable String username) {
         User user = userService.findUserByUsername(username);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, user), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new JsonResponseBody<>(200, user), HttpStatus.OK);
     }
 
     /**
@@ -114,7 +115,7 @@ public class UserController {
     public ResponseEntity<?> createUser(@RequestParam String username,
                                         @RequestParam String password) {
         systemService.createUser(username, password);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JsonResponseBody<>(201), HttpStatus.CREATED);
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.seaso.seaso.modules.media.web;
 
+import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
 import com.seaso.seaso.modules.media.manager.LargeBinaryFileManager;
 import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +35,12 @@ public class BinFileController {
         String message;
         if (file.isEmpty()) {
             message = "Please select a file to upload";
-            return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED, message, null), HttpStatus.CREATED);
+            throw new ApiIllegalArgumentException(message);
         }
 
         String path = largeBinaryFileManager.uploadFile(file);
         message = "File `" + file.getOriginalFilename() + "` has been uploaded";
 
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED, message, path), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JsonResponseBody<>(message, 201, path), HttpStatus.CREATED);
     }
 }

@@ -1,5 +1,6 @@
 server:
   port: 8080
+  address: 172.20.127.88
 
 spring:
   profiles:

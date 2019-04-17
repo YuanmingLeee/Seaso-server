@@ -10,10 +10,6 @@ package com.seaso.seaso.common.exception;
 public class ServiceException extends RuntimeException {
     private static final long serialVersionUID = 5685725309076938368L;
 
-    public ServiceException() {
-        super();
-    }
-
     public ServiceException(String message) {
         super(message);
     }

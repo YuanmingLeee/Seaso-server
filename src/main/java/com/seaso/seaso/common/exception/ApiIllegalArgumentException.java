@@ -4,11 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class ApiIllegalArgumentException extends ServiceException {
-
-    public ApiIllegalArgumentException() {
-        super();
-    }
+public class ApiIllegalArgumentException extends RuntimeException {
 
     public ApiIllegalArgumentException(String message) {
         super(message);

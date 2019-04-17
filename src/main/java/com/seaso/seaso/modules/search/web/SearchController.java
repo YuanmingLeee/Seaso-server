@@ -43,7 +43,7 @@ public class SearchController {
 
         Page<Question> questions = searchService.searchQuestionByImage(image, pageable);
 
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, questions), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/text/", method = RequestMethod.POST)
@@ -54,6 +54,6 @@ public class SearchController {
 
         Page<Question> questions = searchService.searchQuestionByText(text, pageable);
 
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, questions), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, questions), HttpStatus.OK);
     }
 }
