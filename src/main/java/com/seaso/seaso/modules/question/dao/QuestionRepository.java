@@ -9,7 +9,5 @@ public interface QuestionRepository extends ElasticsearchRepository<Question, St
 
     Optional<Question> findByQuestionId(Long questionId);
 
-    boolean existsByQuestionId(Long questionId);
-
     void deleteByQuestionId(Long questionId);
 }

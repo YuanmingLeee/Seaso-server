@@ -50,11 +50,8 @@ public class AnswerServiceImpl implements AnswerService {
 
     @Override
     public void createAnswer(Answer answer) {
-        if (questionRepository.existsByQuestionId(answer.getQuestionId())) {
-            answerRepository.save(answer);
-            return;
-        }
-        throw new ServiceException("Question Id not found");
+        questionRepository.findByQuestionId(answer.getQuestionId()).orElseThrow(() -> new ServiceException("Question Id not found"));
+        answerRepository.save(answer);
     }
 
     @Override
