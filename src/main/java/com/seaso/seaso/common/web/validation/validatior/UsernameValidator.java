@@ -4,10 +4,11 @@ import com.seaso.seaso.common.web.validation.annotation.Username;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.regex.Pattern;
 
 public class UsernameValidator implements ConstraintValidator<Username, Object> {
 
-    private static final String pattern = "[\\s!@#$%&_.,;]|^$";
+    private static final Pattern pattern = Pattern.compile("[\\s!@#$%&_.,;]");
 
     @Override
     public void initialize(Username constraintAnnotation) {
@@ -17,7 +18,7 @@ public class UsernameValidator implements ConstraintValidator<Username, Object> 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         if (value instanceof String)
-            return !((String) value).matches(pattern);
+            return !pattern.matcher((String) value).find();
         return false;
     }
 }

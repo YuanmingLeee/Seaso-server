@@ -5,6 +5,7 @@ import com.seaso.seaso.modules.sys.dao.RoleRepository;
 import com.seaso.seaso.modules.sys.entity.Role;
 import com.seaso.seaso.modules.sys.entity.SystemUser;
 import com.seaso.seaso.modules.sys.entity.User;
+import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -24,13 +25,17 @@ public class UserUtils {
      * User password encoder. This encoder is for the use of static method
      */
     private static PasswordEncoder encoder;
+
     /**
      * User password encoder for auto injection
      */
     private final PasswordEncoder _encoder;
 
     private static List<Role> roles;
+
     private final RoleRepository roleRepository;
+
+    public static final long GUEST_USER_ID = -1L;
 
     /**
      * Constructor of UserUtils with {@link PasswordEncoder}
@@ -53,7 +58,7 @@ public class UserUtils {
      * @return User ID or -1 if no user has been authenticated.
      */
     public static long getCurrentUserId() {
-        return getCurrentSystemUser().map(SystemUser::getUserId).orElse(-1L);
+        return getCurrentSystemUser().map(SystemUser::getUserId).orElse(GUEST_USER_ID);
     }
 
     /**
@@ -72,10 +77,11 @@ public class UserUtils {
      *
      * @return the wrapped {@link SystemUser} or {@code null} by {@link Optional}
      */
+    @NotNull
     private static Optional<SystemUser> getCurrentSystemUser() {
         Object principal = null;
-        SystemUser systemUser = null;
 
+        SystemUser systemUser;
         try {
             principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         } catch (NullPointerException ignored) {
@@ -83,10 +89,13 @@ public class UserUtils {
 
         if (principal instanceof SystemUser) {
             systemUser = (SystemUser) principal;
+        } else {
+            systemUser = SystemUser.getGuestInstance();
         }
-        return Optional.ofNullable(systemUser);
+        return Optional.of(systemUser);
     }
 
+    @Contract("_ -> !null")
     public static String encryptUserPreference(@NotNull Map<Long, UserPreference> map) {
         return EncryptionUtils.encryptString(map);
     }

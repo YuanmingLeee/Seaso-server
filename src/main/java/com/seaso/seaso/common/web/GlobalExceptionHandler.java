@@ -1,6 +1,10 @@
-package com.seaso.seaso.common.exception;
+package com.seaso.seaso.common.web;
 
+import com.seaso.seaso.common.exception.ResourceConflictException;
+import com.seaso.seaso.common.exception.ResourceNotFoundException;
+import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -10,6 +14,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.client.HttpClientErrorException;
 
+import javax.validation.ConstraintViolationException;
 import java.sql.SQLException;
 
 @ControllerAdvice
@@ -35,17 +40,18 @@ public class GlobalExceptionHandler {
                 HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(ApiIllegalArgumentException.class)
+    @ExceptionHandler(ConstraintViolationException.class)
     @ResponseBody
-    public ResponseEntity<?> apiIllegalArgument(ApiIllegalArgumentException e) {
+    public ResponseEntity<?> apiIllegalArgument(@NotNull ConstraintViolationException e) {
+        String message = e.getLocalizedMessage().replaceAll("[A-Za-z]*\\.(?=[A-Za-z]*:)", "");
         return new ResponseEntity<>(
-                new JsonResponseBody<>("API illegal argument: " + e.getLocalizedMessage(), 400, null),
+                new JsonResponseBody<>("API illegal argument: " + message, 400, null),
                 HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(HttpClientErrorException.Unauthorized.class)
     @ResponseBody
-    public ResponseEntity<?> unauthorized(HttpClientErrorException.Unauthorized e) {
+    public ResponseEntity<?> unauthorized(@NotNull HttpClientErrorException.Unauthorized e) {
         return new ResponseEntity<>(
                 new JsonResponseBody<>("Unauthorized: " + e.getLocalizedMessage(), 401, null),
                 HttpStatus.UNAUTHORIZED);
@@ -60,7 +66,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(ServiceException.class)
     @ResponseBody
-    public ResponseEntity<?> serviceExcept(ServiceException e) {
+    public ResponseEntity<?> serviceExcept(@NotNull ServiceException e) {
         serviceLogger.info(e.getLocalizedMessage());
         return new ResponseEntity<>(
                 new JsonResponseBody<>(e.getLocalizedMessage(), 50001, null),
@@ -70,7 +76,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(SQLException.class)
     @ResponseBody
-    public ResponseEntity<?> sqlException(Exception e) {
+    public ResponseEntity<?> sqlException(@NotNull Exception e) {
         logger.info(e.getLocalizedMessage());
         return new ResponseEntity<>(
                 new JsonResponseBody<>(e.getLocalizedMessage(), 50002, null),
@@ -79,7 +85,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
     @ResponseBody
-    public ResponseEntity<?> defaultErrorHandler(Exception e) {
+    public ResponseEntity<?> defaultErrorHandler(@NotNull Exception e) {
         logger.info(e.getLocalizedMessage());
         return new ResponseEntity<>(
                 new JsonResponseBody<>(e.getLocalizedMessage(), 50000, null),
