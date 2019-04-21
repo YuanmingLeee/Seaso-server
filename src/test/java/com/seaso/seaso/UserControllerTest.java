@@ -50,6 +50,6 @@ public class UserControllerTest {
         Assert.assertEquals(200, userResponseEntity.getStatusCodeValue());
         Assert.assertTrue(userResponseEntity.hasBody());
         JsonResponseBody json = userResponseEntity.getBody();
-        Assert.assertEquals(200, json.getCode());
+        Assert.assertEquals(200, json.getStatus());
     }
 }

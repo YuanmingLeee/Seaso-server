@@ -4,10 +4,11 @@ import com.seaso.seaso.common.web.validation.annotation.Password;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.regex.Pattern;
 
 public class PasswordValidator implements ConstraintValidator<Password, Object> {
 
-    private static final String pattern = "(?=^\\S{8,16}$)(?=.*[\\d])(?=.*[a-zA-Z])";
+    private static final Pattern pattern = Pattern.compile("(?=^\\S{8,16}$)(?=.*[\\d])(?=.*[a-zA-Z])");
 
     @Override
     public void initialize(Password constraintAnnotation) {
@@ -16,7 +17,7 @@ public class PasswordValidator implements ConstraintValidator<Password, Object> 
     @Override
     public boolean isValid(Object value, ConstraintValidatorContext context) {
         if (value instanceof String) {
-            return ((String) value).matches(pattern);
+            return pattern.matcher((String) value).find();
         }
         return false;
     }

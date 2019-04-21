@@ -17,21 +17,21 @@ public class JsonResponseBody<T> {
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date timestamp;
-    private int code;
+    private int status;
 
-    public JsonResponseBody(String message, int code, T data) {
+    public JsonResponseBody(String message, int status, T data) {
         timestamp = new Date();
-        this.code = code;
+        this.status = status;
         this.message = message;
         this.data = data;
     }
 
-    public JsonResponseBody(int code, T data) {
-        this("success", code, data);
+    public JsonResponseBody(int status, T data) {
+        this("success", status, data);
     }
 
-    public JsonResponseBody(int code) {
-        this(code, null);
+    public JsonResponseBody(int status) {
+        this(status, null);
     }
 
     public JsonResponseBody() {
@@ -46,12 +46,12 @@ public class JsonResponseBody<T> {
         this.timestamp = timestamp;
     }
 
-    public int getCode() {
-        return code;
+    public int getStatus() {
+        return status;
     }
 
-    public void setCode(int code) {
-        this.code = code;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getMessage() {
