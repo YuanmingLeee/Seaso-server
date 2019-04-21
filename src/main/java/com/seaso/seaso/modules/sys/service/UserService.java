@@ -1,8 +1,11 @@
 package com.seaso.seaso.modules.sys.service;
 
+import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.sys.entity.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
+
+import java.util.List;
 
 /**
  * User service class.
@@ -48,6 +51,8 @@ public interface UserService {
      * @return the found user.
      */
     User findUserByUsername(String username);
+
+    List<Question> findUserHistoryByUsername(String username);
 
     /**
      * Find a page of users given the queried page number, page size and sorting method.

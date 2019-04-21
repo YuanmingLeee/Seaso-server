@@ -1,5 +1,6 @@
 package com.seaso.seaso.modules.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.common.persistance.Update;
 import com.seaso.seaso.common.utils.idgen.IdGen;
@@ -43,12 +44,14 @@ public class User extends DataEntity<User> {
     private byte[] avatar;
 
     @Size(max = 0, message = "Set invalid field", groups = {Update.class})
+    @JsonIgnore
     @Lob
     @Basic(fetch = FetchType.LAZY)
     @Column(nullable = false, length = Integer.MAX_VALUE)
     private String history = "";
 
     @Size(max = 0, message = "Set invalid field", groups = {Update.class})
+    @JsonIgnore
     @Lob
     @Column(nullable = false, length = Integer.MAX_VALUE)
     private String myLikes = "";

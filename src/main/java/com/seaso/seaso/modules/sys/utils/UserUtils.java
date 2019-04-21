@@ -104,6 +104,14 @@ public class UserUtils {
         return EncryptionUtils.decodeString(string, UserPreference.class);
     }
 
+    public static String encryptUserHistory(@NotNull Map<Long, ViewDate> map) {
+        return EncryptionUtils.encryptString(map);
+    }
+
+    public static Map<Long, ViewDate> decodeUserHistory(String string) {
+        return EncryptionUtils.decodeString(string, ViewDate.class);
+    }
+
     public static Role getRole(@NotNull RoleType roleType) {
         return roles.get(roleType.ordinal());
     }

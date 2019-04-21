@@ -4,6 +4,7 @@ import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
 import com.seaso.seaso.common.persistance.Update;
 import com.seaso.seaso.common.web.validation.annotation.Password;
 import com.seaso.seaso.common.web.validation.annotation.Username;
+import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.SystemService;
 import com.seaso.seaso.modules.sys.service.UserService;
@@ -75,6 +76,14 @@ public class UserController {
         User user = userService.findUserByUsername(username);
         return new ResponseEntity<>(
                 new JsonResponseBody<>(200, user), HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/{username}/history", method = RequestMethod.GET)
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> getUserHistory(@PathVariable String username) {
+        List<Question> questions = userService.findUserHistoryByUsername(username);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, questions), HttpStatus.OK);
     }
 
     /**
