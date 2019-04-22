@@ -3,13 +3,17 @@ package com.seaso.seaso.modules.sys.entity;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seaso.seaso.common.persistance.DataEntity;
 import com.seaso.seaso.modules.sys.utils.AuthenticationType;
+import com.seaso.seaso.modules.sys.utils.RoleType;
+import com.seaso.seaso.modules.sys.utils.UserUtils;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -154,6 +158,14 @@ public class SystemUser extends DataEntity<SystemUser> implements UserDetails {
         password = authentication.getCredential();
         username = authentication.getIdentifier();
         userId = user.getUserId();
+    }
+
+    public static SystemUser getGuestInstance() {
+        SystemUser systemUser = new SystemUser(
+                User.getGuestInstance(), new ArrayList<>(), Collections.singletonList(UserUtils.getRole(RoleType.GUEST))
+        );
+        systemUser.userId = UserUtils.getCurrentUserId();
+        return systemUser;
     }
 
     public static class SystemUserBuilder {

@@ -31,19 +31,19 @@ public class AnswerController {
         Page<Answer> answers = answerService.findAnswersByQuestionId(questionId, page, size,
                 Sort.by(itemName).descending());
 
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, answers), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, answers), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public ResponseEntity<?> createAnswer(@RequestBody Answer answer) {
         answerService.createAnswer(answer);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JsonResponseBody<>(201), HttpStatus.CREATED);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.GET)
     public ResponseEntity<?> getAnswerById(@PathVariable Long answerId) {
         Answer answer = answerService.findAnswerById(answerId);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, answer), HttpStatus.OK);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, answer), HttpStatus.OK);
     }
 
     @RequestMapping(value = "/{answerId}", method = RequestMethod.POST)

@@ -72,11 +72,11 @@ public class SearchManager {
     private TextResponse parseGetTextFromImageEntity(HttpResponse response) {
         ObjectMapper mapper = new ObjectMapper();
 
-        int status = response.getStatusLine().getStatusCode();
         String jsonResponse;
         try {
-            jsonResponse = EntityUtils.toString(response.getEntity());
+            jsonResponse = EntityUtils.toString(response.getEntity(), "UTF-8");
             StringReader reader = new StringReader(jsonResponse);
+            int status = response.getStatusLine().getStatusCode();
 
             if (status < HttpStatus.OK.value() || status > HttpStatus.MULTIPLE_CHOICES.value()) {
                 JsonResponseBody<?> jsonResp = mapper.readValue(reader, JsonResponseBody.getJsonResponseBodyType());

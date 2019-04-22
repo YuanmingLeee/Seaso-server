@@ -1,9 +1,7 @@
 package com.seaso.seaso.modules.sys.utils;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
-import org.springframework.http.HttpStatus;
 
 import java.util.Date;
 
@@ -19,26 +17,25 @@ public class JsonResponseBody<T> {
 
     @JsonFormat(shape = JsonFormat.Shape.NUMBER)
     private Date timestamp;
-    @JsonProperty("status")
-    private int statusCode;
+    private int status;
 
-    public JsonResponseBody(HttpStatus status, String message, T data) {
+    public JsonResponseBody(String message, int status, T data) {
         timestamp = new Date();
-        this.statusCode = status.value();
+        this.status = status;
         this.message = message;
         this.data = data;
     }
 
-    public JsonResponseBody(HttpStatus status, T data) {
-        this(status, "success", data);
+    public JsonResponseBody(int status, T data) {
+        this("success", status, data);
     }
 
-    public JsonResponseBody(HttpStatus status) {
+    public JsonResponseBody(int status) {
         this(status, null);
     }
 
     public JsonResponseBody() {
-        this(HttpStatus.OK);
+        this(200);
     }
 
     public Date getTimestamp() {
@@ -49,12 +46,12 @@ public class JsonResponseBody<T> {
         this.timestamp = timestamp;
     }
 
-    public int getStatusCode() {
-        return statusCode;
+    public int getStatus() {
+        return status;
     }
 
-    public void setStatusCode(int statusCode) {
-        this.statusCode = statusCode;
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public String getMessage() {

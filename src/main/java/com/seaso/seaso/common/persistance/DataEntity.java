@@ -7,6 +7,7 @@ import com.seaso.seaso.common.exception.ServiceException;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
 import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -28,6 +29,7 @@ public abstract class DataEntity<T> implements Serializable {
     /**
      * Entity owner.
      */
+    @Null(groups = {Create.class, Update.class})
     @Column(nullable = false, length = 32)
     protected Long creator;
 
@@ -42,6 +44,7 @@ public abstract class DataEntity<T> implements Serializable {
      * Entity create date.
      */
     /* TODO: bug may raised because of timezone */
+    @Null(groups = {Create.class, Update.class})
     @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss", timezone = "GMT+8")
     @JsonProperty(value = "create_date")
     @Temporal(TemporalType.TIMESTAMP)
@@ -51,6 +54,7 @@ public abstract class DataEntity<T> implements Serializable {
     /**
      * Entity update date.
      */
+    @Null(groups = {Create.class, Update.class})
     @JsonFormat(pattern = "MM-dd-yyyy HH:mm:ss", timezone = "GMT+8")
     @JsonProperty(value = "update_date")
     @Temporal(TemporalType.TIMESTAMP)

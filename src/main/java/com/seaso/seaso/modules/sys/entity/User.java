@@ -1,9 +1,15 @@
 package com.seaso.seaso.modules.sys.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.seaso.seaso.common.persistance.DataEntity;
+import com.seaso.seaso.common.persistance.Update;
 import com.seaso.seaso.common.utils.idgen.IdGen;
+import com.seaso.seaso.common.web.validation.annotation.Username;
+import org.hibernate.validator.constraints.Range;
 
 import javax.persistence.*;
+import javax.validation.constraints.Null;
+import javax.validation.constraints.Size;
 import java.util.function.Consumer;
 
 /**
@@ -19,27 +25,35 @@ public class User extends DataEntity<User> {
     @Transient
     private static final long serialVersionUID = 912182812071648668L;
 
+    @Null(message = "Set invalid field", groups = {Update.class})
     @Column(nullable = false, updatable = false, length = 64)
     private Long userId;
 
+    @Range(max = 99, message = "Please set an age between 0 and 99")
     @Column(length = 2)
     private Integer age;
 
+    @Username
     @Column(nullable = false, length = 32)
     private String username;
 
+    @Null(message = "Set invalid field")
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(length = 16777215)
+    @Column(nullable = false, length = Integer.MAX_VALUE)
     private byte[] avatar;
 
+    @Size(max = 0, message = "Set invalid field", groups = {Update.class})
+    @JsonIgnore
     @Lob
     @Basic(fetch = FetchType.LAZY)
-    @Column(length = 166777215)
-    private String history;
+    @Column(nullable = false, length = Integer.MAX_VALUE)
+    private String history = "";
 
+    @Size(max = 0, message = "Set invalid field", groups = {Update.class})
+    @JsonIgnore
     @Lob
-    @Column(length = 166777215)
+    @Column(nullable = false, length = Integer.MAX_VALUE)
     private String myLikes = "";
 
     public User() {

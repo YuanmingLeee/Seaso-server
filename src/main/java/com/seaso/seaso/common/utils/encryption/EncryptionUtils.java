@@ -1,6 +1,5 @@
 package com.seaso.seaso.common.utils.encryption;
 
-import com.seaso.seaso.modules.sys.utils.UserPreference;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public final class EncryptionUtils {
      * @param map the map of the encrypt data with Long type ID.
      * @return the encoded string
      */
-    public static String encryptString(@NotNull Map<Long, UserPreference> map) {
+    public static <T extends EncryptData> String encryptString(@NotNull Map<Long, T> map) {
         return map.entrySet().stream()
                 .filter(x -> x.getValue() != null)
                 .map(e -> e.getKey() + ":" + e.getValue().encrypt())

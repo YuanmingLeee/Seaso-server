@@ -42,8 +42,8 @@ public final class UserPreference extends EncryptData {
         String like = strings[1];
         assert like.equals("0") || like.equals("1") : "Expecting 2nd element be `0` or `1`, but got " + like;
 
-        this.createDate = new Date(Long.parseLong(strings[0]));
-        this.preference = like.equals("1");
+        createDate = new Date(Long.parseLong(strings[0]));
+        preference = like.equals("1");
     }
 
     @Override

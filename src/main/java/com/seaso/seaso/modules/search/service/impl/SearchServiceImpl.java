@@ -1,5 +1,6 @@
 package com.seaso.seaso.modules.search.service.impl;
 
+import com.google.common.collect.Lists;
 import com.seaso.seaso.modules.question.dao.QuestionRepository;
 import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.search.manager.SearchManager;
@@ -12,6 +13,7 @@ import org.elasticsearch.search.sort.ScoreSortBuilder;
 import org.elasticsearch.search.sort.SortBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.data.elasticsearch.core.query.SearchQuery;
@@ -39,7 +41,12 @@ public class SearchServiceImpl implements SearchService {
     public Page<Question> searchQuestionByImage(MultipartFile image, Pageable pageable) {
         String result = searchManager.getTextFromImage(image);
 
-        QueryBuilder queryBuilder = buildQueryBuilders(result);
+        return searchQuestionByText(result, pageable);
+    }
+
+    @Override
+    public Page<Question> searchQuestionByText(String text, Pageable pageable) {
+        QueryBuilder queryBuilder = buildQueryBuilders(text);
         // TODO: add rescorer
 //        QueryRescorerBuilder rescorerBuilder = new QueryRescorerBuilder(queryBuilders[0])
 //                .windowSize(pageable.getPageSize() * 5)
@@ -69,7 +76,7 @@ public class SearchServiceImpl implements SearchService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return null;
+        return new PageImpl<>(Lists.newArrayList());
     }
 
     private QueryBuilder buildQueryBuilders(String result) {

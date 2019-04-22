@@ -1,6 +1,7 @@
 package com.seaso.seaso.modules.media.manager;
 
 import com.seaso.seaso.modules.media.entity.FastDFSFile;
+import org.csource.common.MyException;
 import org.csource.common.NameValuePair;
 import org.csource.fastdfs.*;
 import org.jetbrains.annotations.Contract;
@@ -40,12 +41,30 @@ public class FastDFSManager implements LargeBinaryFileManager {
         try {
             String filePath = new ClassPathResource("fdfs_client.properties").getFile().getAbsolutePath();
             ClientGlobal.init(filePath);
+        } catch (IOException e) {
+            logger.error("Fail to load fdfs_client.properties");
+            return;
+        } catch (MyException e) {
+            logger.error("Fail to init FDFS client: " + e.getLocalizedMessage());
+            return;
+        }
+        try {
             trackerClient = new TrackerClient();
             trackerServer = trackerClient.getConnection();
-            storageServer = trackerClient.getStoreStorage(trackerServer);
-            trackerUrl = "http://" + trackerServer.getInetSocketAddress().getHostString() + ":" + ClientGlobal.getG_tracker_http_port() + "/";
         } catch (Exception e) {
-            logger.error("FastDFS client init fail.");
+            logger.error("Fail to connect FDFS tracker server: " + e.getLocalizedMessage());
+            return;
+        }
+        try {
+            storageServer = trackerClient.getStoreStorage(trackerServer);
+        } catch (IOException e) {
+            logger.error("Fail to connect FDFS tracker client: " + e.getLocalizedMessage());
+            return;
+        }
+        try {
+            trackerUrl = "http://" + trackerServer.getInetSocketAddress().getHostString() + ":" + ClientGlobal.getG_tracker_http_port() + "/";
+        } catch (NullPointerException e) {
+            logger.error("Fail to load FDFS tracker server");
         }
     }
 

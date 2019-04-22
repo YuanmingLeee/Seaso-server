@@ -8,6 +8,8 @@ import com.seaso.seaso.modules.sys.utils.UserUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
+
 @Service
 public class AuthenticationServiceImpl implements AuthenticationService {
 
@@ -19,6 +21,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     }
 
     @Override
+    @Transactional
     public void createUserAuth(Authentication authentication) {
         if (authentication.getAuthenticationType() == AuthenticationType.USERNAME) {
             String password = UserUtils.encryptByBCrypt(authentication.getCredential());
@@ -27,12 +30,15 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         authenticationRepository.save(authentication);
     }
 
+    // TODO:
     @Override
+    @Transactional
     public int updateUserAuthByIdentifier(String identifier) {
         return 0;
     }
 
     @Override
+    @Transactional
     public void deleteUserAuthByIdentifier(String identifier) {
         authenticationRepository.deleteByIdentifier(identifier);
     }

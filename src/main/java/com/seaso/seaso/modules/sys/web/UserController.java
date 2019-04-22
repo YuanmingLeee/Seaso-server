@@ -1,5 +1,10 @@
 package com.seaso.seaso.modules.sys.web;
 
+import com.seaso.seaso.common.exception.ApiIllegalArgumentException;
+import com.seaso.seaso.common.persistance.Update;
+import com.seaso.seaso.common.web.validation.annotation.Password;
+import com.seaso.seaso.common.web.validation.annotation.Username;
+import com.seaso.seaso.modules.question.entity.Question;
 import com.seaso.seaso.modules.sys.entity.User;
 import com.seaso.seaso.modules.sys.service.SystemService;
 import com.seaso.seaso.modules.sys.service.UserService;
@@ -7,12 +12,16 @@ import com.seaso.seaso.modules.sys.utils.JsonResponseBody;
 import com.seaso.seaso.modules.sys.utils.RoleType;
 import com.seaso.seaso.modules.sys.utils.UserUtils;
 import io.swagger.annotations.ApiOperation;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +34,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping(value = "/users")
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -64,18 +74,37 @@ public class UserController {
     @RequestMapping(value = "/{username}", method = RequestMethod.GET)
     public ResponseEntity<?> getUser(@PathVariable String username) {
         User user = userService.findUserByUsername(username);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.OK, user), HttpStatus.OK);
+        return new ResponseEntity<>(
+                new JsonResponseBody<>(200, user), HttpStatus.OK);
+    }
+
+
+    @RequestMapping(value = "/{username}/history", method = RequestMethod.GET)
+    @Secured("ROLE_ADMIN")
+    public ResponseEntity<?> getUserHistory(@PathVariable String username) {
+        List<Question> questions = userService.findUserHistoryByUsername(username);
+        return new ResponseEntity<>(new JsonResponseBody<>(200, questions), HttpStatus.OK);
     }
 
     /**
      * Update the logged in user's information.
      *
      * @param user the new user with the fields to be updated. If a field is not to be updated, you should leave it as
-     *             {@code null}
+     *             {@code null}.
+     * @param bindingResult validator binding result of user model.
      * @return a {@link JsonResponseBody} if updated successfully. Other exceptions may be raised.
      */
     @RequestMapping(value = "/", method = RequestMethod.PATCH)
-    public ResponseEntity<JsonResponseBody<?>> updateUser(@ModelAttribute User user) {
+    public ResponseEntity<JsonResponseBody<?>> updateUser(@ModelAttribute @Validated({Update.class}) User user,
+                                                          @NotNull BindingResult bindingResult) {
+        // check for validation
+        StringBuilder message = new StringBuilder();
+        if (bindingResult.hasErrors()) {
+            for (FieldError fieldError : bindingResult.getFieldErrors()) {
+                message.append(fieldError.getField()).append(":").append(fieldError.getDefaultMessage()).append(";");
+            }
+            throw new ApiIllegalArgumentException(message.toString());
+        }
         Long userId = UserUtils.getCurrentUserId();
         String username = user.getUsername();
 
@@ -92,11 +121,11 @@ public class UserController {
      *
      * @param password the new plain password.
      * @return a {@link JsonResponseBody} if post successfully. Other exceptions may be raised. Refer to
-     * {@link #changePassword(Long, String)} for details.
+     * {@link #changePassword(long, String)} for details.
      */
     @RequestMapping(value = "/password", method = RequestMethod.POST)
-    public ResponseEntity<?> changePassword(@RequestParam String password) {
-        Long userId = UserUtils.getCurrentUserId();
+    public ResponseEntity<?> changePassword(@RequestParam @Password String password) {
+        long userId = UserUtils.getCurrentUserId();
         return changePassword(userId, password);
     }
 
@@ -111,11 +140,10 @@ public class UserController {
      * @return a {@link JsonResponseBody} if created successfully. Exceptions will be raised.
      */
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> createUser(@RequestParam String username,
-                                        @RequestParam String password) {
+    public ResponseEntity<?> createUser(@RequestParam @Username String username,
+                                        @RequestParam @Password String password) {
         systemService.createUser(username, password);
-        return new ResponseEntity<>(new JsonResponseBody<>(HttpStatus.CREATED), HttpStatus.CREATED);
+        return new ResponseEntity<>(new JsonResponseBody<>(201), HttpStatus.CREATED);
     }
 
     /**
@@ -131,11 +159,12 @@ public class UserController {
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.PATCH)
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> updateUser(@PathVariable Long userId,
-                                        @RequestParam(required = false) String username,
+    public ResponseEntity<?> updateUser(@PathVariable long userId,
+                                        @RequestParam(required = false) @Username String username,
                                         @RequestParam(required = false) List<RoleType> roles) {
-        if (username != null)
+        if (username != null) {
             systemService.updateUsernameByUserId(userId, username);
+        }
         else if (roles != null)
             systemService.updateUserRolesByUserId(userId, roles);
         return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
@@ -149,7 +178,7 @@ public class UserController {
      */
     @RequestMapping(value = "/{userId}", method = RequestMethod.DELETE)
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> deleteUser(@PathVariable Long userId) {
+    public ResponseEntity<?> deleteUser(@PathVariable long userId) {
         systemService.deleteUserByUserId(userId);
         return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
@@ -163,8 +192,8 @@ public class UserController {
      */
     @RequestMapping(value = "/password/{userId}", method = RequestMethod.POST)
     @Secured("ROLE_ADMIN")
-    public ResponseEntity<?> changePassword(@PathVariable Long userId,
-                                            @RequestParam String password) {
+    public ResponseEntity<?> changePassword(@PathVariable long userId,
+                                            @RequestParam @Password String password) {
         systemService.updatePasswordByUserId(userId, password);
         return new ResponseEntity<>(new JsonResponseBody<>(), HttpStatus.OK);
     }
