@@ -14,7 +14,7 @@ datasource:
     password: password # this is your db password
     driver-class-name: com.mysql.cj.jdbc.Driver
 ```
-### Install FastDFS
+### Install FastDFS (not required)
 [FastDFS](https://github.com/happyfish100/fastdfs/) is an open source high performance distributed file system (DFS). 
 It's major functions include: file storing, file syncing and file accessing, and design for high capacity and 
 load balance.  
@@ -22,8 +22,6 @@ load balance.
 FastDFS consists of two parts: **tracker** and **storage**(with nginx). You may choose to deploy tracker and storage in
 different servers.  
 
-Aside: How to remember FastDFS?   
-Fast Discrete Fourier Series! XD   
 #### Unix User
 For FastDFS to function, you are required to install: tracker, storage, and fastdfs-nginx-module. 
 [Here](https://blog.csdn.net/xcg132566/article/details/79163790) is a Chinese tutorial on how to configure FastDFS. Or
